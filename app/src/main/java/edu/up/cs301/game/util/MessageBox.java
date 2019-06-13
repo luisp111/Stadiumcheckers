@@ -12,6 +12,8 @@ import android.content.DialogInterface.OnClickListener;
  *
  */
 public class MessageBox {
+	//Tag for logging
+	private static final String TAG = "MessageBox";
 	/**
 	 * popUpMessage, a handy method for putting a message box on the screen.
 	 * 

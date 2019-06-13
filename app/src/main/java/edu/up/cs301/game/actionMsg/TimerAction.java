@@ -13,7 +13,9 @@ public class TimerAction extends GameAction {
 	
 	// to satisfy the Serializable interface
 	private static final long serialVersionUID = -8093996755313861636L;
-	
+	//TAG For Logging:
+	private static final String TAG = "TimerAction";
+
 	// the timer that caused this action
 	private GameTimer myTimer;
 

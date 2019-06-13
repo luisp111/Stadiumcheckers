@@ -25,6 +25,8 @@ public abstract class GameAction implements Serializable {
 	
 	// to support the Serializable interface
 	private static final long serialVersionUID = 30672013L;
+    //TAG For Logging
+    private static final String TAG = "GameAction";
 
     // the player who generated the request
     private GamePlayer player;

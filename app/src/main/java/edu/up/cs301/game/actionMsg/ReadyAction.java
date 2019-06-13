@@ -13,6 +13,8 @@ public class ReadyAction extends GameAction {
 	
 	// to satisfy the Serializable interface
 	private static final long serialVersionUID = -5286032209480788772L;
+	//TAG For Logging:
+	private static final String TAG = "ReadyAction";
 
 	/** constructor
 	 * 

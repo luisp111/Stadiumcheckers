@@ -14,7 +14,8 @@ import edu.up.cs301.game.infoMsg.IllegalMoveInfo;
  */
 
 public class TTTLocalGame extends LocalGame {
-
+	//Tag for logging
+	private static final String TAG = "TTTLocalGame";
 	// the game's state
 	protected TTTState state;
 

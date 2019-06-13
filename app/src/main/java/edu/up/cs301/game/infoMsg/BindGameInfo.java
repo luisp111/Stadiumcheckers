@@ -11,7 +11,8 @@ import edu.up.cs301.game.Game;
  * @version July 2013
  */
 public class BindGameInfo extends GameInfo {
-	
+	//Tag for logging
+	private static final String TAG = "BindGameInfo";
 	// to satisfy the Serializable interface
 	private static final long serialVersionUID = 8819385408185187694L;
 	

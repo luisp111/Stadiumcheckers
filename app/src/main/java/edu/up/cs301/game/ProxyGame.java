@@ -6,6 +6,7 @@ import android.util.Log;
 import edu.up.cs301.game.actionMsg.GameAction;
 import edu.up.cs301.game.infoMsg.GameInfo;
 import edu.up.cs301.game.util.IPCoder;
+import edu.up.cs301.game.util.Logger;
 import edu.up.cs301.game.util.NetworkObjectPasser;
 
 /**
@@ -20,6 +21,8 @@ import edu.up.cs301.game.util.NetworkObjectPasser;
  * @version July 2013
  */
 public class ProxyGame implements Game {
+	//Tag for logging
+	private static final String TAG = "ProxyGame";
 
     // the player associated with this game
     private GamePlayer player;
@@ -77,7 +80,7 @@ public class ProxyGame implements Game {
         	// callback method, called whenever an object is sent to us from
         	// across the network
         	public void onReceiveObject(Object obj) {
-        		Log.i("ProxyGame", "received object ("+obj.getClass()+")");
+				Logger.log(TAG, "recieved object (" + obj.getClass()+")");
         		try {
         			boolean b = obj instanceof GameInfo;
         			if (b) {
@@ -88,13 +91,13 @@ public class ProxyGame implements Game {
         					if (player == null) {
         						// if the player has not been connected, save the
         						// object in a queue
-        						Log.i("ProxyGame", "adding object to queue");
+        						Logger.log(TAG, "adding object to queue");
         						queuedObjectsForPlayer.add(gs);
         					}
         					else {
         						// if the player has been connected, send the object
         						// directly to the player
-                				Log.i("ProxyGame", "about to send state to player");
+                				Logger.log(TAG, "about to send state to player");
                 				player.sendInfo(gs);
                 				Log.i("ProxyGame", "... done sending state");
         					}
@@ -102,12 +105,12 @@ public class ProxyGame implements Game {
         			}
         			else {
         				// ignore if the object is not a GameInfo object
-        				Log.i("ProxyGame", "object NOT being sent to player");
+        				Logger.log(TAG, "object NOT being sent to player");
         			}
         		}
         		catch (Exception x) {
         			// if any other exception occurs, log it
-        			Log.i(x.getClass().toString(), x.getMessage());
+        			Logger.log(x.getLocalizedMessage().toLowerCase(), x.getMessage(), Logger.ERROR);
         		}
         	}
         };

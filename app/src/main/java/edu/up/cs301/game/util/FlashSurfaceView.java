@@ -16,7 +16,8 @@ import android.view.SurfaceView;
  *
  */
 public class FlashSurfaceView extends SurfaceView {
-
+    //Tag for logging
+    private static final String TAG = "FlashSurfaceView";
     // handler for our creator's thread
     private Handler mainHandler;
 

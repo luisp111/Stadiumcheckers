@@ -11,8 +11,9 @@ import edu.up.cs301.game.infoMsg.GameState;
  * @author Steven R. Vegdahl
  * @version July 2013
  */
-public class TTTState extends GameState
-{
+public class TTTState extends GameState {
+    //Tag for logging
+    private static final String TAG = "TTTState";
 	private static final long serialVersionUID = 7552321013488624386L;
 
     ///////////////////////////////////////////////////

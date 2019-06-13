@@ -28,6 +28,7 @@ import android.widget.TabHost.TabSpec;
 import edu.up.cs301.game.config.GameConfig;
 import edu.up.cs301.game.config.GamePlayerType;
 import edu.up.cs301.game.util.IPCoder;
+import edu.up.cs301.game.util.Logger;
 import edu.up.cs301.game.util.MessageBox;
 
 /**
@@ -42,6 +43,8 @@ import edu.up.cs301.game.util.MessageBox;
  */
 public abstract class GameMainActivity extends Activity implements
 View.OnClickListener {
+	//Tag for logging
+	private static final String TAG = "GameMainActivity";
 
 	/*
 	 * ====================================================================
@@ -475,8 +478,8 @@ View.OnClickListener {
 	 * NOTE: With the current layout it could either be a Button or ImageButton.
 	 */
 	public void onClick(View button) {
-		
-		Log.i("onClick", "just clicked");
+
+		Logger.log("onClick", "I've been clicked" + button.getId());
 		
 		// if the GUI many not have been fully initialized, ignore
 		if (justStarted) {

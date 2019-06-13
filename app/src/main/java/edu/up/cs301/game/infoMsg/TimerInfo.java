@@ -11,7 +11,10 @@ import edu.up.cs301.game.util.GameTimer;
  */
 
 public class TimerInfo extends GameInfo {
-	
+
+	//Tag for logging
+	private static final String TAG = "TimerInfo";
+
 	// to satisfy the Serializable interface
 	private static final long serialVersionUID = -7138064704052644451L;
 

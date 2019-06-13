@@ -18,6 +18,8 @@ import edu.up.cs301.game.Game;
  * @version July 2013
  */
 public abstract class GameInfo implements Serializable {
+	//Tag for logging
+	private static final String TAG = "GameInfo";
 	/**
 	 * satisfy the Serializable interface
 	 */

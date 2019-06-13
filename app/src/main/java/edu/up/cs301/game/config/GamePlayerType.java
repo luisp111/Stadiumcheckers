@@ -23,6 +23,8 @@ public abstract class GamePlayerType implements Cloneable /*, Serializable*/ {
 	 * this is a short description of the player type used in GUI widgets
 	 */
 	private String typeName;
+	//Tag for logging
+	private static final String TAG = "GamePlayerType";
 
 //	/**
 //	 * this is the fully qualified name of the class that will provides moves

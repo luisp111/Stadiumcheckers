@@ -22,7 +22,8 @@ import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
  * @version July 2013
  */
 public class TTTHumanPlayer2 extends GameHumanPlayer implements OnClickListener {
-	
+	//Tag for logging
+	private static final String TAG = "TTTHumanPlayer2";
 	// the activity under which we're running
 	GameMainActivity myActivity = null;
 	

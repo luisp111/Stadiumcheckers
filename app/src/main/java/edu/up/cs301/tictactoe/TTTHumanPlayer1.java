@@ -13,6 +13,7 @@ import edu.up.cs301.game.R;
 import edu.up.cs301.game.infoMsg.GameInfo;
 import edu.up.cs301.game.infoMsg.IllegalMoveInfo;
 import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
+import edu.up.cs301.game.util.Logger;
 
 /**
  * A GUI that allows a human to play tic-tac-toe. Moves are made by clicking
@@ -22,7 +23,8 @@ import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
  * @version September 2016
  */
 public class TTTHumanPlayer1 extends GameHumanPlayer implements View.OnTouchListener {
-
+    //Tag for logging
+    private static final String TAG = "TTTHumanPlayer1";
     // the current activity
     private Activity myActivity;
 
@@ -66,7 +68,7 @@ public class TTTHumanPlayer1 extends GameHumanPlayer implements View.OnTouchList
         else {
             surfaceView.setState((TTTState)info);
             surfaceView.invalidate();
-            Log.i("human player", "receiving");
+            Logger.log(TAG, "receiving");
         }
     }
 
@@ -83,7 +85,7 @@ public class TTTHumanPlayer1 extends GameHumanPlayer implements View.OnTouchList
 
         // set the surfaceView instance variable
         surfaceView = (TTTSurfaceView)myActivity.findViewById(R.id.surfaceView);
-        Log.i("set listener","OnTouch");
+        Logger.log("set listener","OnTouch");
         surfaceView.setOnTouchListener(this);
     }
 
@@ -131,7 +133,7 @@ public class TTTHumanPlayer1 extends GameHumanPlayer implements View.OnTouchList
             surfaceView.flash(Color.RED, 50);
         } else {
             TTTMoveAction action = new TTTMoveAction(this, p.y, p.x);
-            Log.i("onTouch", "Human player sending TTTMA ...");
+            Logger.log("onTouch", "Human player sending TTTMA ...");
             game.sendAction(action);
             surfaceView.invalidate();
         }

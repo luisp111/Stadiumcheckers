@@ -8,7 +8,8 @@ package edu.up.cs301.game.infoMsg;
  * @version July 2013
  */
 public class NotYourTurnInfo extends GameInfo {
-
+	//Tag for logging
+	private static final String TAG = "NotYourTurnInfo";
 	// to satisfy the Serializable interface
 	private static final long serialVersionUID = 3417491177980351323L;
 

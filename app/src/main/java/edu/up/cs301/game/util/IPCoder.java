@@ -6,6 +6,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 import android.util.Log;
+import edu.up.cs301.game.util.Logger;
 
 /**
  * Helper-class to encode and decode IP addresses to/from a format that is
@@ -16,7 +17,8 @@ import android.util.Log;
  *
  */
 public class IPCoder {
-	
+	//Tag for logging
+	private static final String TAG = "IPCoder";
 	/**
 	 * gets the IP address of the current device
 	 * 
@@ -40,7 +42,7 @@ public class IPCoder {
 				}
 			}
 		} catch (SocketException ex) {
-			Log.e("IPCoder"/*this.toString()*/, ex.toString());
+			Logger.log(TAG, ex.toString(), Logger.ERROR);
 		}
 		return "Unable to determine UP address.";
 	}

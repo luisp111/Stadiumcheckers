@@ -28,7 +28,10 @@ public class AnimationSurface extends SurfaceView implements OnTouchListener {
 	private Paint backgroundPaint = new Paint(); // painter for painting background
 	private int flashCount; // counts down ticks for background-flash
 	private Paint flashPaint; // has color for background flash
-	
+
+	//TAG For Logging:
+	private static final String TAG = "AnimationSurface";
+
 	/**
 	 * Constructor for the AnimationSurface class. In order to be useful, an
 	 * object must be supplied that implements the Animator interface. This

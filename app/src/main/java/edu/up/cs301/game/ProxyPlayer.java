@@ -3,6 +3,7 @@ package edu.up.cs301.game;
 import edu.up.cs301.game.actionMsg.GameAction;
 import edu.up.cs301.game.infoMsg.BindGameInfo;
 import edu.up.cs301.game.infoMsg.GameInfo;
+import edu.up.cs301.game.util.Logger;
 import edu.up.cs301.game.util.NetworkObjectPasser;
 import android.util.Log;
 
@@ -17,7 +18,8 @@ import android.util.Log;
  * @version July 2013
  */
 public class ProxyPlayer implements GamePlayer {
-    
+    //Tag for logging
+    private static final String TAG = "ProxyPlayer";
     // the game object
     private Game game;
     
@@ -36,8 +38,8 @@ public class ProxyPlayer implements GamePlayer {
      * 		the port number through which we connect to our client
      */
     public ProxyPlayer(int portNum) {
-    	
-    	Log.i("ProxyPlayer", "creating Proxy Player");
+
+        Logger.log(TAG, "creating Proxy Player");
         
         // set instance variables to their initial values
         game = null; // the game

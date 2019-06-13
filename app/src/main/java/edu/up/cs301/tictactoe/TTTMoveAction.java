@@ -10,8 +10,9 @@ import edu.up.cs301.game.actionMsg.GameAction;
  * @author Steven R. Vegdahl
  * @version 2 July 2001
  */
-public class TTTMoveAction extends GameAction
-{
+public class TTTMoveAction extends GameAction {
+    //Tag for logging
+    private static final String TAG = "TTTMoveAction";
 	private static final long serialVersionUID = -2242980258970485343L;
 	
 	// instance variables: the selected row and column
@@ -21,7 +22,7 @@ public class TTTMoveAction extends GameAction
     /**
      * Constructor for TTTMoveAction
      *
-     * @param source the player making the move
+     //@param source the player making the move
      * @param row the row of the square selected (0-2)
      * @param col the column of the square selected
      */

@@ -14,6 +14,7 @@ import android.util.Log;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.ProxyPlayer;
+import edu.up.cs301.game.util.Logger;
 
 /**
  * GameConfig class
@@ -31,6 +32,8 @@ import edu.up.cs301.game.ProxyPlayer;
  * @see GameMainActivity
  */
 public class GameConfig {
+	//Tag for logging
+	private static final String TAG = "GameConfig";
 
 	/** a list of all valid player types that the user chooses */
 	private GamePlayerType[] availTypes;
@@ -276,7 +279,7 @@ public class GameConfig {
 			oos.close();
 		} catch (IOException e) {
 			// return false if there was a problem
-			Log.i("MainActivity", "File writing problem.");
+			Logger.log(TAG, "File writing problem.", Logger.ERROR);
 			return false;
 		}
 		
@@ -379,13 +382,13 @@ public class GameConfig {
 		}
 		catch (IOException e) {
 			// abort if I/O exception
-			Log.i("MainActivity", "File reading problem.");
+			Logger.log(TAG, "File reading problem.", Logger.ERROR);
 			return false;
 		}
 		catch (ClassNotFoundException cnfx) {
 			// abort of there if one of the serialized objects somehow was (or contained)
 			// an object in a class that we do not know about.
-			Log.i("MainActivity", "Object/class reading problem.");
+			Logger.log(TAG, "Object/class reading problem.", Logger.ERROR);
 			return false;
 		}
 		finally {

@@ -13,8 +13,9 @@ import android.graphics.Point;
  * @version September 2016
  * 
  */
-public class TTTComputerPlayer2 extends GameComputerPlayer
-{
+public class TTTComputerPlayer2 extends GameComputerPlayer {
+	//Tag for logging
+	private static final String TAG = "TTTComputerPlayer2";
 	/**
 	 * instance variable that tells which piece am I playing ('X' or 'O').
 	 * This is set once the player finds out which player they are, in the

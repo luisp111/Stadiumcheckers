@@ -16,7 +16,8 @@ import edu.up.cs301.game.config.GamePlayerType;
  * @version July 2013
  */
 public class TTTMainActivity extends GameMainActivity {
-	
+	//Tag for logging
+	private static final String TAG = "TTTMainActivity";
 	public static final int PORT_NUMBER = 5213;
 
 	/**

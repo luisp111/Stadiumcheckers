@@ -25,6 +25,8 @@ package edu.up.cs301.game.util;
  * @version July 2013
  */
 public class GameTimer {
+	//Tag for logging
+	private static final String TAG = "GameTimer";
 	// the game to send actions to
 	private Tickable target;
 

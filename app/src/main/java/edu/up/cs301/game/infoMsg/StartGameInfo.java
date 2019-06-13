@@ -7,7 +7,9 @@ package edu.up.cs301.game.infoMsg;
  * @version July 2013
  */
 public class StartGameInfo extends GameInfo {
-	
+	//Tag for logging
+	private static final String TAG = "StartGameInfo";
+
 	// to satisfy the Serializable interface
 	private static final long serialVersionUID = -6396033535388393791L;
 	

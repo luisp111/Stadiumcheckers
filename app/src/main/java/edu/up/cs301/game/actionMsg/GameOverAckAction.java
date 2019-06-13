@@ -12,6 +12,8 @@ public class GameOverAckAction extends GameAction {
 
 	// to satisfy the Serializable interface
 	private static final long serialVersionUID = 4096230060363451102L;
+	//TAG For Logging:
+	private static final String TAG = "GameOverAckAction";
 
 	/**
 	 * constructor

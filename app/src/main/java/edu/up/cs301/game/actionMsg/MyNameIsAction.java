@@ -13,7 +13,9 @@ public class MyNameIsAction extends GameAction {
 	
 	// to satisfy the Serializable interface
 	private static final long serialVersionUID = -4574617895412648866L;
-	
+	//TAG For Logging:
+	private static final String TAG = "MyNameIsAction";
+
 	// the player's name
 	private String name;
 	

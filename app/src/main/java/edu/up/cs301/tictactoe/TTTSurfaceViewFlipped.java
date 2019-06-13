@@ -23,7 +23,8 @@ import edu.up.cs301.game.util.FlashSurfaceView;
  *
  */
 public class TTTSurfaceViewFlipped extends TTTSurfaceView {
-
+    //Tag for logging
+    private static final String TAG = "TTTSurfaceViewFlipped";
     /*
 	 * Instance variables
 	 */

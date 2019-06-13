@@ -11,6 +11,7 @@ import edu.up.cs301.game.infoMsg.TimerInfo;
 import edu.up.cs301.game.util.GameTimer;
 import edu.up.cs301.game.util.MessageBox;
 import edu.up.cs301.game.util.Tickable;
+import edu.up.cs301.game.util.Logger;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -32,6 +33,8 @@ import android.view.View;
  * 
  */
 public abstract class GameHumanPlayer implements GamePlayer, Tickable {
+	//Tag for logging
+	private static final String TAG = "GameHumanPlayer";
 	/**
 	 * instance variables
 	 */
@@ -205,9 +208,9 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
 		while (myHandler == null) Thread.yield();
 
 		// post message to the handler
-		Log.d("sendInfo", "about to post");
+		Logger.debugLog("sendInfo", "about to post");
 		myHandler.post(new MyRunnable(info));
-		Log.d("sendInfo", "done with post");
+		Logger.debugLog("sendInfo", "about to post");
 	}
 
 	/**
@@ -245,7 +248,7 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
 				// game has not been bound: the only thing we're looking for is
 				// BindGameInfo object; ignore everything else
 				if (myInfo instanceof BindGameInfo) {
-					Log.i("GameHumanPlayer", "binding game");
+					Logger.log(TAG, "binding game");
 					BindGameInfo bgs = (BindGameInfo)myInfo;
 					game = bgs.getGame(); // set the game
 					playerNum = bgs.getPlayerNum(); // set our player id
@@ -258,7 +261,7 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
 				// here, the only thing we're looking for is a StartGameInfo object;
 				// ignore everything else
 				if (myInfo instanceof StartGameInfo) {
-					Log.i("GameHumanPlayer", "notification to start game");
+					Logger.log(TAG, "notification to start game");
 					
 					// update our player-name array
 					allPlayerNames = ((StartGameInfo)myInfo).getPlayerNames();

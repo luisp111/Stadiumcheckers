@@ -11,6 +11,7 @@ import edu.up.cs301.game.infoMsg.IllegalMoveInfo;
 import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
 import edu.up.cs301.game.infoMsg.StartGameInfo;
 import edu.up.cs301.game.util.GameTimer;
+import edu.up.cs301.game.util.Logger;
 import edu.up.cs301.game.util.Tickable;
 
 import android.os.Handler;
@@ -32,6 +33,8 @@ import android.util.Log;
  * @version July 2013
  */
 public abstract class LocalGame implements Game, Tickable {
+	//Tag for logging
+	private static final String TAG = "LocalGame";
 	
 	// the stage that the game is in
 	private GameStage gameStage = GameStage.BEFORE_GAME;
@@ -174,7 +177,7 @@ public abstract class LocalGame implements Game, Tickable {
 			if (action instanceof MyNameIsAction &&
 					gameStage == GameStage.WAITING_FOR_NAMES) {
 				MyNameIsAction mnis = (MyNameIsAction) action;
-				Log.i("LocalGame", "received 'myNameIs' ("+mnis.getName()+")");
+				Logger.log(TAG,"received 'myNameIs' ("+mnis.getName()+")");
 
 				// mark that player as having given us its name
 				int playerIdx = getPlayerIdx(mnis.getPlayer());
@@ -187,7 +190,7 @@ public abstract class LocalGame implements Game, Tickable {
 				// game stage, and send a message to each player that the game is
 				// about to start
 				if (playerNameCount >= playerNames.length) {
-					Log.i("LocalGame", "broadcasting player names");
+					Logger.log(TAG, "broadcasting player names");
 					gameStage = GameStage.WAITING_FOR_READY;
 					playersReady = new boolean[players.length]; // array to keep track of players responding
 					for (GamePlayer p : players) {
@@ -206,7 +209,7 @@ public abstract class LocalGame implements Game, Tickable {
 
 				// mark the given player as being ready
 				int playerIdx = getPlayerIdx(ra.getPlayer());
-				Log.i("LocalGame", "got 'ready' ("+playerNames[playerIdx]+")");
+				Logger.log(TAG, "got 'ready' ("+playerNames[playerIdx]+")");
 				if (playerIdx >= 0 && !playersReady[playerIdx]) {
 					playersReady[playerIdx] = true;
 					playerReadyCount++;
@@ -216,7 +219,7 @@ public abstract class LocalGame implements Game, Tickable {
 				// send each player the initial state
 				if (playerReadyCount >= playerNames.length) {
 					gameStage = GameStage.DURING_GAME;
-					Log.i("LocalGame", "broadcasting initial state");
+					Logger.log(TAG, "broadcasting initial state");
 					// send each player the initial state of the game
 					sendAllUpdatedState();
 				}
