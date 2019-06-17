@@ -1,6 +1,6 @@
 package edu.up.cs301.tictactoe;
 
-import edu.up.cs301.game.infoMsg.GameState;
+import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 
 
 /**

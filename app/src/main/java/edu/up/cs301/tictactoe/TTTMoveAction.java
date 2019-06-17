@@ -1,7 +1,7 @@
 package edu.up.cs301.tictactoe;
 
-import edu.up.cs301.game.GamePlayer;
-import edu.up.cs301.game.actionMsg.GameAction;
+import edu.up.cs301.game.GameFramework.GamePlayer;
+import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
 
 /**
  * A game-move object that a tic-tac-toe player sends to the game to make

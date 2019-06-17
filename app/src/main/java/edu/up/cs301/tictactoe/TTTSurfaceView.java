@@ -12,7 +12,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import edu.up.cs301.game.util.FlashSurfaceView;
+import edu.up.cs301.game.GameFramework.utilities.FlashSurfaceView;
 
 /**
  * A SurfaceView which allows which an animation to be drawn on it by a

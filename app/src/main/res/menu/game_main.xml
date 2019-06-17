@@ -1,6 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_settings"
-        android:title="@string/menu_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+<item android:id="@+id/menu_help"
+    android:title="@string/menu_help"
+    android:orderInCategory="100"/>
+<!--If you want to make new menu items copy the above item object and change the id to be
+unique (and descriptive!) and the title to be new text
+Once you've done this update your game-specific MainActivity to set a listener for this new
+item.-->
+<item android:id="@+id/menu_test"
+    android:title="Second Menu Item"
+    android:orderInCategory="100"/>
 </menu>

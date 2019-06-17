@@ -1,9 +1,9 @@
 package edu.up.cs301.tictactoe;
 
-import edu.up.cs301.game.GamePlayer;
-import edu.up.cs301.game.LocalGame;
-import edu.up.cs301.game.actionMsg.GameAction;
-import edu.up.cs301.game.infoMsg.IllegalMoveInfo;
+import edu.up.cs301.game.GameFramework.GamePlayer;
+import edu.up.cs301.game.GameFramework.LocalGame;
+import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
+import edu.up.cs301.game.GameFramework.infoMessage.IllegalMoveInfo;
 
 /**
  * The TTTLocalGame class for a simple tic-tac-toe game.  Defines and enforces

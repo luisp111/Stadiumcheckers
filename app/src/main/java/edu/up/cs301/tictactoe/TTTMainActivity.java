@@ -2,12 +2,12 @@ package edu.up.cs301.tictactoe;
 
 import java.util.ArrayList;
 
-import edu.up.cs301.game.GameMainActivity;
-import edu.up.cs301.game.GamePlayer;
-import edu.up.cs301.game.LocalGame;
+import edu.up.cs301.game.GameFramework.GameMainActivity;
+import edu.up.cs301.game.GameFramework.GamePlayer;
+import edu.up.cs301.game.GameFramework.LocalGame;
 import edu.up.cs301.game.R;
-import edu.up.cs301.game.config.GameConfig;
-import edu.up.cs301.game.config.GamePlayerType;
+import edu.up.cs301.game.GameFramework.gameConfiguration.GameConfig;
+import edu.up.cs301.game.GameFramework.gameConfiguration.GamePlayerType;
 
 /**
  * this is the primary activity for Counter game

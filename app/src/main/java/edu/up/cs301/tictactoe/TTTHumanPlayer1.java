@@ -7,13 +7,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import edu.up.cs301.game.GameHumanPlayer;
-import edu.up.cs301.game.GameMainActivity;
+import edu.up.cs301.game.GameFramework.GameHumanPlayer;
+import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.R;
-import edu.up.cs301.game.infoMsg.GameInfo;
-import edu.up.cs301.game.infoMsg.IllegalMoveInfo;
-import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
-import edu.up.cs301.game.util.Logger;
+import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
+import edu.up.cs301.game.GameFramework.infoMessage.IllegalMoveInfo;
+import edu.up.cs301.game.GameFramework.infoMessage.NotYourTurnInfo;
+import edu.up.cs301.game.GameFramework.utilities.Logger;
 
 /**
  * A GUI that allows a human to play tic-tac-toe. Moves are made by clicking

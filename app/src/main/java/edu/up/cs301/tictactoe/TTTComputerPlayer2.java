@@ -1,7 +1,9 @@
 package edu.up.cs301.tictactoe;
 
-import edu.up.cs301.game.GameComputerPlayer;
-import edu.up.cs301.game.infoMsg.GameInfo;
+import edu.up.cs301.game.GameFramework.GameComputerPlayer;
+import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
+import edu.up.cs301.game.GameFramework.utilities.Logger;
+
 import android.graphics.Point;
 
 /**
@@ -62,11 +64,12 @@ public class TTTComputerPlayer2 extends GameComputerPlayer {
 		if (myState.getWhoseMove() != this.playerNum) return;
 
 		// sleep for a second to make any observers think that we're thinking
-		sleep(1000);
+		sleep(1);
 
 		// if we find a win, select that move
 		Point win = findWin(myState, piece);
 		if (win != null) {
+			Logger.log("TTTComputer", "sending action");
 			game.sendAction(new TTTMoveAction(this, win.y, win.x));
 			return;
 		}
@@ -76,6 +79,7 @@ public class TTTComputerPlayer2 extends GameComputerPlayer {
 		char opponentPiece = piece == 'X' ? 'O' : 'X';
 		Point loss = findWin(myState, opponentPiece);
 		if (loss != null) {
+			Logger.log("TTTComputer", "sending action");
 			game.sendAction(new TTTMoveAction(this, loss.y, loss.x));
 			return;
 		}
