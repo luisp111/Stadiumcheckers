@@ -6,6 +6,7 @@ import edu.up.cs301.game.GameFramework.actionMessage.GameOverAckAction;
 import edu.up.cs301.game.GameFramework.actionMessage.MyNameIsAction;
 import edu.up.cs301.game.GameFramework.actionMessage.ReadyAction;
 import edu.up.cs301.game.GameFramework.actionMessage.TimerAction;
+import edu.up.cs301.game.GameFramework.gameConfiguration.GameConfig;
 import edu.up.cs301.game.GameFramework.infoMessage.BindGameInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.GameOverInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.IllegalMoveInfo;

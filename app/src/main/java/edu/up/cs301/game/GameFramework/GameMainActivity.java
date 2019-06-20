@@ -88,6 +88,9 @@ public abstract class GameMainActivity extends Activity implements
         return tableRows;
     }
 
+    //Keeping the user's configuration for restarting
+    private GameConfig restartConfig = null;
+
 
     /*
      * ====================================================================
@@ -599,6 +602,8 @@ public abstract class GameMainActivity extends Activity implements
 
     private String startGame() {
         GameConfig finalConfig = scrapeData();
+        //Saving the user's inputs in case they want to restart the game later
+        this.restartConfig = finalConfig;
         return launchGame(finalConfig);
     }
 
@@ -882,4 +887,18 @@ public abstract class GameMainActivity extends Activity implements
     public void doFinish(View v) {
         finish();
     }
+
+    /**
+     * Restarts the activity (the game) with the configuration the user selected when they originally
+     * started the game
+     */
+    public void restartGame(){
+        //Might need to fake a configuration for the restart to work properly
+        String msg = launchGame(this.restartConfig);
+        if (msg != null) {
+            // we have an error message
+            MessageBox.popUpMessage(msg, this);
+        }
+    }
+
 }

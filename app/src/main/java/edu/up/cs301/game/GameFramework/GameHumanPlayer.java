@@ -12,7 +12,9 @@ import edu.up.cs301.game.GameFramework.utilities.GameTimer;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.GameFramework.utilities.MessageBox;
 import edu.up.cs301.game.GameFramework.utilities.Tickable;
+import edu.up.cs301.game.R;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -278,8 +280,6 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
             else if (myInfo instanceof GameOverInfo) {
                 // if we're being notified the game is over, finish up
 
-                // perform the "gave over" behavior--by default, to show pop-up message
-                gameIsOver(((GameOverInfo)myInfo).getMessage());
 
                 // if our activity is non-null (which it should be), mark the activity as over
                 if (myActivity != null) myActivity.setGameOver(true);
@@ -289,6 +289,24 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
 
                 // set our instance variable, to indicate the game as over
                 gameOver = true;
+
+                //Since the game is over, we will ask the player if they would like to restart the game
+                String quitQuestion = ((GameOverInfo)myInfo).getMessage() + "Would you like to restart the game?";
+                String posLabel = "Yes!";
+                String negLabel = "No";
+                MessageBox.popUpChoice(quitQuestion, posLabel, negLabel,
+                        //If they want to restart the game, restart it
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface di, int val) {
+                                myActivity.restartGame();
+                            }},
+                        //If not, then just display who won the game
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface di, int val) {
+                                // perform the "gave over" behavior--by default, to show pop-up message
+                                gameIsOver(((GameOverInfo)myInfo).getMessage());
+                            }},
+                        myActivity);
             }
             else if (myInfo instanceof TimerInfo) {
                 // if we have a timer-tick, and it's our timer object,
