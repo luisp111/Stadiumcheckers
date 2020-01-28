@@ -3,14 +3,15 @@ package edu.up.cs301.tictactoe;
 import edu.up.cs301.game.GameFramework.GamePlayer;
 import edu.up.cs301.game.GameFramework.LocalGame;
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
-import edu.up.cs301.game.GameFramework.infoMessage.IllegalMoveInfo;
+import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 
 /**
  * The TTTLocalGame class for a simple tic-tac-toe game.  Defines and enforces
  * the game rules; handles interactions with players.
  * 
- * @author Steven R. Vegdahl 
- * @version July 2013
+ * @author Steven R. Vegdahl
+ * @author Eric Imperio
+ * @version January 2020
  */
 
 public class TTTLocalGame extends LocalGame {
@@ -36,6 +37,15 @@ public class TTTLocalGame extends LocalGame {
 
 		// create a new, unfilled-in TTTState object
 		state = new TTTState();
+	}
+
+	/**
+	 * Constructor for the TTTLocalGame with loaded tttState
+	 * @param tttState
+	 */
+	public TTTLocalGame(TTTState tttState){
+		super();
+		state = tttState;
 	}
 
 	/**
@@ -176,6 +186,16 @@ public class TTTLocalGame extends LocalGame {
 		
 		// return true, indicating the it was a legal move
 		return true;
+	}
+
+	/**
+	 * returns the current gameState.
+	 *
+	 * @return GameState
+	 */
+	@Override
+	public GameState getGameState(){
+		return state;
 	}
 
 }

@@ -1,4 +1,6 @@
 <resources>
+    <!--These are strings unique to Tic-Tac-Toe-->
     <string name="app_name">Tic-Tac-Toe</string>
     <string name="hello_world">Hello world!</string>
+    <string name="extension">.ttt</string>
 </resources>

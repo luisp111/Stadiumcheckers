@@ -2,6 +2,10 @@ package edu.up.cs301.tictactoe;
 
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 
+import static edu.up.cs301.game.GameFramework.utilities.Saving.SEPARATOR;
+import static edu.up.cs301.game.GameFramework.utilities.Saving.ARRAY_SEPARATOR;
+import static edu.up.cs301.game.GameFramework.utilities.Saving.SECOND_ARRAY_SEPARATOR;
+
 
 /**
  * Contains the state of a Tic-Tac-Toe game.  Sent by the game when
@@ -9,7 +13,8 @@ import edu.up.cs301.game.GameFramework.infoMessage.GameState;
  * it, or to help figure out its next move.)
  * 
  * @author Steven R. Vegdahl
- * @version July 2013
+ * @authoer Eric Imperio
+ * @version July 2020
  */
 public class TTTState extends GameState {
     //Tag for logging
@@ -62,6 +67,24 @@ public class TTTState extends GameState {
     	
     	// copy the player-to-move information
         playerToMove = original.playerToMove;
+    }
+
+    /**
+     * From String constructor for class TTTState
+     * @param str
+     *      a string representation of a previously saved TTTState
+     */
+    public TTTState(String str){
+        String[] variables = str.split(SEPARATOR, -1);
+        playerToMove = Integer.parseInt(variables[0]);
+        String[] rows = variables[1].split(ARRAY_SEPARATOR, -1);
+        board = new char[3][3];
+        for(int i = 0 ; i < 3; i++){
+            String[] values = rows[i].split(SECOND_ARRAY_SEPARATOR, -1);
+            for(int j = 0; j < 3; j++){
+                board[i][j] = values[j].toCharArray()[0];
+            }
+        }
     }
 
     /**
@@ -119,5 +142,35 @@ public class TTTState extends GameState {
      */
     public void setWhoseMove(int id) {
     	playerToMove = id;
+    }
+
+    /**
+     *  equals, Compares the string representation of this gameState with object for equality
+     * @param object
+     *          The object to be compared with
+     * @return true if equal or false if not equal
+     */
+    @Override
+    public boolean equals(Object object){
+        return this.toString().equals(object.toString());
+    }
+
+    /**
+     * toString, makes a string representation of this instance
+     * @return String representation of this instance
+     */
+    @Override
+    public String toString(){
+        String ret_val = this.playerToMove + SEPARATOR;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                ret_val += this.board[i][j] + SECOND_ARRAY_SEPARATOR;
+            }
+            ret_val = ret_val.substring(0, ret_val.length()-3) + ARRAY_SEPARATOR;
+        }
+        ret_val = ret_val.substring(0,ret_val.length()-3);
+
+        return ret_val;
     }
 }
