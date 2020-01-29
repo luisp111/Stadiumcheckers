@@ -280,8 +280,8 @@ public abstract class GameMainActivity extends Activity implements
      *
      * @param config
      *            is the configuration for this game
-     *@param gameState
-     *           the gameState for this game
+     * @param gameState
+     *            the gameState for this game
      * @return
      * 			null if the launch was successful; otherwise a message telling
      * 			why game could not be launched
@@ -535,7 +535,6 @@ public abstract class GameMainActivity extends Activity implements
                 }
                 return true;
             case R.id.load_game:
-
                 Logger.log(TAG, "This is the loading button!");
                 MessageBox.popUpLoadGame("Select Your Game: ", this);
 
@@ -946,8 +945,9 @@ public abstract class GameMainActivity extends Activity implements
      * @param gameName
      * @return null
      */
-    public GameState loadGame(String gameName){
+    public GameState loadGame(String gameName) {
         config.restoreSavedConfig(gameName + "c", this);
+        // Sub class should do this part
         return null;
     }
 

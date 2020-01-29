@@ -17,8 +17,6 @@ import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 public class TTTLocalGame extends LocalGame {
 	//Tag for logging
 	private static final String TAG = "TTTLocalGame";
-	// the game's state
-	protected TTTState state;
 
 	// the marks for player 0 and player 1, respectively
 	private final static char[] mark = {'X','O'};
@@ -75,18 +73,18 @@ public class TTTLocalGame extends LocalGame {
 		// to all three lines in the current group
 		for (int i = 0; i < 3; i++) {
 			// get the initial character in each line
-			char rowToken = state.getPiece(i,0);
-			char colToken = state.getPiece(0,i);;
-			char diagToken = state.getPiece(0,i);
+			char rowToken = ((TTTState) state).getPiece(i,0);
+			char colToken = ((TTTState) state).getPiece(0,i);;
+			char diagToken = ((TTTState) state).getPiece(0,i);
 			// determine the direction that the diagonal moves
 			int diagDelta = 1-i;
 			// look for matches for each of the three positions in each
 			// of the current lines; set the corresponding variable to ' '
 			// if a mismatch is found
 			for (int j = 1; j < 3; j++) {
-				if (state.getPiece(i,j) != rowToken) rowToken = ' ';
-				if (state.getPiece(j,i) != colToken) colToken = ' ';
-				if (state.getPiece(j, i+(diagDelta*j)) != diagToken) diagToken = ' ';
+				if (((TTTState) state).getPiece(i,j) != rowToken) rowToken = ' ';
+				if (((TTTState) state).getPiece(j,i) != colToken) colToken = ' ';
+				if (((TTTState) state).getPiece(j, i+(diagDelta*j)) != diagToken) diagToken = ' ';
 			}
 
 			////////////////////////////////////////////////////////////
@@ -131,7 +129,7 @@ public class TTTLocalGame extends LocalGame {
 	@Override
 	protected void sendUpdatedStateTo(GamePlayer p) {
 		// make a copy of the state, and send it to the player
-		p.sendInfo(new TTTState(state));
+		p.sendInfo(new TTTState(((TTTState) state)));
 
 	}
 
@@ -145,7 +143,7 @@ public class TTTLocalGame extends LocalGame {
 	 * 		true iff the player is allowed to move
 	 */
 	protected boolean canMove(int playerIdx) {
-		return playerIdx == state.getWhoseMove();
+		return playerIdx == ((TTTState) state).getWhoseMove();
 	}
 
 	/**
@@ -168,18 +166,18 @@ public class TTTLocalGame extends LocalGame {
 		int playerId = getPlayerIdx(tm.getPlayer());
 
 		// if that space is not blank, indicate an illegal move
-		if (state.getPiece(row, col) != ' ') {
+		if (((TTTState) state).getPiece(row, col) != ' ') {
 			return false;
 		}
 
 		// get the 0/1 id of the player whose move it is
-		int whoseMove = state.getWhoseMove();
+		int whoseMove = ((TTTState) state).getWhoseMove();
 
 		// place the player's piece on the selected square
-		state.setPiece(row, col, mark[playerId]);
+		((TTTState) state).setPiece(row, col, mark[playerId]);
 
 		// make it the other player's turn
-		state.setWhoseMove(1-whoseMove);
+		((TTTState) state).setWhoseMove(1-whoseMove);
 
 		// bump the move count
 		moveCount++;

@@ -10,7 +10,7 @@ import edu.up.cs301.game.GameFramework.infoMessage.GameState;
  *
  * @author Steven R. Vegdahl
  * @author Andrew M. Nuxoll
- * @author  Eric Imperio
+ * @author Eric Imperio
  * @version January 2020
  * @see LocalGame
  * @see ProxyGame

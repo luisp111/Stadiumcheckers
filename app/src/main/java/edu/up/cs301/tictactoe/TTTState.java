@@ -67,6 +67,8 @@ public class TTTState extends GameState {
     	
     	// copy the player-to-move information
         playerToMove = original.playerToMove;
+    	super.numSetupTurns = original.numSetupTurns;
+    	super.currentSetupTurn = original.currentSetupTurn;
     }
 
     /**
@@ -76,8 +78,10 @@ public class TTTState extends GameState {
      */
     public TTTState(String str){
         String[] variables = str.split(SEPARATOR, -1);
-        playerToMove = Integer.parseInt(variables[0]);
-        String[] rows = variables[1].split(ARRAY_SEPARATOR, -1);
+        super.numSetupTurns = Integer.parseInt(variables[0]);
+        super.currentSetupTurn = Integer.parseInt(variables[1]);
+        playerToMove = Integer.parseInt(variables[2]);
+        String[] rows = variables[3].split(ARRAY_SEPARATOR, -1);
         board = new char[3][3];
         for(int i = 0 ; i < 3; i++){
             String[] values = rows[i].split(SECOND_ARRAY_SEPARATOR, -1);
@@ -161,7 +165,7 @@ public class TTTState extends GameState {
      */
     @Override
     public String toString(){
-        String ret_val = this.playerToMove + SEPARATOR;
+        String ret_val = super.toString() + SEPARATOR + this.playerToMove + SEPARATOR;
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {

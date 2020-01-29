@@ -20,7 +20,7 @@ import edu.up.cs301.game.GameFramework.utilities.Logger;
  *
  * @author Steven R. Vegdahl
  * @author Eric Imperio
- * @version July 2020
+ * @version January 2020
  */
 public class ProxyGame implements Game {
     //Tag for logging
