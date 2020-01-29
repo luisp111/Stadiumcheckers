@@ -537,9 +537,6 @@ public abstract class GameMainActivity extends Activity implements
             case R.id.load_game:
                 Logger.log(TAG, "This is the loading button!");
                 MessageBox.popUpLoadGame("Select Your Game: ", this);
-
-                GameState gameState = loadGame("test");
-                Logger.log(TAG, gameState.toString());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
