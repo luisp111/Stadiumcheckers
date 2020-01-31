@@ -129,10 +129,39 @@ public class MessageBox {
         builder.setItems(strings, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //Logger.log(TAG, whichButton+"");
-                if(strings[whichButton].equals(FRAMEWORKCANCEL)){
+                if(strings[whichButton].equals(FRAMEWORKCANCEL)) {
                     return;
                 }
                 ((GameMainActivity) activity).startLoadedGame(((GameMainActivity) activity).loadGame(strings[whichButton].toString()));
+                dialog.dismiss();
+                return;
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+    /**
+     * popUpDeleteGame, a method to select a game to play
+     *
+     * @param msg
+     *          The message to post
+     * @param activity
+     *          The current activity. (Nothing will be shown if the activity is null.)
+     */
+    public static void popUpDeleteGame(String msg, final Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(msg);
+        final CharSequence[] strings = MessageBox.getGameFileNames(activity);
+        builder.setItems(strings, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //Logger.log(TAG, whichButton+"");
+                if(strings[whichButton].equals(FRAMEWORKCANCEL)) {
+                    return;
+                }
+                Logger.log(TAG, Saving.deleteFromFile(activity.getString(R.string.app_name) + "_" + strings[whichButton].toString(), activity) + "");
+                Logger.log(TAG, Saving.deleteFromFile(activity.getString(R.string.app_name) + "_" + strings[whichButton].toString() + ".c", activity) + "");
                 dialog.dismiss();
                 return;
             }
@@ -147,17 +176,17 @@ public class MessageBox {
      * @param activity
      *          the current activity. (Nothing will be shown if the activity is null.)
      * @return CharSequence[]
-     *          The files in directory matching the save extension for this game
+     *          The files in directory matching the save prepend for this game
      */
     private static CharSequence[] getGameFileNames(Activity activity){
         File f = new File(activity.getApplicationContext().getFilesDir().getPath());
         File[] files=f.listFiles();
         ArrayList<String> strings = new ArrayList<>();
-        String extension = activity.getString(R.string.extension);
+        String appName = activity.getString(R.string.app_name);
         for(File file: files){
-            if(file.getName().endsWith(extension)) {
+            if(file.getName().startsWith(appName) && !file.getName().endsWith(".c")) {
                 //Logger.log(TAG, file.getName());
-                strings.add(file.getName().replace(extension, ""));
+                strings.add(file.getName().replace(appName + "_", ""));
             }
         }
         strings.add(FRAMEWORKCANCEL);

@@ -2,12 +2,13 @@ package edu.up.cs301.game.GameFramework.utilities;
 
 import android.content.Context;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 
 
 /**
@@ -28,18 +29,19 @@ public class Saving {
 
     /**
      * writeToFile, this saves a given string to a file. Designed to save gameStates
-     * @param data
+     * @param gameState
      *              The String representation of the gameState to save
      * @param fileName
      *              This Name of the file to write to
      * @param context
      *              The current context. (Must not be null).
      */
-    public static void writeToFile(String data, String fileName, Context context) {
+    public static void writeToFile(GameState gameState, String fileName, Context context) {
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
+            ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput(fileName, Context.MODE_PRIVATE));
+            out.writeObject(gameState);
+            out.flush();
+            out.close();
         }
         catch (IOException e) {
             Logger.log(TAG, "File write failed" + e.toString(), Logger.ERROR);
@@ -55,32 +57,36 @@ public class Saving {
      *              The current context. (Must not be null).
      * @return String represantion of the gameState to load
      */
-    public static String readFromFile(String fileName, Context context) {
-        String ret = "";
-
+    public static GameState readFromFile(String fileName, Context context) {
         try {
-            InputStream inputStream = context.openFileInput(fileName);
+            ObjectInputStream in = new ObjectInputStream(context.openFileInput(fileName));
+            GameState gameState = (GameState) in.readObject();
+            in.close();
+            return gameState;
 
-            if ( inputStream != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveString);
-                }
-
-                inputStream.close();
-                ret = stringBuilder.toString();
-            }
         }
         catch (FileNotFoundException e) {
             Logger.log(TAG, "File not Found: " + e.toString() , Logger.ERROR);
         } catch (IOException e) {
             Logger.log(TAG, "Can not read file: " + e.toString());
+        } catch (ClassNotFoundException e) {
+            Logger.log(TAG, "Object not found: " + e.toString());
         }
 
-        return ret;
+        return null;
+    }
+
+    /**
+     * deleteFromFile, designed to delete a file and return whether or not it was deleted successfully
+     *
+     * @param fileName
+     *              The name of the file to read
+     * @param context
+     *              The current context. (Must not be null).
+     * @return String representation of the gameState to load
+     */
+    public static boolean deleteFromFile(String fileName, Context context) {
+        File file = new File(context.getFilesDir().getPath(), fileName);
+        return file.delete();
     }
 }

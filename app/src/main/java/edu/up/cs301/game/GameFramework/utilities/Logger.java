@@ -8,7 +8,7 @@ import android.widget.Toast;
  * Logger is a class used for all logging purposes.
  * It can perform regular logging as well as toast logging.
  *
- * Author: Nicole Kister
+ * @author: Nicole Kister
  */
 public class Logger {
     //Tag for logging

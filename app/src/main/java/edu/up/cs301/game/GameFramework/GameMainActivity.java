@@ -538,6 +538,10 @@ public abstract class GameMainActivity extends Activity implements
                 Logger.log(TAG, "This is the loading button!");
                 MessageBox.popUpLoadGame("Select Your Game: ", this);
                 return true;
+            case R.id.delete_game:
+                Logger.log(TAG, "This is the delete button!");
+                MessageBox.popUpDeleteGame("Select the Game to Delete: ", this);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -927,12 +931,12 @@ public abstract class GameMainActivity extends Activity implements
      * @param gameName
      * @return String representation of the gameState
      */
-    public String saveGame(String gameName) {
+    public GameState saveGame(String gameName) {
         Logger.log(TAG, "Saving: " + gameName);
-        config.saveConfig(gameName + "c" , this);
-        String savable = getGameState().toString();
-        Saving.writeToFile(savable, gameName, this.getApplicationContext());
-        return savable;
+        config.saveConfig(gameName + ".c" , this);
+        GameState gameState = getGameState();
+        Saving.writeToFile(gameState, gameName, this.getApplicationContext());
+        return gameState;
     }
 
     /**
@@ -943,7 +947,7 @@ public abstract class GameMainActivity extends Activity implements
      * @return null
      */
     public GameState loadGame(String gameName) {
-        config.restoreSavedConfig(gameName + "c", this);
+        config.restoreSavedConfig(gameName + ".c", this);
         // Sub class should do this part
         return null;
     }

@@ -101,29 +101,29 @@ public class TTTMainActivity extends GameMainActivity {
 	}
 
 	/**
-	 * saveGame, adds this games extension to the filename
+	 * saveGame, adds this games prepend to the filename
 	 *
 	 * @param gameName
 	 * 				Desired save name
 	 * @return String representation of the save
 	 */
 	@Override
-	public String saveGame(String gameName) {
-		return super.saveGame(gameName + this.getString(R.string.extension));
+	public GameState saveGame(String gameName) {
+		return super.saveGame(this.getString(R.string.app_name)+ "_" + gameName);
 	}
 
 	/**
-	 * loadGame, adds this games extension to the desire file to open and creates the game specific state
+	 * loadGame, adds this games prepend to the desire file to open and creates the game specific state
 	 * @param gameName
 	 * 				The file to open
 	 * @return The loaded GameState
 	 */
 	@Override
 	public GameState loadGame(String gameName){
-		String extension = this.getString(R.string.extension);
-		super.loadGame(gameName + extension);
+		String appName = this.getString(R.string.app_name);
+		super.loadGame(appName + "_" + gameName);
 		Logger.log(TAG, "Loading: " + gameName);
-		return (GameState) new TTTState(Saving.readFromFile(gameName + extension, this.getApplicationContext()));
+		return (GameState) new TTTState((TTTState) Saving.readFromFile(appName + "_" + gameName, this.getApplicationContext()));
 	}
 
 }

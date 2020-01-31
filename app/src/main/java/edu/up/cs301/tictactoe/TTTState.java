@@ -1,5 +1,7 @@
 package edu.up.cs301.tictactoe;
 
+import java.io.Serializable;
+
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 
 import static edu.up.cs301.game.GameFramework.utilities.Saving.SEPARATOR;
@@ -16,7 +18,7 @@ import static edu.up.cs301.game.GameFramework.utilities.Saving.SECOND_ARRAY_SEPA
  * @authoer Eric Imperio
  * @version July 2020
  */
-public class TTTState extends GameState {
+public class TTTState extends GameState implements Serializable {
     //Tag for logging
     private static final String TAG = "TTTState";
 	private static final long serialVersionUID = 7552321013488624386L;
@@ -69,26 +71,6 @@ public class TTTState extends GameState {
         playerToMove = original.playerToMove;
     	super.numSetupTurns = original.numSetupTurns;
     	super.currentSetupTurn = original.currentSetupTurn;
-    }
-
-    /**
-     * From String constructor for class TTTState
-     * @param str
-     *      a string representation of a previously saved TTTState
-     */
-    public TTTState(String str){
-        String[] variables = str.split(SEPARATOR, -1);
-        super.numSetupTurns = Integer.parseInt(variables[0]);
-        super.currentSetupTurn = Integer.parseInt(variables[1]);
-        playerToMove = Integer.parseInt(variables[2]);
-        String[] rows = variables[3].split(ARRAY_SEPARATOR, -1);
-        board = new char[3][3];
-        for(int i = 0 ; i < 3; i++){
-            String[] values = rows[i].split(SECOND_ARRAY_SEPARATOR, -1);
-            for(int j = 0; j < 3; j++){
-                board[i][j] = values[j].toCharArray()[0];
-            }
-        }
     }
 
     /**

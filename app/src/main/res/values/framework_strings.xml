@@ -7,6 +7,7 @@ really need to.-->
     <string name="menu_help">Help</string>
     <string name="save_game">Save Game</string>
     <string name="load_game">Load Game</string>
+    <string name="delete_game">Delete Game</string>
     <!--The following are Configuration menu strings-->
     <string name="title_activity_game_main">Shall We Play A Game?</string>
     <string name="save_config">Save As Default Configuration</string>
