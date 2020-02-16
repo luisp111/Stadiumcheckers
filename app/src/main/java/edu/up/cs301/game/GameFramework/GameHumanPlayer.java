@@ -43,9 +43,9 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
     protected int playerNum; // my player ID
     protected String name; // my player's name
     protected String[] allPlayerNames; // the names of all the player
+    protected GameMainActivity myActivity; // the current activity
     private Handler myHandler; // my thread's handler
     private Handler saveMe;
-    private GameMainActivity myActivity; // the current activity
     private GameTimer myTimer = new GameTimer(this); // my player's timer
     private boolean gameOver; // whether the game is over
 
@@ -364,5 +364,10 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
         // by default, do nothing
     }
 
+    //TESTING
+
+    public GameMainActivity getActivity(){
+        return myActivity;
+    }
 }// class GameHumanPlayer
 

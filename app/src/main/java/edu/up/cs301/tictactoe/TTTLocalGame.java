@@ -3,7 +3,8 @@ package edu.up.cs301.tictactoe;
 import edu.up.cs301.game.GameFramework.GamePlayer;
 import edu.up.cs301.game.GameFramework.LocalGame;
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
-import edu.up.cs301.game.GameFramework.infoMessage.GameState;
+import edu.up.cs301.tictactoe.infoMessage.TTTState;
+import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
 
 /**
  * The TTTLocalGame class for a simple tic-tac-toe game.  Defines and enforces
@@ -181,23 +182,12 @@ public class TTTLocalGame extends LocalGame {
 		state.setPiece(row, col, mark[playerId]);
 
 		// make it the other player's turn
-		state.setWhoseMove(1-whoseMove);
+		state.setWhoseMove(1 - whoseMove);
 
 		// bump the move count
 		moveCount++;
-		
+
 		// return true, indicating the it was a legal move
 		return true;
 	}
-
-	/**
-	 * returns the current gameState.
-	 *
-	 * @return GameState
-	 */
-	@Override
-	public GameState getGameState(){
-		return state;
-	}
-
 }

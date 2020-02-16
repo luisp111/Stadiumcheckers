@@ -1,4 +1,4 @@
-package edu.up.cs301.tictactoe;
+package edu.up.cs301.tictactoe.players;
 
 import android.graphics.Color;
 import android.view.View;
@@ -13,6 +13,8 @@ import edu.up.cs301.game.R;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.IllegalMoveInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.NotYourTurnInfo;
+import edu.up.cs301.tictactoe.infoMessage.TTTState;
+import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
 
 /**
  * A human (i.e., GUI) version of a tic-tac-toe player that gives the user

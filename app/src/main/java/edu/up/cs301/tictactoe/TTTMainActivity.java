@@ -11,6 +11,11 @@ import edu.up.cs301.game.GameFramework.utilities.Saving;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.GameFramework.gameConfiguration.GameConfig;
 import edu.up.cs301.game.GameFramework.gameConfiguration.GamePlayerType;
+import edu.up.cs301.tictactoe.infoMessage.TTTState;
+import edu.up.cs301.tictactoe.players.TTTComputerPlayer1;
+import edu.up.cs301.tictactoe.players.TTTComputerPlayer2;
+import edu.up.cs301.tictactoe.players.TTTHumanPlayer1;
+import edu.up.cs301.tictactoe.players.TTTHumanPlayer2;
 
 /**
  * this is the primary activity for Counter game
@@ -109,7 +114,7 @@ public class TTTMainActivity extends GameMainActivity {
 	 */
 	@Override
 	public GameState saveGame(String gameName) {
-		return super.saveGame(this.getString(R.string.app_name)+ "_" + gameName);
+		return super.saveGame(getGameString(gameName));
 	}
 
 	/**
@@ -120,10 +125,10 @@ public class TTTMainActivity extends GameMainActivity {
 	 */
 	@Override
 	public GameState loadGame(String gameName){
-		String appName = this.getString(R.string.app_name);
-		super.loadGame(appName + "_" + gameName);
+		String appName = getGameString(gameName);
+		super.loadGame(appName);
 		Logger.log(TAG, "Loading: " + gameName);
-		return (GameState) new TTTState((TTTState) Saving.readFromFile(appName + "_" + gameName, this.getApplicationContext()));
+		return (GameState) new TTTState((TTTState) Saving.readFromFile(appName, this.getApplicationContext()));
 	}
 
 }

@@ -24,7 +24,7 @@
             android:text="@string/save_config_as_default" />
 
         <CheckBox
-            android:id="@+id/on-screenLogging"
+            android:id="@+id/onScreenLogging"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/debugLogging"

@@ -61,4 +61,11 @@ public abstract class GamePlayerType implements Cloneable /*, Serializable*/ {
     //	public abstract GamePlayer createPlayer(Game game, int playerNum);
     public abstract GamePlayer createPlayer(String name);
 
+    @Override
+    public boolean equals(Object object) {
+        if(! (object instanceof GamePlayerType)) return false;
+        GamePlayerType gamePlayerType = (GamePlayerType) object;
+        return this.typeName.equals(gamePlayerType.typeName);
+    }
+
 }// class GamePlayerType

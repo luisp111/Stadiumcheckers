@@ -193,7 +193,7 @@ public abstract class GameMainActivity extends Activity implements
             }
         }
 
-        if (((CheckBox) findViewById(R.id.on_screenLogging)).isChecked()) {
+        if (((CheckBox) findViewById(R.id.onScreenLogging)).isChecked()) {
             Logger.setToastValue(true);
         } else {
             Logger.setToastValue(false);
@@ -489,7 +489,7 @@ public abstract class GameMainActivity extends Activity implements
         // Set the remote widget data
         initRemoteWidgets();
 
-        //Set up the Setttings Tab
+        //Set up the Settings Tab
         initSettingsTab();
 
         // Set myself as the listener for the buttons
@@ -499,7 +499,7 @@ public abstract class GameMainActivity extends Activity implements
         v.setOnClickListener(this);
         v = findViewById(R.id.playGameButton);
         v.setOnClickListener(this);
-        v = findViewById(R.id.on_screenLogging);
+        v = findViewById(R.id.onScreenLogging);
         v.setOnClickListener(this);
         v = findViewById(R.id.debugLogging);
         v.setOnClickListener(this);
@@ -606,7 +606,7 @@ public abstract class GameMainActivity extends Activity implements
         }
 
         //On-screen debugging checkbox
-        else if(button.getId() == R.id.on_screenLogging){
+        else if(button.getId() == R.id.onScreenLogging){
             if(((CheckBox)button).isChecked()){
                 Logger.setToastValue(true);
             }else{
@@ -815,6 +815,8 @@ public abstract class GameMainActivity extends Activity implements
         gameIsOver = b;
     }// setGameOver
 
+    public boolean getGameOver() { return gameIsOver; }
+
     /**
      *  the label for the local tab header
      *
@@ -968,8 +970,35 @@ public abstract class GameMainActivity extends Activity implements
     public void startLoadedGame(GameState gameState){
         String msg = launchGame(this.config, gameState);
         if (msg != null) {
-            // we have an error message
+            // we have an error message/
             MessageBox.popUpMessage(msg, this);
         }
     }
+
+    public String getGameString(String gameName){
+        return this.getString(R.string.app_name) + "_" + gameName;
+    }
+
+    //////////////////////
+    // TESTING
+    //////////////////////
+
+    /*
+     * gets the GameConfig for this game
+     */
+    public GameConfig getConfig() {
+        return this.config;
+    }
+
+    public boolean isGameNull() {
+        return game == null;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    ///////////////////////
+    //END TESTING
+    ///////////////////////
 }

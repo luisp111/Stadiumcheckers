@@ -7,13 +7,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import android.content.Context;
+import android.util.Pair;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.GamePlayer;
 import edu.up.cs301.game.GameFramework.ProxyPlayer;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
+import static edu.up.cs301.game.GameFramework.utilities.Equality_Methods.arrayEquals;
 
 /**
  * GameConfig class
@@ -499,7 +503,7 @@ public class GameConfig {
      */
     public String[] getSelNames() {
         if (isLocal) {
-            return (String[]) this.selNames.toArray();
+            return Arrays.copyOf(this.selNames.toArray(), this.selNames.size(), String[].class);
         }
         else {
             return new String[]{remoteName};
@@ -718,6 +722,62 @@ public class GameConfig {
     public void setUserModifiable(boolean userModifiable) {
         this.userModifiable = userModifiable;
     }// setUserModifiable
+
+    public Pair<Boolean, String> test_gameConfig(){
+        String ret_val = "";
+        boolean b = true;
+        if(!isLocal){
+            b = false;
+            ret_val += "GameConfig is not Local\n";
+        }
+        if(!userModifiable){
+            b = false;
+            ret_val += "GameConfig is not user Modifiable\n";
+        }
+        if(minPlayers > maxPlayers){
+            b = false;
+            ret_val += "GameConfig: minPlayers is greater than maxPlayers\n";
+        }
+        if( minPlayers < 1) {
+            b = false;
+            ret_val += "GameConfig: minPlayers must greater than 0\n";
+        }
+        if(maxPlayers < 1) {
+            b = false;
+            ret_val += "GameConfig: maxPlayers must greater than 0\n";
+        }
+        if(!availTypes[availTypes.length-1].getTypeName().equals("WiFi Player")){
+            b = false;
+            ret_val += "GameConfig: Last Available Player is not a WiFi Player\n";
+        }
+        if(getGameName().equals("")) {
+            b = false;
+            ret_val += "GameConfig: Game Name was not set\n";
+        }
+        return new Pair(b, ret_val);
+    }
+
+    @Override
+    public boolean equals(Object object){
+        if(! (object instanceof GameConfig)) return false;
+        GameConfig gc = (GameConfig) object;
+        if(this.isLocal() == gc.isLocal()
+                && this.isUserModifiable() == gc.isUserModifiable()
+                && this.getRemoteName().equals(gc.getRemoteName())
+                && this.getIpCode().equals(gc.getIpCode())
+                && this.getPortNum() == gc.getPortNum()
+                && this.getMinPlayers() == gc.getMinPlayers()
+                && this.getMaxPlayers() == gc.getMaxPlayers()
+                && this.getGameName() == gc.getGameName()
+                && arrayEquals(this.getAvailTypes(), gc.getAvailTypes())
+                && arrayEquals(this.getSelNames(), gc.getSelNames())
+                && arrayEquals(this.getSelTypes(), gc.getSelTypes())
+                && this.getRemoteSelType().equals(gc.getRemoteSelType())
+        ) {
+            return true;
+        }
+        return false;
+    }
 
 }// class GameConfig
 

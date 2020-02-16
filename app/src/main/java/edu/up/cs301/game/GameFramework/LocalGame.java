@@ -451,4 +451,20 @@ public abstract class LocalGame implements Game, Tickable {
         return this.state.getCurrentSetupTurn();
     }
 
+    /**
+     * returns the current gameState.
+     *
+     * @return GameState
+     */
+    @Override
+    public GameState getGameState(){
+        return state;
+    }
+
+    //TESTING
+
+    public GamePlayer[] getPlayers(){
+        return players;
+    }
+
 }// class LocalGame

@@ -1,12 +1,8 @@
-package edu.up.cs301.tictactoe;
+package edu.up.cs301.tictactoe.infoMessage;
 
 import java.io.Serializable;
 
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
-
-import static edu.up.cs301.game.GameFramework.utilities.Saving.SEPARATOR;
-import static edu.up.cs301.game.GameFramework.utilities.Saving.ARRAY_SEPARATOR;
-import static edu.up.cs301.game.GameFramework.utilities.Saving.SECOND_ARRAY_SEPARATOR;
 
 
 /**
@@ -130,33 +126,18 @@ public class TTTState extends GameState implements Serializable {
     	playerToMove = id;
     }
 
-    /**
-     *  equals, Compares the string representation of this gameState with object for equality
-     * @param object
-     *          The object to be compared with
-     * @return true if equal or false if not equal
-     */
-    @Override
-    public boolean equals(Object object){
-        return this.toString().equals(object.toString());
-    }
-
-    /**
-     * toString, makes a string representation of this instance
-     * @return String representation of this instance
-     */
-    @Override
-    public String toString(){
-        String ret_val = super.toString() + SEPARATOR + this.playerToMove + SEPARATOR;
-
+    public boolean equals(TTTState tttState){
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                ret_val += this.board[i][j] + SECOND_ARRAY_SEPARATOR;
+                if(this.board[i][j] != tttState.board[i][j]){
+                    return false;
+                }
             }
-            ret_val = ret_val.substring(0, ret_val.length()-3) + ARRAY_SEPARATOR;
         }
-        ret_val = ret_val.substring(0,ret_val.length()-3);
 
-        return ret_val;
+        if (this.playerToMove != tttState.playerToMove || this.numSetupTurns != tttState.numSetupTurns || this.currentSetupTurn != tttState.currentSetupTurn){
+            return false;
+        }
+        return true;
     }
 }

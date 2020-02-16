@@ -141,5 +141,10 @@ public class ProxyPlayer implements GamePlayer {
     public boolean supportsGui() {
         return false;
     }
+
+    //TESTING
+    public GameMainActivity getActivity(){
+        return null;
+    }
 }
 
