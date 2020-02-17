@@ -49,12 +49,14 @@ public class TicTacToeTests {
         match.setPiece(0,0,'X');
         match.setWhoseMove(1);
         assertTrue("Game States were not equal",((TTTState) tttLocalGame.getGameState()).equals(match));
+        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[1], 0,0));
+        assertTrue("Game States were not equal",((TTTState) tttLocalGame.getGameState()).equals(match));
         tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[1], 0,1));
         tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[0], 1,1));
         match.setPiece(0,1,'O');
         match.setPiece(1,1, 'X');
         assertTrue("Game States were not equal",((TTTState) tttLocalGame.getGameState()).equals(match));
-        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[1], 0,2));
+        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[1], 0,3));
         tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[0], 2,2));
         match.setPiece(0,2, 'O');
         match.setPiece(2,2, 'X');
