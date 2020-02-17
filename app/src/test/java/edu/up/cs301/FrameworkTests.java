@@ -10,9 +10,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
-import edu.up.cs301.game.GameFramework.GameComputerPlayer;
-import edu.up.cs301.game.GameFramework.GameHumanPlayer;
-import edu.up.cs301.game.GameFramework.GamePlayer;
+import edu.up.cs301.game.GameFramework.players.GameComputerPlayer;
+import edu.up.cs301.game.GameFramework.players.GameHumanPlayer;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.LocalGame;
 import edu.up.cs301.game.GameFramework.gameConfiguration.GameConfig;
 import edu.up.cs301.game.GameFramework.utilities.Logger;

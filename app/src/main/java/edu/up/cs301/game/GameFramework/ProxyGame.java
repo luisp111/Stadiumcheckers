@@ -6,6 +6,7 @@ import java.util.Queue;
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.utilities.IPCoder;
 import edu.up.cs301.game.GameFramework.utilities.NetworkObjectPasser;
 import edu.up.cs301.game.GameFramework.utilities.Logger;

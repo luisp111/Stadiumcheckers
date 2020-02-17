@@ -12,6 +12,7 @@ import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 import edu.up.cs301.game.GameFramework.infoMessage.IllegalMoveInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.NotYourTurnInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.StartGameInfo;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.utilities.GameTimer;
 import edu.up.cs301.game.GameFramework.utilities.Tickable;
 import edu.up.cs301.game.GameFramework.utilities.Logger;

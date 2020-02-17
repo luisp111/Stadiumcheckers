@@ -1,5 +1,6 @@
-package edu.up.cs301.game.GameFramework;
+package edu.up.cs301.game.GameFramework.players;
 
+import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 
 /**

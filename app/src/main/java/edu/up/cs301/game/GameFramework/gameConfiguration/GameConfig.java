@@ -8,13 +8,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import android.content.Context;
 import android.util.Pair;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
-import edu.up.cs301.game.GameFramework.GamePlayer;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.ProxyPlayer;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
 import static edu.up.cs301.game.GameFramework.utilities.Equality_Methods.arrayEquals;

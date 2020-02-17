@@ -1,5 +1,7 @@
-package edu.up.cs301.game.GameFramework;
+package edu.up.cs301.game.GameFramework.players;
 
+import edu.up.cs301.game.GameFramework.Game;
+import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.actionMessage.GameOverAckAction;
 import edu.up.cs301.game.GameFramework.actionMessage.MyNameIsAction;
 import edu.up.cs301.game.GameFramework.actionMessage.ReadyAction;

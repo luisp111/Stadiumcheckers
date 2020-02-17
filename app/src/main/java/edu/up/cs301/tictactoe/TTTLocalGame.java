@@ -1,6 +1,6 @@
 package edu.up.cs301.tictactoe;
 
-import edu.up.cs301.game.GameFramework.GamePlayer;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.LocalGame;
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
 import edu.up.cs301.tictactoe.infoMessage.TTTState;
@@ -189,5 +189,14 @@ public class TTTLocalGame extends LocalGame {
 
 		// return true, indicating the it was a legal move
 		return true;
+	}
+
+	//TESTING
+
+	public int whoWon(){
+		String gameOver = checkIfGameOver();
+		if(gameOver == null || gameOver.equals("It's a cat's game.")) return -1;
+		if(gameOver.equals(playerNames[0]+" is the winner.")) return 0;
+		return 1;
 	}
 }

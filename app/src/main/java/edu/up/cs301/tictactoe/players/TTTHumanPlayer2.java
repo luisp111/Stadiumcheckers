@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import edu.up.cs301.game.GameFramework.GameHumanPlayer;
+import edu.up.cs301.game.GameFramework.players.GameHumanPlayer;
 import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
@@ -26,8 +26,6 @@ import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
 public class TTTHumanPlayer2 extends GameHumanPlayer implements OnClickListener {
 	//Tag for logging
 	private static final String TAG = "TTTHumanPlayer2";
-	// the activity under which we're running
-	GameMainActivity myActivity = null;
 	
 	// the game's state
 	TTTState state = null;

@@ -1,12 +1,11 @@
 package edu.up.cs301.tictactoe.players;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.view.MotionEvent;
 import android.view.View;
 
-import edu.up.cs301.game.GameFramework.GameHumanPlayer;
+import edu.up.cs301.game.GameFramework.players.GameHumanPlayer;
 import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;

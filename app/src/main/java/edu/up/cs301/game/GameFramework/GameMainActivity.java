@@ -29,6 +29,7 @@ import android.widget.TabHost.TabSpec;
 import edu.up.cs301.game.GameFramework.gameConfiguration.GameConfig;
 import edu.up.cs301.game.GameFramework.gameConfiguration.GamePlayerType;
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.utilities.IPCoder;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.GameFramework.utilities.MessageBox;

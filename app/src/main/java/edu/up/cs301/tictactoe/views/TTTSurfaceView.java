@@ -307,6 +307,7 @@ public class TTTSurfaceView extends FlashSurfaceView {
                 float top = v(BORDER_PERCENT + (j * SQUARE_DELTA_PERCENT));
                 float bottom = v(BORDER_PERCENT + SQUARE_SIZE_PERCENT
                         + (j * SQUARE_DELTA_PERCENT));
+                System.out.println(left + " " + right + " " + top + " " + bottom);
                 if ((x > left) != (x > right) && (y > top) != (y > bottom)) {
                     return new Point(i, j);
                 }
