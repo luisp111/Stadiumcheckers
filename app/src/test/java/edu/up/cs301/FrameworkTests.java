@@ -91,7 +91,7 @@ public class FrameworkTests {
     }
 
     @Test
-    public void add_delete_player_test() {
+    public void test_add_delete_player() {
         int before = activity.tableRows.size();
         int maxPlayers = activity.getConfig().getMaxPlayers();
         if( before == maxPlayers) {
@@ -113,7 +113,7 @@ public class FrameworkTests {
     }
 
     @Test
-    public void startGame_test(){
+    public void test_startGame(){
         View view = activity.findViewById(R.id.playGameButton);
         activity.onClick(view);
         assertFalse("Game was null", activity.isGameNull());
@@ -133,7 +133,7 @@ public class FrameworkTests {
     }
 
     @Test
-    public void logger_debug_test() {
+    public void test_logger_debug() {
         Logger.setContext(activity.getApplicationContext());
         Logger.setDebugValue(true); //For Testing the switch
         View view = activity.findViewById(R.id.debugLogging);
@@ -149,7 +149,7 @@ public class FrameworkTests {
      *    Nothing wrong with that override; however, it still needs to set gameOver to the value given
      */
     @Test
-    public void setGameOver_test(){
+    public void test_setGameOver(){
         activity.setGameOver(true);
         assertTrue("setGameOver has been overritten but isGameOver wasn't modified", activity.getGameOver());
         activity.setGameOver(false);
