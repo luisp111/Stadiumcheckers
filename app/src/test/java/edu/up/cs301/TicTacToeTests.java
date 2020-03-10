@@ -83,9 +83,91 @@ public class TicTacToeTests {
         assertTrue("Game States were not equal", ((TTTState) tttLocalGame.getGameState()).equals(match));
     }
 
-    //Tests focused on the state: copy constructors maybe setPiece
+    //Tests focused on the state: copy constructors and equals
     //copy cons:  empty default state, in progress state, full board state
+    @Test
+    public void test_CopyConstructorOfState_Empty(){
+        TTTState tttState = new TTTState();
+        TTTState copyState = new TTTState(tttState);
+        assertTrue("Copy Constructor did not produce equal States", tttState.equals(copyState));
+    }
 
-    //Equals 
+    @Test
+    public void test_CopyConstructorOfState_InProgress(){
+        TTTState tttState = new TTTState();
+        tttState.setWhoseMove(1);
+        tttState.setPiece(1,1, 'X');
+        tttState.setPiece(0,0, 'O');
+        tttState.setPiece( 1, 2, 'X');
+        TTTState copyState = new TTTState(tttState);
+        assertTrue("Copy Constructor did not produce equal States", tttState.equals(copyState));
+    }
+
+    @Test
+    public void test_CopyConstructorOfState_Full(){
+        TTTState tttState = new TTTState();
+        tttState.setPiece(0,0, 'X');
+        tttState.setPiece(0,1, 'O');
+        tttState.setPiece( 0, 2, 'X');
+        tttState.setPiece(1,0, 'O');
+        tttState.setPiece( 1, 1, 'X');
+        tttState.setPiece(1,2, 'O');
+        tttState.setPiece( 2, 0, 'X');
+        tttState.setPiece(2,1, 'O');
+        tttState.setPiece( 2, 2, 'X');
+        tttState.setWhoseMove(1);
+        TTTState copyState = new TTTState(tttState);
+        assertTrue("Copy Constructor did not produce equal States", tttState.equals(copyState));
+    }
+
+    //Equals
+    @Test
+    public void test_Equals_State_Empty(){
+        TTTState tttState = new TTTState();
+        TTTState otherState = new TTTState();
+        assertTrue("Equals method did not agree the States where equal", tttState.equals(otherState));
+    }
+
+    @Test
+    public void test_Equals_State_InProgress(){
+        TTTState tttState = new TTTState();
+        tttState.setWhoseMove(1);
+        tttState.setPiece(1,1, 'X');
+        tttState.setPiece(0,0, 'O');
+        tttState.setPiece( 1, 2, 'X');
+        TTTState otherState = new TTTState();
+        otherState.setWhoseMove(1);
+        otherState.setPiece(1,1, 'X');
+        otherState.setPiece(0,0, 'O');
+        otherState.setPiece( 1, 2, 'X');
+        assertTrue("Equals method did not agree the States where equal", tttState.equals(otherState));
+    }
+
+    @Test
+    public void test_Equals_State_Full(){
+        TTTState tttState = new TTTState();
+        tttState.setPiece(0,0, 'X');
+        tttState.setPiece(0,1, 'O');
+        tttState.setPiece( 0, 2, 'X');
+        tttState.setPiece(1,0, 'O');
+        tttState.setPiece( 1, 1, 'X');
+        tttState.setPiece(1,2, 'O');
+        tttState.setPiece( 2, 0, 'X');
+        tttState.setPiece(2,1, 'O');
+        tttState.setPiece( 2, 2, 'X');
+        tttState.setWhoseMove(1);
+        TTTState otherState = new TTTState();
+        otherState.setPiece(0,0, 'X');
+        otherState.setPiece(0,1, 'O');
+        otherState.setPiece( 0, 2, 'X');
+        otherState.setPiece(1,0, 'O');
+        otherState.setPiece( 1, 1, 'X');
+        otherState.setPiece(1,2, 'O');
+        otherState.setPiece( 2, 0, 'X');
+        otherState.setPiece(2,1, 'O');
+        otherState.setPiece( 2, 2, 'X');
+        otherState.setWhoseMove(1);
+        assertTrue("Equals method did not agree the States where equal", tttState.equals(otherState));
+    }
 }
 

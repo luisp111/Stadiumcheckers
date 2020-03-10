@@ -472,8 +472,7 @@ public class GameConfig {
         }
 
         // don't go over the maximum
-        if (selNames.size() >= this.maxPlayers)
-            return;
+        if (selNames.size() >= this.maxPlayers) return;
 
         // append the new values
         selNames.add(name);
@@ -495,6 +494,7 @@ public class GameConfig {
             return;
 
         this.selNames.remove(index);
+        this.selTypes.remove(index);
     }// removePlayer
 
     /**
@@ -767,7 +767,7 @@ public class GameConfig {
                 && this.getPortNum() == gc.getPortNum()
                 && this.getMinPlayers() == gc.getMinPlayers()
                 && this.getMaxPlayers() == gc.getMaxPlayers()
-                && this.getGameName() == gc.getGameName()
+                && this.getGameName().equals(gc.getGameName())
                 && arrayEquals(this.getAvailTypes(), gc.getAvailTypes())
                 && arrayEquals(this.getSelNames(), gc.getSelNames())
                 && arrayEquals(this.getSelTypes(), gc.getSelTypes())

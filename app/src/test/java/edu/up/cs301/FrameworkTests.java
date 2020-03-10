@@ -3,6 +3,9 @@ package edu.up.cs301;
 import android.util.Pair;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TabHost;
+import android.widget.TableRow;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +42,7 @@ public class FrameworkTests {
         GameConfig gameConfig = activity.createDefaultConfig();
         Pair<Boolean, String> pair = gameConfig.test_gameConfig();
         assertTrue(pair.second , pair.first);
-        assertEquals("Port Num Mistach: GameConfig=" +gameConfig.getPortNum() + " != Activity=" + activity.PORT_NUMBER, gameConfig.getPortNum(), activity.PORT_NUMBER);
+        assertEquals("Port Num Mismatch: GameConfig=" +gameConfig.getPortNum() + " != Activity=" + activity.PORT_NUMBER, gameConfig.getPortNum(), activity.PORT_NUMBER);
     }
 
     @Test
@@ -51,6 +54,7 @@ public class FrameworkTests {
     @Test
     public void test_saveConfig(){
         GameConfig gameConfig = activity.createDefaultConfig();
+        gameConfig.removePlayer(1);
         gameConfig.addPlayer("Test", 0);
         String fileName = "savedTestConfig0000.dat";
         assertTrue("Failed to Save GameConfig", gameConfig.saveConfig(fileName, activity));
@@ -62,12 +66,15 @@ public class FrameworkTests {
     @Test
     public void test_saveConfigButton(){
         GameConfig gameConfig = activity.createDefaultConfig();
-        gameConfig.addPlayer("Test", 0);
+        ((EditText) activity.tableRows.get(1).findViewById(R.id.playerNameEditText)).setText("Test");
+        gameConfig.removePlayer(1);
+        gameConfig.addPlayer("Test", 3);
         View view = activity.findViewById(R.id.saveConfigButton);
         activity.onClick(view);
-        assertTrue("Failed to Load GameConfig",Robolectric.buildActivity(TTTMainActivity.class).create().resume().get() != null);
-        GameConfig restoreConfig = activity.getConfig();
-        assertEquals("Did not properly reload GameConfig", restoreConfig,gameConfig);
+        TTTMainActivity reloadActivity = Robolectric.buildActivity(TTTMainActivity.class).create().resume().get();
+        assertTrue("Failed to Load GameConfig",reloadActivity != null);
+        GameConfig restoreConfig = reloadActivity.getConfig();
+        assertEquals("Did not properly reload GameConfig", restoreConfig, gameConfig);
     }
 
     // Make saveGame return the string value and reloadGame or something accept one

@@ -367,7 +367,6 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
     }
 
     //TESTING
-
     public GameMainActivity getActivity(){
         return myActivity;
     }
