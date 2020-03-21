@@ -21,6 +21,14 @@ import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
 
 import static org.junit.Assert.*;
 
+//@author Eric Imperio
+//@version 2020
+//Use this as a template to make your own tests
+//These are go tests to use
+//Additional tests are good as well
+//NOTE: Avoid tests that simply check one action.
+//    Example: You know that the following will set the expected value.
+//        a = b + 2;
 @RunWith(RobolectricTestRunner.class)
 public class TicTacToeTests {
 
@@ -31,6 +39,10 @@ public class TicTacToeTests {
         activity = Robolectric.buildActivity(TTTMainActivity.class).create().resume().get();
     }
 
+    //This does a full game to verify it works
+    // Notice that it includes invalid moves
+    // You can do it this way or have multiple unit tests that do this
+    // Sometimes easier to just have one since this is turn-based
     @Test
     public void test_checkGamePlay() {
         //Starting the game
@@ -85,6 +97,7 @@ public class TicTacToeTests {
 
     //Tests focused on the state: copy constructors and equals
     //copy cons:  empty default state, in progress state, full board state
+    //This tests the copy constructor when nothing is set
     @Test
     public void test_CopyConstructorOfState_Empty(){
         TTTState tttState = new TTTState();
@@ -92,6 +105,7 @@ public class TicTacToeTests {
         assertTrue("Copy Constructor did not produce equal States", tttState.equals(copyState));
     }
 
+    //Make state that looks like a game that'd be in progress
     @Test
     public void test_CopyConstructorOfState_InProgress(){
         TTTState tttState = new TTTState();
@@ -103,6 +117,7 @@ public class TicTacToeTests {
         assertTrue("Copy Constructor did not produce equal States", tttState.equals(copyState));
     }
 
+    // Make a state that has all values set to something (preferably not default)
     @Test
     public void test_CopyConstructorOfState_Full(){
         TTTState tttState = new TTTState();
@@ -120,6 +135,9 @@ public class TicTacToeTests {
         assertTrue("Copy Constructor did not produce equal States", tttState.equals(copyState));
     }
 
+    //These follow the same structure as copy but they test your equals method
+    // Copy might fail because your equals is wrong
+    // DO NOT make equals use copy while copy is using equals. You won't know which is broken easily.
     //Equals
     @Test
     public void test_Equals_State_Empty(){

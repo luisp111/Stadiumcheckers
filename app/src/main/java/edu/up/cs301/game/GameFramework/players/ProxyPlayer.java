@@ -1,9 +1,10 @@
-package edu.up.cs301.game.GameFramework;
+package edu.up.cs301.game.GameFramework.players;
 
+import edu.up.cs301.game.GameFramework.Game;
+import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
 import edu.up.cs301.game.GameFramework.infoMessage.BindGameInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
-import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.utilities.NetworkObjectPasser;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
 

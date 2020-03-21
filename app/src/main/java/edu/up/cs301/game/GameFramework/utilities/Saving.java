@@ -20,6 +20,7 @@ import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 public class Saving {
     private static final String TAG = "Saving";
 
+    // These are convenient separator between values for your toString methods
     public static final String SEPARATOR = ":-:";
     public static final String ARRAY_SEPARATOR = ":=:";
     public static final String SECOND_ARRAY_SEPARATOR = ":~:";

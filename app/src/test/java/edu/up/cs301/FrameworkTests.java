@@ -26,17 +26,24 @@ import edu.up.cs301.tictactoe.infoMessage.TTTState;
 
 import static org.junit.Assert.*;
 
+//@author Eric Imperio
+//@version Spring 2020
+// This is used to verify the functionality of the Framework is intact
 @RunWith(RobolectricTestRunner.class)
 public class FrameworkTests {
 
-    //Change to your game Main Activity
+    //Look for these TODOs in the document
+    //TODO: Change to your game Main Activity
     public TTTMainActivity activity;
 
     @Before
     public void setup() throws Exception {
+        //TODO: Change to your game Main Activity
         activity = Robolectric.buildActivity(TTTMainActivity.class).create().resume().get();
     }
 
+    //This verifies the default config has the same port number as the activity
+    //It also verifies the test_gameConfig returns true
     @Test
     public void test_createDefaultConfig(){
         GameConfig gameConfig = activity.createDefaultConfig();
@@ -45,12 +52,15 @@ public class FrameworkTests {
         assertEquals("Port Num Mismatch: GameConfig=" +gameConfig.getPortNum() + " != Activity=" + activity.PORT_NUMBER, gameConfig.getPortNum(), activity.PORT_NUMBER);
     }
 
+    //Verifies a local Game can be created
     @Test
     public void test_createLocalGame(){
+        //TODO: Change to your game State
         LocalGame localGame = activity.createLocalGame(new TTTState());
         assertTrue("GameState was null", localGame.getGameState() != null);
     }
 
+    //Verifies the configuration can be saved and loaded
     @Test
     public void test_saveConfig(){
         GameConfig gameConfig = activity.createDefaultConfig();
@@ -63,6 +73,7 @@ public class FrameworkTests {
         assertEquals("Did not properly reload GameConfig", restoreConfig, gameConfig);
     }
 
+    //"Clicks" the save Config Button to verify that works
     @Test
     public void test_saveConfigButton(){
         GameConfig gameConfig = activity.createDefaultConfig();
@@ -71,17 +82,19 @@ public class FrameworkTests {
         gameConfig.addPlayer("Test", 3);
         View view = activity.findViewById(R.id.saveConfigButton);
         activity.onClick(view);
+        //TODO: Change to your game Main Activity
         TTTMainActivity reloadActivity = Robolectric.buildActivity(TTTMainActivity.class).create().resume().get();
         assertTrue("Failed to Load GameConfig",reloadActivity != null);
         GameConfig restoreConfig = reloadActivity.getConfig();
         assertEquals("Did not properly reload GameConfig", restoreConfig, gameConfig);
     }
 
-    // Make saveGame return the string value and reloadGame or something accept one
     //NOTICE: Tests the toString conversions of saving
+    //Tests that your game can be saved and loaded
     @Test
     public void test_save_game() {
         //Make a game state here
+        //TODO: Change to your game State
         TTTState tttState = new TTTState();
         tttState.setPiece(0,0,'X');
         tttState.setPiece(1,1, 'O');
@@ -89,14 +102,16 @@ public class FrameworkTests {
 
         //Call save game (In Main)
         Saving.writeToFile(tttState, R.string.app_name + "_test", activity);
-        //System.out.println(saved_string);
+
         //Test by remaking the state
+        //TODO: Change to your game State
         TTTState newtttState = new TTTState((TTTState) Saving.readFromFile(R.string.app_name + "_test", activity));
         //Check the game states are the same
 
         assertTrue(tttState.equals(newtttState));
     }
 
+    //Tests players can be added to the max and removed to the min
     @Test
     public void test_add_delete_player() {
         int before = activity.tableRows.size();
@@ -119,6 +134,7 @@ public class FrameworkTests {
         assertEquals(0,activity.tableRows.size());
     }
 
+    //Verifies a game can be started
     @Test
     public void test_startGame(){
         View view = activity.findViewById(R.id.playGameButton);
@@ -126,6 +142,7 @@ public class FrameworkTests {
         assertFalse("Game was null", activity.isGameNull());
     }
 
+    //Verifies Toast can be turned on and off
     @Test
     public void logger_toast_test(){
         Logger.setContext(activity.getApplicationContext());
@@ -139,6 +156,7 @@ public class FrameworkTests {
         assertTrue("Toast value of logger was not true", Logger.getToastValue());
     }
 
+    // Verifies Debug mode can be turned on and off
     @Test
     public void test_logger_debug() {
         Logger.setContext(activity.getApplicationContext());
@@ -155,6 +173,7 @@ public class FrameworkTests {
     /* Why test setGameOver? It's valid to assume students may want to override this method to add functionality
      *    Nothing wrong with that override; however, it still needs to set gameOver to the value given
      */
+    //Verifies setGameOver still sets the Game as over
     @Test
     public void test_setGameOver(){
         activity.setGameOver(true);
@@ -163,6 +182,8 @@ public class FrameworkTests {
         assertFalse("setGameOver has been overritten but isGameOver wasn't modified", activity.getGameOver());
     }
 
+    //Verifies that human players support and require a GUI while Computer Players don't
+    //Tests if activities are equal
     @Test
     public void test_players(){
         View view = activity.findViewById(R.id.playGameButton);

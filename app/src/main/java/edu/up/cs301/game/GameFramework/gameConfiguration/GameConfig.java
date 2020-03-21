@@ -14,9 +14,9 @@ import android.util.Pair;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.players.GamePlayer;
-import edu.up.cs301.game.GameFramework.ProxyPlayer;
+import edu.up.cs301.game.GameFramework.players.ProxyPlayer;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
-import static edu.up.cs301.game.GameFramework.utilities.Equality_Methods.arrayEquals;
+import static edu.up.cs301.game.GameFramework.utilities.EqualityMethods.arrayEquals;
 
 /**
  * GameConfig class
@@ -722,6 +722,11 @@ public class GameConfig {
         this.userModifiable = userModifiable;
     }// setUserModifiable
 
+    /** This makes sure the gameConfig is in the expect starting state
+     *
+     * @return Pair<Boolean, String> Where the boolean is false if in an unexpected state and
+     *     the String is the error message
+     */
     public Pair<Boolean, String> test_gameConfig(){
         String ret_val = "";
         boolean b = true;
@@ -756,6 +761,11 @@ public class GameConfig {
         return new Pair(b, ret_val);
     }
 
+    /** Tests if two gameConfigs are equal
+     *
+     * @param object - Hopefully and GameConfig object
+     * @return true if the objects have the same values throughout
+     */
     @Override
     public boolean equals(Object object){
         if(! (object instanceof GameConfig)) return false;
@@ -768,6 +778,7 @@ public class GameConfig {
                 && this.getMinPlayers() == gc.getMinPlayers()
                 && this.getMaxPlayers() == gc.getMaxPlayers()
                 && this.getGameName().equals(gc.getGameName())
+                //NOTE: Comparing arrays is supported by the framework!!
                 && arrayEquals(this.getAvailTypes(), gc.getAvailTypes())
                 && arrayEquals(this.getSelNames(), gc.getSelNames())
                 && arrayEquals(this.getSelTypes(), gc.getSelTypes())

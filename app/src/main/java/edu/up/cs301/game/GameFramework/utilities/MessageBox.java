@@ -105,7 +105,7 @@ public class MessageBox {
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
+                //Auto-generated method stub
                 return;
             }
         });
