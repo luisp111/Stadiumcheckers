@@ -126,7 +126,9 @@ public class TTTState extends GameState implements Serializable {
     	playerToMove = id;
     }
 
-    public boolean equals(TTTState tttState){
+    public boolean equals(Object object){
+        if(! (object instanceof TTTState)) return false;
+        TTTState tttState = (TTTState) object;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 if(this.board[i][j] != tttState.board[i][j]){

@@ -4,8 +4,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TabHost;
-import android.widget.TableRow;
+import android.widget.Spinner;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,9 +25,10 @@ import edu.up.cs301.tictactoe.infoMessage.TTTState;
 
 import static org.junit.Assert.*;
 
-//@author Eric Imperio
-//@version Spring 2020
-// This is used to verify the functionality of the Framework is intact
+/* @author Eric Imperio
+ * @version Spring 2020
+ * This is used to verify the functionality of the Framework is intact
+ */
 @RunWith(RobolectricTestRunner.class)
 public class FrameworkTests {
 
@@ -76,10 +76,12 @@ public class FrameworkTests {
     //"Clicks" the save Config Button to verify that works
     @Test
     public void test_saveConfigButton(){
-        GameConfig gameConfig = activity.createDefaultConfig();
+        GameConfig gameConfig = activity.getConfig();
+        //TODO: This add and remove player might need to be modified based on default player count and number of types
         ((EditText) activity.tableRows.get(1).findViewById(R.id.playerNameEditText)).setText("Test");
+        ((Spinner) activity.tableRows.get(1).findViewById(R.id.playerTypeSpinner)).setSelection(4);
         gameConfig.removePlayer(1);
-        gameConfig.addPlayer("Test", 3);
+        gameConfig.addPlayer("Test",4);
         View view = activity.findViewById(R.id.saveConfigButton);
         activity.onClick(view);
         //TODO: Change to your game Main Activity
@@ -106,8 +108,8 @@ public class FrameworkTests {
         //Test by remaking the state
         //TODO: Change to your game State
         TTTState newtttState = new TTTState((TTTState) Saving.readFromFile(R.string.app_name + "_test", activity));
-        //Check the game states are the same
 
+        //Check the game states are the same
         assertTrue(tttState.equals(newtttState));
     }
 
@@ -116,22 +118,22 @@ public class FrameworkTests {
     public void test_add_delete_player() {
         int before = activity.tableRows.size();
         int maxPlayers = activity.getConfig().getMaxPlayers();
-        if( before == maxPlayers) {
-            assert true;
-            return;
-        }
+        int minPlayers = activity.getConfig().getMinPlayers();
         View view = activity.findViewById(R.id.addPlayerButton);
         for(int i = before; i < maxPlayers; i++) {
             activity.onClick(view);
             assertEquals("Couldn't add player #" + before,before+=1,activity.tableRows.size());
         }
         assertEquals("Couldn't add players to the max player size",before, maxPlayers);
-        view = activity.findViewById(R.id.delPlayerButton);
-        for(int i = maxPlayers; i > -1; i--) {
-            activity.onClick(view);
+        activity.onClick(view);
+        assertEquals("Was able to add above the max player count",maxPlayers, activity.tableRows.size());
+        //view = activity.findViewById(R.id.delPlayerButton);
+        for(int i = before; i > minPlayers; i--) {
+            activity.onClick(activity.tableRows.get(i-1).findViewById(R.id.delPlayerButton));
             assertEquals("Couldn't remove player #" + before, before-=1, activity.tableRows.size());
         }
-        assertEquals(0,activity.tableRows.size());
+        activity.onClick(activity.tableRows.get(minPlayers-1).findViewById(R.id.delPlayerButton));
+        assertEquals("Was able to remove below the minimum player count",minPlayers,activity.tableRows.size());
     }
 
     //Verifies a game can be started

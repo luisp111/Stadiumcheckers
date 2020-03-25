@@ -16,19 +16,19 @@ import edu.up.cs301.game.R;
 import edu.up.cs301.tictactoe.TTTLocalGame;
 import edu.up.cs301.tictactoe.TTTMainActivity;
 import edu.up.cs301.tictactoe.infoMessage.TTTState;
-import edu.up.cs301.tictactoe.players.TTTHumanPlayer1;
 import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
 
 import static org.junit.Assert.*;
 
-//@author Eric Imperio
-//@version 2020
-//Use this as a template to make your own tests
-//These are go tests to use
-//Additional tests are good as well
-//NOTE: Avoid tests that simply check one action.
-//    Example: You know that the following will set the expected value.
-//        a = b + 2;
+/* @author Eric Imperio
+ * @version 2020
+ * Use this as a template to make your own tests
+ * These are go tests to use
+ * Additional tests are good as well
+ * NOTE: Avoid tests that simply check one action.
+ *    Example: You know that the following will set the expected value.
+ *        a = b + 2;
+ */
 @RunWith(RobolectricTestRunner.class)
 public class TicTacToeTests {
 
@@ -45,6 +45,7 @@ public class TicTacToeTests {
     // Sometimes easier to just have one since this is turn-based
     @Test
     public void test_checkGamePlay() {
+        //TODO: Modify the following for your game
         //Starting the game
         View view = activity.findViewById(R.id.playGameButton);
         activity.onClick(view);
@@ -60,9 +61,12 @@ public class TicTacToeTests {
         for (GamePlayer gp : gamePlayers) {
             tttLocalGame.sendAction(new ReadyAction(gp));
         }
+        //TODO: Start Making moves here
+        GamePlayer player1 = gamePlayers[0];
+        GamePlayer player2 = gamePlayers[1];
         //Can I make two moves in a row?
-        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[0], 0, 0));
-        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[0], 1, 1));
+        tttLocalGame.sendAction(new TTTMoveAction(player1, 0, 0));
+        tttLocalGame.sendAction(new TTTMoveAction(player1, 1, 1));
         //Setting the expected outcome of the two lines above
         TTTState match = new TTTState();
         match.setPiece(0, 0, 'X');
@@ -70,20 +74,20 @@ public class TicTacToeTests {
         //Testing that I couldn't make two moves in a row
         assertTrue("Game States were not equal", ((TTTState) tttLocalGame.getGameState()).equals(match));
         //Can I overwrite an opponents move
-        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[1], 0, 0));
+        tttLocalGame.sendAction(new TTTMoveAction(player1, 0, 0));
         //Make sure nothing changed
         assertTrue("Game States were not equal", ((TTTState) tttLocalGame.getGameState()).equals(match));
         //Make sure turns do in fact work
-        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[1], 0, 1));
-        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[0], 1, 1));
+        tttLocalGame.sendAction(new TTTMoveAction(player1, 0, 1));
+        tttLocalGame.sendAction(new TTTMoveAction(player1, 1, 1));
         //Expected changes from two lines above
         match.setPiece(0, 1, 'O');
         match.setPiece(1, 1, 'X');
         //Make sure those changes happened
         assertTrue("Game States were not equal", ((TTTState) tttLocalGame.getGameState()).equals(match));
         //Get to a finished game
-        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[1], 0, 3));
-        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[0], 2, 2));
+        tttLocalGame.sendAction(new TTTMoveAction(player1, 0, 3));
+        tttLocalGame.sendAction(new TTTMoveAction(player1, 2, 2));
         //Expected Changes from the two lines above
         match.setPiece(0, 2, 'O');
         match.setPiece(2, 2, 'X');
@@ -91,7 +95,8 @@ public class TicTacToeTests {
         assertTrue("Game States were not equal", ((TTTState) tttLocalGame.getGameState()).equals(match));
         //Make sure player 1 won
         assertEquals("Player 1 did not win", 0, tttLocalGame.whoWon());
-        tttLocalGame.sendAction(new TTTMoveAction(gamePlayers[1], 1, 2));
+        //Check if you can move after game over
+        tttLocalGame.sendAction(new TTTMoveAction(player1, 1, 2));
         assertTrue("Game States were not equal", ((TTTState) tttLocalGame.getGameState()).equals(match));
     }
 

@@ -10,7 +10,6 @@ import java.io.ObjectOutputStream;
 
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 
-
 /**
  * Helper-class for writing and reading save files
  * @author Eric Imperio
@@ -27,6 +26,7 @@ public class Saving {
     public static final String OBJECT_SEPARATOR = ":_:";
     public static final String SUB_OBJECT_SEPARATOR = ":`:";
     public static final String SECOND_SUB_OBJECT_SEPARATOR = ":--:";
+
 
     /**
      * writeToFile, this saves a given string to a file. Designed to save gameStates
@@ -64,7 +64,6 @@ public class Saving {
             GameState gameState = (GameState) in.readObject();
             in.close();
             return gameState;
-
         }
         catch (FileNotFoundException e) {
             Logger.log(TAG, "File not Found: " + e.toString() , Logger.ERROR);
