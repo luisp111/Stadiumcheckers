@@ -44,7 +44,7 @@ public class TTTLocalGame extends LocalGame {
 	 */
 	public TTTLocalGame(TTTState tttState){
 		super();
-		super.state = tttState;
+		super.state = new TTTState(tttState);
 	}
 
 	/**
