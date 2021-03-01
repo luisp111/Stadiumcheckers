@@ -6,12 +6,13 @@ import edu.up.cs301.game.GameFramework.actionMessage.GameOverAckAction;
 import edu.up.cs301.game.GameFramework.actionMessage.MyNameIsAction;
 import edu.up.cs301.game.GameFramework.actionMessage.ReadyAction;
 import edu.up.cs301.game.GameFramework.actionMessage.TimerAction;
-import edu.up.cs301.game.GameFramework.gameConfiguration.GameConfig;
 import edu.up.cs301.game.GameFramework.infoMessage.BindGameInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.GameOverInfo;
+import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 import edu.up.cs301.game.GameFramework.infoMessage.IllegalMoveInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.NotYourTurnInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.StartGameInfo;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.utilities.GameTimer;
 import edu.up.cs301.game.GameFramework.utilities.Tickable;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
@@ -64,12 +65,8 @@ public abstract class LocalGame implements Game, Tickable {
     // this game's timer and timer action
     private GameTimer myTimer = new GameTimer(this);
 
-    //How many setup phases we have, initially set to 0
-    private int numSetupTurns = 0;
-
-    //How many setup turns have passed, initially set to 0
-    private int currentSetupTurn = 0;
-
+    // the game's state
+    protected GameState state;
 
     /**
      * Returns the game's timer
@@ -235,8 +232,8 @@ public abstract class LocalGame implements Game, Tickable {
                     //If we have to actually perform a setup phase, so check for that and send out
                     //info accordingly.
                     gameStage = GameStage.SETUP_PHASE;
-                    if(this.numSetupTurns == 0){ gameStage = GameStage.DURING_GAME;}
-                    Logger.log(TAG, "Numof setup turns is "+ this.numSetupTurns);
+                    if(this.state.getNumSetupTurns() == 0){ gameStage = GameStage.DURING_GAME;}
+                    Logger.log(TAG, "Num of setup turns is "+ this.state.getNumSetupTurns());
                     Logger.debugLog(TAG, "broadcasting initial state - setup phase");
                     // send each player the initial state of the game
                     sendAllUpdatedState();
@@ -313,9 +310,9 @@ public abstract class LocalGame implements Game, Tickable {
         //turn then we need to increment the setup phase counter and update our phase accordingly.
         if(this.gameStage == GameStage.SETUP_PHASE){
             if((this.players.length-1 == playerId) && action instanceof EndTurnAction){
-                this.currentSetupTurn++;
+                this.state.incCurrentSetupTurn();
             }
-            if(this.currentSetupTurn >= this.numSetupTurns){
+            if(this.state.getCurrentSetupTurn() >= this.state.getNumSetupTurns()){
                 this.gameStage = GameStage.DURING_GAME;
             }
         }
@@ -437,15 +434,6 @@ public abstract class LocalGame implements Game, Tickable {
     }
 
     /**
-     * For setting the number of setup turns in the game.
-     * To be set in the constructor of the game-specific version of LocalGame.
-     * @param setupTurnNumber
-     */
-    public void setNumSetupTurns(int setupTurnNumber){
-        this.numSetupTurns = setupTurnNumber;
-    }
-
-    /**
      * Returns whether or not we are in setup phase.
      * @return
      */
@@ -461,7 +449,23 @@ public abstract class LocalGame implements Game, Tickable {
      * @return The turn number of setup we are on
      */
     public int setupTurnNumber(){
-        return this.currentSetupTurn;
+        return this.state.getCurrentSetupTurn();
+    }
+
+    //TESTING
+
+    public GamePlayer[] getPlayers(){
+        return players;
+    }
+
+    /**
+     * returns the current gameState
+     *
+     * @return GameState
+     */
+    @Override
+    public GameState getGameState(){
+        return state;
     }
 
 }// class LocalGame

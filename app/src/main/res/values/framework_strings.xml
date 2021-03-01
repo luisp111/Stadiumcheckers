@@ -2,8 +2,13 @@
 <!--These strings are specific to the GameFramework  Please do not edit strings unless you
 really need to.-->
 <resources>
+    <!--The following are settings menu strings-->
     <string name="menu_settings">Settings</string>
     <string name="menu_help">Help</string>
+    <string name="save_game">Save Game</string>
+    <string name="load_game">Load Game</string>
+    <string name="delete_game">Delete Game</string>
+    <!--The following are Configuration menu strings-->
     <string name="title_activity_game_main">Shall We Play A Game?</string>
     <string name="save_config">Save As Default Configuration</string>
     <string name="begin_game">Begin Game</string>

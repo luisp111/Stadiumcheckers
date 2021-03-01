@@ -1,6 +1,6 @@
 package edu.up.cs301.game.GameFramework.gameConfiguration;
 
-import edu.up.cs301.game.GameFramework.GamePlayer;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 
 /**
  * class GamePlayerType
@@ -60,5 +60,13 @@ public abstract class GamePlayerType implements Cloneable /*, Serializable*/ {
 
     //	public abstract GamePlayer createPlayer(Game game, int playerNum);
     public abstract GamePlayer createPlayer(String name);
+
+    // This compares to player types
+    @Override
+    public boolean equals(Object object) {
+        if(! (object instanceof GamePlayerType)) return false;
+        GamePlayerType gamePlayerType = (GamePlayerType) object;
+        return this.typeName.equals(gamePlayerType.typeName);
+    }
 
 }// class GamePlayerType

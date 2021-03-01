@@ -1,5 +1,6 @@
-package edu.up.cs301.game.GameFramework;
+package edu.up.cs301.game.GameFramework.players;
 
+import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 
 /**
@@ -12,7 +13,6 @@ import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
  */
 
 public interface GamePlayer {
-
     // sets this player as the GUI player (implemented as final in the
     // major player classes)
     public abstract void gameSetAsGui(GameMainActivity activity);
@@ -32,5 +32,8 @@ public interface GamePlayer {
 
     // whether this player supports a GUI
     public boolean supportsGui();
+
+    //TESTING
+    public GameMainActivity getActivity();
 
 }// interface GamePlayer

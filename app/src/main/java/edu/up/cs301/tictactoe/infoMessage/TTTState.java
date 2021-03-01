@@ -1,4 +1,6 @@
-package edu.up.cs301.tictactoe;
+package edu.up.cs301.tictactoe.infoMessage;
+
+import java.io.Serializable;
 
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 
@@ -9,9 +11,10 @@ import edu.up.cs301.game.GameFramework.infoMessage.GameState;
  * it, or to help figure out its next move.)
  * 
  * @author Steven R. Vegdahl
- * @version July 2013
+ * @authoer Eric Imperio
+ * @version July 2020
  */
-public class TTTState extends GameState {
+public class TTTState extends GameState implements Serializable {
     //Tag for logging
     private static final String TAG = "TTTState";
 	private static final long serialVersionUID = 7552321013488624386L;
@@ -62,6 +65,8 @@ public class TTTState extends GameState {
     	
     	// copy the player-to-move information
         playerToMove = original.playerToMove;
+    	super.numSetupTurns = original.numSetupTurns;
+    	super.currentSetupTurn = original.currentSetupTurn;
     }
 
     /**
@@ -119,5 +124,22 @@ public class TTTState extends GameState {
      */
     public void setWhoseMove(int id) {
     	playerToMove = id;
+    }
+
+    public boolean equals(Object object){
+        if(! (object instanceof TTTState)) return false;
+        TTTState tttState = (TTTState) object;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if(this.board[i][j] != tttState.board[i][j]){
+                    return false;
+                }
+            }
+        }
+
+        if (this.playerToMove != tttState.playerToMove || this.numSetupTurns != tttState.numSetupTurns || this.currentSetupTurn != tttState.currentSetupTurn){
+            return false;
+        }
+        return true;
     }
 }

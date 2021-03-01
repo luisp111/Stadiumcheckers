@@ -1,19 +1,20 @@
-package edu.up.cs301.tictactoe;
+package edu.up.cs301.tictactoe.players;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import edu.up.cs301.game.GameFramework.GameHumanPlayer;
+import edu.up.cs301.game.GameFramework.players.GameHumanPlayer;
 import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.IllegalMoveInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.NotYourTurnInfo;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
+import edu.up.cs301.tictactoe.infoMessage.TTTState;
+import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
+import edu.up.cs301.tictactoe.views.TTTSurfaceView;
 
 /**
  * A GUI that allows a human to play tic-tac-toe. Moves are made by clicking
@@ -25,8 +26,6 @@ import edu.up.cs301.game.GameFramework.utilities.Logger;
 public class TTTHumanPlayer1 extends GameHumanPlayer implements View.OnTouchListener {
     //Tag for logging
     private static final String TAG = "TTTHumanPlayer1";
-    // the current activity
-    private Activity myActivity;
 
     // the surface view
     private TTTSurfaceView surfaceView;
@@ -76,9 +75,6 @@ public class TTTHumanPlayer1 extends GameHumanPlayer implements View.OnTouchList
      * sets the current player as the activity's GUI
      */
     public void setAsGui(GameMainActivity activity) {
-
-        // remember our activitiy
-        myActivity = activity;
 
         // Load the layout resource for the new configuration
         activity.setContentView(layoutId);

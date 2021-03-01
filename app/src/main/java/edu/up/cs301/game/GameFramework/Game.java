@@ -1,6 +1,8 @@
 package edu.up.cs301.game.GameFramework;
 
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
+import edu.up.cs301.game.GameFramework.infoMessage.GameState;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 
 /**
  * To support remote play, this game framework has two types of Games: local
@@ -9,7 +11,8 @@ import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
  *
  * @author Steven R. Vegdahl
  * @author Andrew M. Nuxoll
- * @version July 2013
+ * @author Eric Imperio
+ * @version January 2020
  * @see LocalGame
  * @see ProxyGame
  */
@@ -21,7 +24,7 @@ public interface Game {
      * @param players
      * 			the players who are in the game
      */
-    public abstract void start(GamePlayer[] players);
+    void start(GamePlayer[] players);
 
     /**
      * sends the given action to the Game object.
@@ -29,6 +32,13 @@ public interface Game {
      * @param action
      *            the action to send
      */
-    public abstract void sendAction(GameAction action);
+    void sendAction(GameAction action);
+
+    /**
+     * returns the current gameState.
+     *
+     * @return GameState
+     */
+    GameState getGameState();
 
 }

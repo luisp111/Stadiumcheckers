@@ -1,6 +1,5 @@
-package edu.up.cs301.tictactoe;
+package edu.up.cs301.tictactoe.views;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,9 +9,9 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
+
 import edu.up.cs301.game.GameFramework.utilities.FlashSurfaceView;
+import edu.up.cs301.tictactoe.infoMessage.TTTState;
 
 /**
  * A SurfaceView which allows which an animation to be drawn on it by a
@@ -308,6 +307,7 @@ public class TTTSurfaceView extends FlashSurfaceView {
                 float top = v(BORDER_PERCENT + (j * SQUARE_DELTA_PERCENT));
                 float bottom = v(BORDER_PERCENT + SQUARE_SIZE_PERCENT
                         + (j * SQUARE_DELTA_PERCENT));
+                System.out.println(left + " " + right + " " + top + " " + bottom);
                 if ((x > left) != (x > right) && (y > top) != (y > bottom)) {
                     return new Point(i, j);
                 }

@@ -3,17 +3,26 @@ package edu.up.cs301.tictactoe;
 import java.util.ArrayList;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
-import edu.up.cs301.game.GameFramework.GamePlayer;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.LocalGame;
+import edu.up.cs301.game.GameFramework.infoMessage.GameState;
+import edu.up.cs301.game.GameFramework.utilities.Logger;
+import edu.up.cs301.game.GameFramework.utilities.Saving;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.GameFramework.gameConfiguration.GameConfig;
 import edu.up.cs301.game.GameFramework.gameConfiguration.GamePlayerType;
+import edu.up.cs301.tictactoe.infoMessage.TTTState;
+import edu.up.cs301.tictactoe.players.TTTComputerPlayer1;
+import edu.up.cs301.tictactoe.players.TTTComputerPlayer2;
+import edu.up.cs301.tictactoe.players.TTTHumanPlayer1;
+import edu.up.cs301.tictactoe.players.TTTHumanPlayer2;
 
 /**
  * this is the primary activity for Counter game
  * 
  * @author Steven R. Vegdahl
- * @version July 2013
+ * @author Eric Imperio
+ * @version July 2020
  */
 public class TTTMainActivity extends GameMainActivity {
 	//Tag for logging
@@ -84,13 +93,42 @@ public class TTTMainActivity extends GameMainActivity {
 	 * createLocalGame
 	 * 
 	 * Creates a new game that runs on the server tablet,
+	 * @param gameState
+	 * 				the gameState for this game or null for a new game
 	 * 
 	 * @return a new, game-specific instance of a sub-class of the LocalGame
 	 *         class.
 	 */
 	@Override
-	public LocalGame createLocalGame() {
-		return new TTTLocalGame();
+	public LocalGame createLocalGame(GameState gameState){
+		if(gameState == null) return new TTTLocalGame();
+		return new TTTLocalGame((TTTState) gameState);
+	}
+
+	/**
+	 * saveGame, adds this games prepend to the filename
+	 *
+	 * @param gameName
+	 * 				Desired save name
+	 * @return String representation of the save
+	 */
+	@Override
+	public GameState saveGame(String gameName) {
+		return super.saveGame(getGameString(gameName));
+	}
+
+	/**
+	 * loadGame, adds this games prepend to the desire file to open and creates the game specific state
+	 * @param gameName
+	 * 				The file to open
+	 * @return The loaded GameState
+	 */
+	@Override
+	public GameState loadGame(String gameName){
+		String appName = getGameString(gameName);
+		super.loadGame(appName);
+		Logger.log(TAG, "Loading: " + gameName);
+		return (GameState) new TTTState((TTTState) Saving.readFromFile(appName, this.getApplicationContext()));
 	}
 
 }

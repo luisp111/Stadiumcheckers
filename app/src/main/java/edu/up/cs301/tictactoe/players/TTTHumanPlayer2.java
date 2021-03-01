@@ -1,4 +1,4 @@
-package edu.up.cs301.tictactoe;
+package edu.up.cs301.tictactoe.players;
 
 import android.graphics.Color;
 import android.view.View;
@@ -7,12 +7,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import edu.up.cs301.game.GameFramework.GameHumanPlayer;
+import edu.up.cs301.game.GameFramework.players.GameHumanPlayer;
 import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.IllegalMoveInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.NotYourTurnInfo;
+import edu.up.cs301.tictactoe.infoMessage.TTTState;
+import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
 
 /**
  * A human (i.e., GUI) version of a tic-tac-toe player that gives the user
@@ -24,8 +26,6 @@ import edu.up.cs301.game.GameFramework.infoMessage.NotYourTurnInfo;
 public class TTTHumanPlayer2 extends GameHumanPlayer implements OnClickListener {
 	//Tag for logging
 	private static final String TAG = "TTTHumanPlayer2";
-	// the activity under which we're running
-	GameMainActivity myActivity = null;
 	
 	// the game's state
 	TTTState state = null;

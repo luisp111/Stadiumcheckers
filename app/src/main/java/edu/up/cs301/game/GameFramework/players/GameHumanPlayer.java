@@ -1,5 +1,7 @@
-package edu.up.cs301.game.GameFramework;
+package edu.up.cs301.game.GameFramework.players;
 
+import edu.up.cs301.game.GameFramework.Game;
+import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.actionMessage.GameOverAckAction;
 import edu.up.cs301.game.GameFramework.actionMessage.MyNameIsAction;
 import edu.up.cs301.game.GameFramework.actionMessage.ReadyAction;
@@ -12,7 +14,6 @@ import edu.up.cs301.game.GameFramework.utilities.GameTimer;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.GameFramework.utilities.MessageBox;
 import edu.up.cs301.game.GameFramework.utilities.Tickable;
-import edu.up.cs301.game.R;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -44,9 +45,9 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
     protected int playerNum; // my player ID
     protected String name; // my player's name
     protected String[] allPlayerNames; // the names of all the player
+    protected GameMainActivity myActivity; // the current activity
     private Handler myHandler; // my thread's handler
     private Handler saveMe;
-    private GameMainActivity myActivity; // the current activity
     private GameTimer myTimer = new GameTimer(this); // my player's timer
     private boolean gameOver; // whether the game is over
 
@@ -322,7 +323,7 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
             }
             else {
                 // pass the state on to the subclass
-                    receiveInfo(myInfo);
+                receiveInfo(myInfo);
             }
         }
     }
@@ -365,5 +366,9 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
         // by default, do nothing
     }
 
+    //TESTING
+    public GameMainActivity getActivity(){
+        return myActivity;
+    }
 }// class GameHumanPlayer
 

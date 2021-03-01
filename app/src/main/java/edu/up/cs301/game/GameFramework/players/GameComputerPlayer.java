@@ -1,5 +1,7 @@
-package edu.up.cs301.game.GameFramework;
+package edu.up.cs301.game.GameFramework.players;
 
+import edu.up.cs301.game.GameFramework.Game;
+import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.actionMessage.GameOverAckAction;
 import edu.up.cs301.game.GameFramework.actionMessage.MyNameIsAction;
 import edu.up.cs301.game.GameFramework.actionMessage.ReadyAction;
@@ -35,11 +37,11 @@ public abstract class GameComputerPlayer implements GamePlayer, Tickable {
     protected int playerNum; // which player number I am
     protected String name; // my name
     protected String[] allPlayerNames; // list of all player names, in ID order
+    protected GameMainActivity myActivity; // the game's main activity, set only
+    // this game is connected to the GUI
     private Handler myHandler; // the handler for this player's thread
     private boolean running; // whether the player's thread is running
     private boolean gameOver = false; // whether the game is over
-    private GameMainActivity myActivity; // the game's main activity, set only
-    // this game is connected to the GUI
     private GameTimer myTimer = new GameTimer(this); // my timer
 
     /**
@@ -327,5 +329,10 @@ public abstract class GameComputerPlayer implements GamePlayer, Tickable {
      */
     protected void timerTicked() {
         // by default, do nothing
+    }
+
+    //TESTING
+    public GameMainActivity getActivity() {
+        return myActivity;
     }
 }// class GameComputerPlayer

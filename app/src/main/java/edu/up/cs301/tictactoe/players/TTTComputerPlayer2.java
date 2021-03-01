@@ -1,8 +1,10 @@
-package edu.up.cs301.tictactoe;
+package edu.up.cs301.tictactoe.players;
 
-import edu.up.cs301.game.GameFramework.GameComputerPlayer;
+import edu.up.cs301.game.GameFramework.players.GameComputerPlayer;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
+import edu.up.cs301.tictactoe.infoMessage.TTTState;
+import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
 
 import android.graphics.Point;
 

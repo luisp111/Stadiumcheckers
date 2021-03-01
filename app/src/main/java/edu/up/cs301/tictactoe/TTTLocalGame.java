@@ -1,23 +1,23 @@
 package edu.up.cs301.tictactoe;
 
-import edu.up.cs301.game.GameFramework.GamePlayer;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.LocalGame;
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
-import edu.up.cs301.game.GameFramework.infoMessage.IllegalMoveInfo;
+import edu.up.cs301.tictactoe.infoMessage.TTTState;
+import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
 
 /**
  * The TTTLocalGame class for a simple tic-tac-toe game.  Defines and enforces
  * the game rules; handles interactions with players.
  * 
- * @author Steven R. Vegdahl 
- * @version July 2013
+ * @author Steven R. Vegdahl
+ * @author Eric Imperio
+ * @version January 2020
  */
 
 public class TTTLocalGame extends LocalGame {
 	//Tag for logging
 	private static final String TAG = "TTTLocalGame";
-	// the game's state
-	protected TTTState state;
 
 	// the marks for player 0 and player 1, respectively
 	private final static char[] mark = {'X','O'};
@@ -35,7 +35,16 @@ public class TTTLocalGame extends LocalGame {
 		super();
 
 		// create a new, unfilled-in TTTState object
-		state = new TTTState();
+		super.state = new TTTState();
+	}
+
+	/**
+	 * Constructor for the TTTLocalGame with loaded tttState
+	 * @param tttState
+	 */
+	public TTTLocalGame(TTTState tttState){
+		super();
+		super.state = new TTTState(tttState);
 	}
 
 	/**
@@ -61,6 +70,8 @@ public class TTTLocalGame extends LocalGame {
 		// the character that will eventually contain an 'X' or 'O' if we
 		// find a winner
 		char resultChar = ' ';
+
+		TTTState state = (TTTState) super.state;
 
 		// to all three lines in the current group
 		for (int i = 0; i < 3; i++) {
@@ -121,7 +132,7 @@ public class TTTLocalGame extends LocalGame {
 	@Override
 	protected void sendUpdatedStateTo(GamePlayer p) {
 		// make a copy of the state, and send it to the player
-		p.sendInfo(new TTTState(state));
+		p.sendInfo(new TTTState(((TTTState) state)));
 
 	}
 
@@ -135,7 +146,7 @@ public class TTTLocalGame extends LocalGame {
 	 * 		true iff the player is allowed to move
 	 */
 	protected boolean canMove(int playerIdx) {
-		return playerIdx == state.getWhoseMove();
+		return playerIdx == ((TTTState)state).getWhoseMove();
 	}
 
 	/**
@@ -151,6 +162,8 @@ public class TTTLocalGame extends LocalGame {
 
 		// get the row and column position of the player's move
 		TTTMoveAction tm = (TTTMoveAction) action;
+		TTTState state = (TTTState) super.state;
+
 		int row = tm.getRow();
 		int col = tm.getCol();
 
@@ -169,13 +182,21 @@ public class TTTLocalGame extends LocalGame {
 		state.setPiece(row, col, mark[playerId]);
 
 		// make it the other player's turn
-		state.setWhoseMove(1-whoseMove);
+		state.setWhoseMove(1 - whoseMove);
 
 		// bump the move count
 		moveCount++;
-		
+
 		// return true, indicating the it was a legal move
 		return true;
 	}
 
+	//TESTING
+
+	public int whoWon(){
+		String gameOver = checkIfGameOver();
+		if(gameOver == null || gameOver.equals("It's a cat's game.")) return -1;
+		if(gameOver.equals(playerNames[0]+" is the winner.")) return 0;
+		return 1;
+	}
 }

@@ -5,6 +5,8 @@ import java.util.Queue;
 
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
+import edu.up.cs301.game.GameFramework.infoMessage.GameState;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.utilities.IPCoder;
 import edu.up.cs301.game.GameFramework.utilities.NetworkObjectPasser;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
@@ -18,7 +20,8 @@ import edu.up.cs301.game.GameFramework.utilities.Logger;
  * unserializes the message and sends it to its player.
  *
  * @author Steven R. Vegdahl
- * @version July 2013
+ * @author Eric Imperio
+ * @version January 2020
  */
 public class ProxyGame implements Game {
     //Tag for logging
@@ -178,6 +181,16 @@ public class ProxyGame implements Game {
             Logger.debugLog(TAG, "Sending queued object to player: "+unqueuedObject.getClass());
             players[0].sendInfo(unqueuedObject);
         }
+    }
+
+    /**
+     * returns null because network saving is not implemented yet.
+     *
+     * @return GameState
+     */
+    @Override
+    public GameState getGameState(){
+        return null;
     }
 }
 

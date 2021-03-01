@@ -28,9 +28,12 @@ import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
 import edu.up.cs301.game.GameFramework.gameConfiguration.GameConfig;
 import edu.up.cs301.game.GameFramework.gameConfiguration.GamePlayerType;
+import edu.up.cs301.game.GameFramework.infoMessage.GameState;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.utilities.IPCoder;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.GameFramework.utilities.MessageBox;
+import edu.up.cs301.game.GameFramework.utilities.Saving;
 import edu.up.cs301.game.R;
 
 /**
@@ -41,7 +44,8 @@ import edu.up.cs301.game.R;
  *
  * @author Andrew M. Nuxoll
  * @author Steven R. Vegdahl
- * @date Version 2013
+ * @author Eric Imperio
+ * @date Version 2020
  */
 public abstract class GameMainActivity extends Activity implements
         View.OnClickListener {
@@ -118,11 +122,13 @@ public abstract class GameMainActivity extends Activity implements
      * you were creating tic-tac-toe, you would implement this method to return
      * an instance of your TTTLocalGame class which, in turn, would be a
      * subclass of {@link LocalGame}.
+     * @param gameState
+     *              The desired gameState to start at or null for new game
      *
      * @return a new, game-specific instance of a sub-class of the LocalGame
      *         class.
      */
-    public abstract LocalGame createLocalGame();
+    public abstract LocalGame createLocalGame(GameState gameState);
 
     /**
      * Creates a "proxy" game that acts as an intermediary between a local
@@ -181,14 +187,14 @@ public abstract class GameMainActivity extends Activity implements
             justStarted = false;
         }
         else { // special run (during debugging?): use the given configuration, unmodified
-            String msg = launchGame(this.config);
+            String msg = launchGame(this.config, null);
             if (msg != null) {
                 // we have an error message
                 MessageBox.popUpMessage(msg, this);
             }
         }
 
-        if (((CheckBox) findViewById(R.id.on_screenLogging)).isChecked()) {
+        if (((CheckBox) findViewById(R.id.onScreenLogging)).isChecked()) {
             Logger.setToastValue(true);
         } else {
             Logger.setToastValue(false);
@@ -275,11 +281,13 @@ public abstract class GameMainActivity extends Activity implements
      *
      * @param config
      *            is the configuration for this game
+     * @param gameState
+     *            the gameState for this game
      * @return
      * 			null if the launch was successful; otherwise a message telling
      * 			why game could not be launched
      */
-    private final String launchGame(GameConfig config) {
+    private final String launchGame(GameConfig config, GameState gameState) {
 
         // Set the title text with the game's name
         this.setTitle(config.getGameName());
@@ -288,7 +296,7 @@ public abstract class GameMainActivity extends Activity implements
         // until further down so that we do not attempt to make the
         // network connection until other errors are checked)
         if (config.isLocal()) { // local game
-            game = createLocalGame();
+            game = createLocalGame(gameState);
             // verify we have a game
             if (game == null) {
                 return Resources.getSystem().getString(R.string.Game_Creation_Error_Msg);
@@ -482,7 +490,7 @@ public abstract class GameMainActivity extends Activity implements
         // Set the remote widget data
         initRemoteWidgets();
 
-        //Set up the Setttings Tab
+        //Set up the Settings Tab
         initSettingsTab();
 
         // Set myself as the listener for the buttons
@@ -492,7 +500,7 @@ public abstract class GameMainActivity extends Activity implements
         v.setOnClickListener(this);
         v = findViewById(R.id.playGameButton);
         v.setOnClickListener(this);
-        v = findViewById(R.id.on_screenLogging);
+        v = findViewById(R.id.onScreenLogging);
         v.setOnClickListener(this);
         v = findViewById(R.id.debugLogging);
         v.setOnClickListener(this);
@@ -516,6 +524,24 @@ public abstract class GameMainActivity extends Activity implements
         switch (item.getItemId()) {
             case R.id.menu_help:
                 Logger.log(TAG, "This is the help button!");
+                return true;
+            case R.id.save_game:
+                Logger.log(TAG, "This is the save button!");
+                if( this.game != null){
+                    Logger.log(TAG, "The Game Exists!");
+                    MessageBox.popUpSaveGame("Name your game:", this);
+                } else {
+                    Logger.log(TAG, "No Game Exists!");
+                    MessageBox.popUpMessage("You cannot save a game without first starting a game (Click Anywhere to dismiss).", this);
+                }
+                return true;
+            case R.id.load_game:
+                Logger.log(TAG, "This is the loading button!");
+                MessageBox.popUpLoadGame("Select Your Game: ", this);
+                return true;
+            case R.id.delete_game:
+                Logger.log(TAG, "This is the delete button!");
+                MessageBox.popUpDeleteGame("Select the Game to Delete: ", this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -581,7 +607,7 @@ public abstract class GameMainActivity extends Activity implements
         }
 
         //On-screen debugging checkbox
-        else if(button.getId() == R.id.on_screenLogging){
+        else if(button.getId() == R.id.onScreenLogging){
             if(((CheckBox)button).isChecked()){
                 Logger.setToastValue(true);
             }else{
@@ -604,7 +630,7 @@ public abstract class GameMainActivity extends Activity implements
         GameConfig finalConfig = scrapeData();
         //Saving the user's inputs in case they want to restart the game later
         this.restartConfig = finalConfig;
-        return launchGame(finalConfig);
+        return launchGame(finalConfig, null);
     }
 
     /**
@@ -790,6 +816,8 @@ public abstract class GameMainActivity extends Activity implements
         gameIsOver = b;
     }// setGameOver
 
+    public boolean getGameOver() { return gameIsOver; }
+
     /**
      *  the label for the local tab header
      *
@@ -894,11 +922,84 @@ public abstract class GameMainActivity extends Activity implements
      */
     public void restartGame(){
         //Might need to fake a configuration for the restart to work properly
-        String msg = launchGame(this.restartConfig);
+        String msg = launchGame(this.restartConfig, null);
         if (msg != null) {
             // we have an error message
             MessageBox.popUpMessage(msg, this);
         }
     }
 
+    /**
+     * saveGame, saves the current configuration and gameState
+     * @param gameName
+     * @return String representation of the gameState
+     */
+    public GameState saveGame(String gameName) {
+        Logger.log(TAG, "Saving: " + gameName);
+        config.saveConfig(gameName + ".c" , this);
+        GameState gameState = getGameState();
+        Saving.writeToFile(gameState, gameName, this.getApplicationContext());
+        return gameState;
+    }
+
+    /**
+     * loadGame, load the config and gameState for selected gameName
+     * NOTE: This should be called and overritten by your Game's MainActivity
+     *
+     * @param gameName
+     * @return null
+     */
+    public GameState loadGame(String gameName) {
+        config.restoreSavedConfig(gameName + ".c", this);
+        // Sub class should do this part
+        return null;
+    }
+
+    /**
+     * Gets the current gameState to save
+     * @return the current GameState
+     */
+    protected GameState getGameState(){
+        return game.getGameState();
+    }
+
+    /**
+     * startLoadedGame, starts the loaded GameState
+     *
+     * @param gameState
+     */
+    public void startLoadedGame(GameState gameState){
+        String msg = launchGame(this.config, gameState);
+        if (msg != null) {
+            // we have an error message/
+            MessageBox.popUpMessage(msg, this);
+        }
+    }
+
+    public String getGameString(String gameName){
+        return this.getString(R.string.app_name) + "_" + gameName;
+    }
+
+    //////////////////////
+    // TESTING
+    //////////////////////
+
+    /*
+     * gets the GameConfig for this game
+     */
+    public GameConfig getConfig() {
+        return this.config;
+    }
+
+    public boolean isGameNull() {
+        return game == null;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    ///////////////////////
+    //END TESTING
+    ///////////////////////
 }

@@ -2,9 +2,9 @@ package edu.up.cs301.game.GameFramework.actionMessage;
 
 import java.io.Serializable;
 
-import edu.up.cs301.game.GameFramework.GamePlayer;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 
-
+//Let's the Game know the player is done with the turn
 public class EndTurnAction extends GameAction implements Serializable {
     //Tag for logging
     private static final String TAG = "EndTurnAction";
