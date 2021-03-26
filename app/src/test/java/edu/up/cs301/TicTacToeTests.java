@@ -78,7 +78,7 @@ public class TicTacToeTests {
         //Make sure nothing changed
         assertTrue("Game States were not equal", ((TTTState) tttLocalGame.getGameState()).equals(match));
         //Make sure turns do in fact work
-        tttLocalGame.sendAction(new TTTMoveAction(player1, 0, 1));
+        tttLocalGame.sendAction(new TTTMoveAction(player2, 0, 1));
         tttLocalGame.sendAction(new TTTMoveAction(player1, 1, 1));
         //Expected changes from two lines above
         match.setPiece(0, 1, 'O');

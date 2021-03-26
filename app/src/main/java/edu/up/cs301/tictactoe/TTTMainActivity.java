@@ -101,7 +101,8 @@ public class TTTMainActivity extends GameMainActivity {
 	 */
 	@Override
 	public LocalGame createLocalGame(GameState gameState){
-		if(gameState == null) return new TTTLocalGame();
+		if(gameState == null)
+			return new TTTLocalGame();
 		return new TTTLocalGame((TTTState) gameState);
 	}
 
