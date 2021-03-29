@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 /* @author Eric Imperio
  * @version 2020
  * Use this as a template to make your own tests
- * These are go tests to use
+ * These are good tests to use
  * Additional tests are good as well
  * NOTE: Avoid tests that simply check one action.
  *    Example: You know that the following will set the expected value.
@@ -74,7 +74,7 @@ public class TicTacToeTests {
         //Testing that I couldn't make two moves in a row
         assertTrue("Game States were not equal", ((TTTState) tttLocalGame.getGameState()).equals(match));
         //Can I overwrite an opponents move
-        tttLocalGame.sendAction(new TTTMoveAction(player1, 0, 0));
+        tttLocalGame.sendAction(new TTTMoveAction(player2, 0, 0));
         //Make sure nothing changed
         assertTrue("Game States were not equal", ((TTTState) tttLocalGame.getGameState()).equals(match));
         //Make sure turns do in fact work
@@ -96,7 +96,7 @@ public class TicTacToeTests {
         //Make sure player 1 won
         assertEquals("Player 1 did not win", 0, tttLocalGame.whoWon());
         //Check if you can move after game over
-        tttLocalGame.sendAction(new TTTMoveAction(player1, 1, 2));
+        tttLocalGame.sendAction(new TTTMoveAction(player2, 1, 2));
         assertTrue("Game States were not equal", ((TTTState) tttLocalGame.getGameState()).equals(match));
     }
 
