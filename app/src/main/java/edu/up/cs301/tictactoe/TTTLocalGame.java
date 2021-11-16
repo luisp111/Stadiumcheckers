@@ -48,6 +48,19 @@ public class TTTLocalGame extends LocalGame {
 	}
 
 	/**
+	 *  This is where you should initialize anything specific to the
+	 *  number of players.  For example you may need to init your
+	 *  game state or part of it.  Loading data could also happen here.
+	 *
+	 * 	 @param players
+	 */
+	@Override
+	public void start(GamePlayer[] players)
+	{
+		super.start(players);
+	}
+
+	/**
 	 * Check if the game is over. It is over, return a string that tells
 	 * who the winner(s), if any, are. If the game is not over, return null;
 	 * 

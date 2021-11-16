@@ -52,7 +52,7 @@ public class TTTMainActivity extends GameMainActivity {
 			}
 		});
 
-		// game of 33
+		// note that most games don't require a second human player class
 		playerTypes.add(new GamePlayerType("Local Human Player (game of 33)") {
 			public GamePlayer createPlayer(String name) {
 				return new TTTHumanPlayer2(name);
