@@ -102,6 +102,7 @@ public class TicTacToeTests {
 
     //Tests focused on the state: copy constructors and equals
     //copy cons:  empty default state, in progress state, full board state
+
     //This tests the copy constructor when nothing is set
     @Test
     public void test_CopyConstructorOfState_Empty(){

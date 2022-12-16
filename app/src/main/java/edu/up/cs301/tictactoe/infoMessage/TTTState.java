@@ -11,7 +11,7 @@ import edu.up.cs301.game.GameFramework.infoMessage.GameState;
  * it, or to help figure out its next move.)
  * 
  * @author Steven R. Vegdahl
- * @authoer Eric Imperio
+ * @author Eric Imperio
  * @version July 2020
  */
 public class TTTState extends GameState implements Serializable {
