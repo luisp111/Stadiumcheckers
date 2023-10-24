@@ -521,31 +521,39 @@ public abstract class GameMainActivity extends Activity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_help:
-                Logger.log(TAG, "This is the help button!");
-                return true;
-            case R.id.save_game:
-                Logger.log(TAG, "This is the save button!");
-                if( this.game != null){
-                    Logger.log(TAG, "The Game Exists!");
-                    MessageBox.popUpSaveGame("Name your game:", this);
-                } else {
-                    Logger.log(TAG, "No Game Exists!");
-                    MessageBox.popUpMessage("You cannot save a game without first starting a game (Click Anywhere to dismiss).", this);
-                }
-                return true;
-            case R.id.load_game:
-                Logger.log(TAG, "This is the loading button!");
-                MessageBox.popUpLoadGame("Select Your Game: ", this);
-                return true;
-            case R.id.delete_game:
-                Logger.log(TAG, "This is the delete button!");
-                MessageBox.popUpDeleteGame("Select the Game to Delete: ", this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        final int itemId = item.getItemId();
+        final int menu_help = R.id.menu_help;
+        final int save_gave = R.id.save_game;
+        final int load_game = R.id.load_game;
+        final int delete_game = R.id.delete_game;
+        if(itemId == menu_help)
+        {
+            Logger.log(TAG, "This is the help button!");
         }
+        else if(itemId == save_gave)
+        {
+            Logger.log(TAG, "This is the save button!");
+            if( this.game != null){
+                Logger.log(TAG, "The Game Exists!");
+                MessageBox.popUpSaveGame("Name your game:", this);
+            } else {
+                Logger.log(TAG, "No Game Exists!");
+                MessageBox.popUpMessage("You cannot save a game without first starting a game (Click Anywhere to dismiss).", this);
+            }
+        }
+        else if(itemId == load_game)
+        {
+            Logger.log(TAG, "This is the loading button!");
+            MessageBox.popUpLoadGame("Select Your Game: ", this);
+        }
+        else if(itemId == delete_game)
+        {
+            Logger.log(TAG, "This is the delete button!");
+            MessageBox.popUpDeleteGame("Select the Game to Delete: ", this);
+        }
+        else
+            return super.onOptionsItemSelected(item);
+        return true;
     }
 
     /**
