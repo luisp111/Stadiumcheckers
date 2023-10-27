@@ -1,5 +1,7 @@
 package edu.up.cs301.stadiumcheckers;
 
+import androidx.annotation.NonNull;
+
 public class Position {
     private int ring;
     private int slot;
@@ -35,5 +37,11 @@ public class Position {
     public void setPosition(int ring, int slot) {
         this.ring = ring;
         this.slot = slot;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "[r" + ring + ", s" + slot + "]";
     }
 }
