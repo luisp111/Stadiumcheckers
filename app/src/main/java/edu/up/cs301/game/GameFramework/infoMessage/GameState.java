@@ -11,7 +11,7 @@ import static edu.up.cs301.game.GameFramework.utilities.Saving.SEPARATOR;
  * @author Steven R. Vegdahl
  * @version July 2013
  */
-public abstract class GameState extends GameInfo {
+public class GameState extends GameInfo {
     //Tag for logging
     private static final String TAG = "GameState";
     // to satisfy the Serializable interface
@@ -22,6 +22,7 @@ public abstract class GameState extends GameInfo {
 
     //How many setup turns have passed, initially set to 0
     protected int currentSetupTurn = 0;
+
 
     /**
      * getNumSetupTurns
