@@ -50,6 +50,24 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListen
 
         SCState secondInstance = new SCState(firstInstance);
 
+        int turnCount = firstInstance.getTurnCount();
+        multiLineEditText.append("Gets the current turn count.\n");
+        firstInstance.setTurnCount(turnCount + 1);
+        multiLineEditText.append("Setting the turn Count");
+
+        int ring = 0;
+        int slotCount = firstInstance.getRingSlotCount(ring);
+        multiLineEditText.append("Method to get ring slot count.\n");
+
+        float ringAngle = firstInstance.getRingAngle(ring);
+        multiLineEditText.append("Method to determine angle of a ring");
+
+        float newAngle = 45.0f;
+        firstInstance.setRingAngle(ring, newAngle);
+        multiLineEditText.append("Setting ring angle to float new angle");
+
+        float[] ringAngles = firstInstance.getRingAngles();
+        multiLineEditText.append("Getting ring angles for all rings");
         firstInstance.setTurnCount(1);
         firstInstance.setRingAngle(0, 45.0f);
 
@@ -65,6 +83,8 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListen
 
         firstInstance.getMarblesByTeam();
         multiLineEditText.append("The marbles are " + firstInstance.getMarblesByTeam());
+        int currentTeamTurn = firstInstance.getCurrentTeamTurn();
+        multiLineEditText.append("gets currents teams turn");
 
         firstInstance.getMarblesByPosition();
         multiLineEditText.append("The marbles are " + firstInstance.getMarblesByPosition());
@@ -74,6 +94,19 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListen
 
         firstInstance.resetMarble(1, position, 1);
         multiLineEditText.append(("Team 1's marble in " + position + " has been reset back in slot 1"));
+        SCState thirdInstance = new SCState();
 
+        SCState fourthInstance = new SCState(thirdInstance);
+
+        String secondInstanceString = secondInstance.toString();
+
+        String fourthInstanceString = fourthInstance.toString();
+        if(secondInstanceString.equals(fourthInstanceString)){
+            multiLineEditText.append("String are identical");
+        }else {
+            multiLineEditText.append("Strings are not identical");
+        }
+            multiLineEditText.append("Second Instance String: " + secondInstanceString);
+            multiLineEditText.append("Fourth Instance String: " + fourthInstanceString);
+      }
     }
-}
