@@ -74,7 +74,8 @@ public class SCState extends GameState {
 
     /**
      * getRingAngle
-     * @param ring the ring to find the angle of
+     *
+     * @param ring      the ring to find the angle of
      * @param asDegrees set to true to return degrees (0-360), false for original value (0-420)
      * @return the angle
      */
@@ -89,6 +90,12 @@ public class SCState extends GameState {
         return ringAngles[ring];
     }
 
+    /**
+     * Set the ring angle. The angle ranges from 0 to 420, it is NOT in degrees!
+     *
+     * @param ring  The ring to set the angle of
+     * @param angle The angle (0-420)
+     */
     public void setRingAngle(int ring, float angle) {
         if (ring >= ringSlotCounts.length || ring < 0) {
             return;
@@ -133,6 +140,36 @@ public class SCState extends GameState {
     }
 
     /**
+     * Finds the closest slot on a ring to the specified angle in some direction
+     *
+     * @param ring      the ring to check
+     * @param angle     angle to start checking from (0-420)
+     * @param direction true for clockwise, false for counterclockwise
+     * @return the id of the closest slot
+     */
+    public int closestSlot(int ring, float angle, boolean direction) {
+        if (ring < 0 || ring >= ringSlotCounts.length) {
+            return -1;
+        }
+
+        int sector = 420 / ringSlotCounts[ring]; // angle between two slots (angle of one sector)
+        float snappedAngle;
+        if (direction) {
+            snappedAngle = ringAngles[ring] - (ringAngles[ring] + angle) % sector;
+        } else {
+            snappedAngle = ringAngles[ring] + (ringAngles[ring] - angle) % sector;
+        }
+
+        if (snappedAngle < 0) {
+            snappedAngle += 420;
+        } else if (snappedAngle > 420) {
+            snappedAngle -= 420;
+        }
+
+        return (int) (snappedAngle / sector + 0.5);
+    }
+
+    /**
      * Have a team rotate a ring until a selected marble drops, changing the board's data correctly
      *
      * @param team      the team trying to rotate the ring
@@ -150,12 +187,25 @@ public class SCState extends GameState {
             return false;
         }
 
-        int innerSector = 420 / ringSlotCounts[ring + 1];
-        int currentSector = 420 / ringSlotCounts[ring];
-        float innerAngle = ringAngles[ring + 1] % innerSector;
-        float currentAngle = ringAngles[ring] % currentSector;
+        int availableSlots = ringSlotCounts[ring + 1];
+        for (int i = 0; i < availableSlots; i++) {
+            if (getTeamFromPosition(new Position(ring + 1, i)) != -1) {
+                availableSlots--;
+            }
+        }
+        if (availableSlots <= 0) {
+            return false;
+        }
 
-        //TODO: figure out which marbles to drop and what slots to drop them to
+        int currentSlots = ringSlotCounts[ring];
+        int innerSlots = ringSlotCounts[ring + 1];
+        float positionAngle = ringAngles[ring] + (420f / currentSlots) * position.getSlot();
+        if (currentSlots > innerSlots) {
+            // find closest slot to position
+            // find all slots that have a position difference smaller than that
+            // drop all marbles that are able to
+            // if targeted marble cannot drop but there are available slots, go again
+        }
 
         return true;
     }
@@ -227,6 +277,4 @@ public class SCState extends GameState {
         builder.append("--------------------\n");
         return builder.toString();
     }
-
-
 }
