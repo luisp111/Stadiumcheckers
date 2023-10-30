@@ -239,7 +239,6 @@ public class SCState extends GameState {
         return true;
     }
 
-
     /**
      * PRIVATE
      * Drops all valid marbles on a ring to act as a partial rotation action
@@ -280,9 +279,9 @@ public class SCState extends GameState {
                 if (getTeamFromPosition(pos) == posDest.getSlot()) {
                     targetRing = -1; // -1: marble fell into the correct target hole
                 }
-                posDest.setRing(targetRing);
+
                 // select a random slot id just to keep two marbles from getting the same position
-                posDest.setSlot(random.nextInt());
+                posDest.setPosition(targetRing, random.nextInt());
             }
 
             // drop the marble
@@ -290,12 +289,13 @@ public class SCState extends GameState {
         }
     }
 
-    /**PRIVATE
+    /**
+     * PRIVATE
      * Change the position of a marble
      * Doesn't have any error checking!
      *
      * @param start starting position
-     * @param end ending position
+     * @param end   ending position
      */
     private void changeMarblePosition(Position start, Position end) {
         int team = getTeamFromPosition(start);
@@ -361,7 +361,7 @@ public class SCState extends GameState {
             }
         }
 
-        builder.append("\n\nmarbles by position:\n");
+        builder.append("\nmarbles by position:\n");
         for (Map.Entry<Position, Integer> entry : marblesByPosition.entrySet()) {
             builder.append("\ts").append(entry.getKey()).append(": ");
             builder.append(entry.getValue()).append("\n");

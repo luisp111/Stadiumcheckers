@@ -12,22 +12,23 @@ import java.util.Objects;
  * @author Luis Perez
  * @author Mohammad Surur
  * @author Dylan Sprigg
- */
-
-/**
+ * <p>
  * Class to store the position of a marble.
  */
 public class Position {
     private int ring;
     private int slot;
+
     public Position(int slot) {
         this.ring = 0;
         this.slot = slot;
     }
+
     public Position(int ring, int slot) {
         this.ring = ring;
         this.slot = slot;
     }
+
     public Position(Position position) {
         this.ring = position.getRing();
         this.slot = position.getSlot();
