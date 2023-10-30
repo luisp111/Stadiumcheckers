@@ -2,6 +2,8 @@ package edu.up.cs301.stadiumcheckers;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 /**
  * Stadium Checkers
  *
@@ -56,5 +58,18 @@ public class Position {
     @Override
     public String toString() {
         return "[r" + ring + ", s" + slot + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position position = (Position) o;
+        return ring == position.ring && slot == position.slot;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ring, slot);
     }
 }
