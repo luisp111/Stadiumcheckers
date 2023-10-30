@@ -80,49 +80,69 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListen
         SCState secondInstance = new SCState(firstInstance);
 
         int turnCount = firstInstance.getTurnCount();
-        multiLineEditText.append("Gets the current turn count.\n");
+        multiLineEditText.append("Current turn count: ");
+        multiLineEditText.append("" + turnCount);
+        multiLineEditText.append("\n");
+
         firstInstance.setTurnCount(turnCount + 1);
-        multiLineEditText.append("Setting the turn Count");
+        multiLineEditText.append("Setting the turn count up by 1.\n");
+
+        multiLineEditText.append("Current turn count: ");
+        multiLineEditText.append("" + firstInstance.getTurnCount());
+        multiLineEditText.append("\n");
 
         int ring = 0;
         int slotCount = firstInstance.getRingSlotCount(ring);
-        multiLineEditText.append("Method to get ring slot count.\n");
+        multiLineEditText.append("Number of slots on ring 0: ");
+        multiLineEditText.append("" + slotCount);
+        multiLineEditText.append("\n");
 
         float ringAngle = firstInstance.getRingAngle(ring);
-        multiLineEditText.append("Method to determine angle of a ring");
+        multiLineEditText.append("Angle of ring 0: ");
+        multiLineEditText.append("" + ringAngle);
+        multiLineEditText.append("\n");
 
         float newAngle = 45.0f;
         firstInstance.setRingAngle(ring, newAngle);
-        multiLineEditText.append("Setting ring angle to float new angle");
+        multiLineEditText.append("Setting ring angle of slot 0 to 45\n");
+
+        multiLineEditText.append("Angle of ring 0: ");
+        multiLineEditText.append("" + firstInstance.getRingAngle(ring));
+        multiLineEditText.append("\n");
 
         float[] ringAngles = firstInstance.getRingAngles();
-        multiLineEditText.append("Getting ring angles for all rings");
-        firstInstance.setTurnCount(1);
-        firstInstance.setRingAngle(0, 45.0f);
+        multiLineEditText.append("Angle of all rings: ");
+        for (float angle : ringAngles) {
+            multiLineEditText.append("\t" + angle);
+            multiLineEditText.append("\n");
+        }
 
         firstInstance.setCurrentTeamTurn(1);
-        multiLineEditText.append("The player has set the team turn to 1");
+        multiLineEditText.append("It's now team 1's turn\n");
 
-        Position position = new Position(1, 2);
-        firstInstance.getTeamFromPosition(position);
-        multiLineEditText.append("The team is " + firstInstance.getTeamFromPosition(position) + "!");
-
-        firstInstance.getPositionsFromTeam(1);
-        multiLineEditText.append("The positions from team 1 are: " + firstInstance.getPositionsFromTeam(1));
-
-        //firstInstance.getMarblesByTeam();
-        multiLineEditText.append("The marbles are " + firstInstance.getMarblesByTeam());
-        int currentTeamTurn = firstInstance.getCurrentTeamTurn();
-        multiLineEditText.append("gets currents teams turn");
-
-        //firstInstance.getMarblesByPosition();
-        multiLineEditText.append("The marbles are " + firstInstance.getMarblesByPosition());
+        Position position = new Position(0, 4);
+        multiLineEditText.append("The team is " + firstInstance.getTeamFromPosition(position) + "!\n");
 
         firstInstance.rotateRing(1, position, true);
-        multiLineEditText.append("Team 1 in " + position + " rotated the ring clockwise");
+        multiLineEditText.append("Team 1 in " + position + " rotated the ring clockwise\n");
+
+        position = new Position(0, 5);
+        firstInstance.rotateRing(1, position, false);
+        multiLineEditText.append("Team 1 in " + position + " rotated the ring counter-clockwise\n");
+
+        position = new Position(0, 7);
+        firstInstance.rotateRing(1, position, true);
+        multiLineEditText.append("Team 1 in " + position + " rotated the ring clockwise\n");
+
+        Position[] positions = firstInstance.getPositionsFromTeam(1);
+        multiLineEditText.append("The positions from team 1 are: ");
+        for (Position pos : positions) {
+            multiLineEditText.append("\t" + pos);
+            multiLineEditText.append("\n");
+        }
 
         firstInstance.resetMarble(1, position, 1);
-        multiLineEditText.append(("Team 1's marble in " + position + " has been reset back in slot 1"));
+        multiLineEditText.append(("Team 1's marble in " + position + " has been reset back in slot 1\n"));
         SCState thirdInstance = new SCState();
 
         SCState fourthInstance = new SCState(thirdInstance);
@@ -131,11 +151,12 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListen
 
         String fourthInstanceString = fourthInstance.toString();
         if (secondInstanceString.equals(fourthInstanceString)) {
-            multiLineEditText.append("Strings are identical");
+            multiLineEditText.append("Strings are identical\n");
         } else {
-            multiLineEditText.append("Strings are not identical");
+            multiLineEditText.append("Strings are not identical\n");
         }
         multiLineEditText.append("Second Instance String: " + secondInstanceString);
         multiLineEditText.append("Fourth Instance String: " + fourthInstanceString);
+        multiLineEditText.append("First Instance String: " + firstInstance);
     }
 }

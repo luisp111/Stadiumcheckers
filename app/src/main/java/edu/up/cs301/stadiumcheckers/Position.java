@@ -2,6 +2,9 @@ package edu.up.cs301.stadiumcheckers;
 
 import androidx.annotation.NonNull;
 
+/**
+ * Class to store the position of a marble.
+ */
 public class Position {
     private int ring;
     private int slot;

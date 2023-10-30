@@ -2,21 +2,22 @@ package edu.up.cs301.stadiumcheckers.infoMessage;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 import edu.up.cs301.stadiumcheckers.Position;
+import edu.up.cs301.stadiumcheckers.SlotMap;
 
 public class SCState extends GameState {
     private final int[] ringSlotCounts = {20, 6, 7, 6, 5, 6, 4, 5, 4};
     private final HashMap<Integer, Position[]> marblesByTeam;
-    private final HashMap<Position, Integer> marblesByPosition;
+    private final SlotMap[] marblesByPosition;
     private final float[] ringAngles; //angles are a range of 0-420 so as to be divisible by 7
     private int turnCount;
     private int currentTeamTurn;
+    private final Random random;
 
     /**
      * Basic constructor for state
@@ -24,21 +25,28 @@ public class SCState extends GameState {
     public SCState() {
         turnCount = 0;
         currentTeamTurn = 0;
+        random = new Random();
 
         marblesByTeam = new HashMap<>();
-        marblesByPosition = new HashMap<>();
+        marblesByPosition = new SlotMap[ringSlotCounts.length + 2];
+
+        for (int i = 0; i < ringSlotCounts.length + 2; i++) {
+            marblesByPosition[i] = new SlotMap();
+            marblesByPosition[i].setMap(new HashMap<>());
+        }
+
         for (int i = 0; i < 4; i++) {
             Position[] marbles = new Position[5];
             for (int j = 0; j < 5; j++) {
-                marbles[j] = new Position(j + i * 4);
-                marblesByPosition.put(marbles[j], i);
+                marbles[j] = new Position(j + i * 5);
+                marblesByPosition[0].getMap().put(j + i * 5, i);
             }
             marblesByTeam.put(i, marbles);
         }
 
         ringAngles = new float[ringSlotCounts.length];
         for (int i = 0; i < ringSlotCounts.length; i++) {
-            ringAngles[i] = 0;
+            ringAngles[i] = random.nextFloat() * 420;
         }
     }
 
@@ -48,11 +56,18 @@ public class SCState extends GameState {
      * @param state the constructor to copy values from
      */
     public SCState(SCState state) {
+        random = new Random();
         turnCount = state.getTurnCount();
         currentTeamTurn = state.getCurrentTeamTurn();
         marblesByTeam = state.getMarblesByTeam();
-        marblesByPosition = state.getMarblesByPosition();
         ringAngles = state.getRingAngles();
+
+        marblesByPosition = new SlotMap[ringSlotCounts.length + 2];
+        SlotMap[] baseMap = state.getMarblesByPosition();
+        for (int i = 0; i < ringSlotCounts.length + 2; i++) {
+            marblesByPosition[i] = new SlotMap();
+            marblesByPosition[i].setMap(baseMap[i].getMap());
+        }
     }
 
     public int getTurnCount() {
@@ -118,7 +133,15 @@ public class SCState extends GameState {
     }
 
     public int getTeamFromPosition(Position pos) {
-        Integer team = marblesByPosition.get(pos);
+        if (pos.getRing() < -2 || pos.getRing() >= ringSlotCounts.length) {
+            return -1;
+        }
+
+        if (pos.getRing() < 0) {
+            pos.setRing(ringSlotCounts.length - pos.getRing() - 1);
+        }
+
+        Integer team = marblesByPosition[pos.getRing()].getMap().get(pos.getSlot());
         if (team == null) {
             return -1;
         }
@@ -137,7 +160,7 @@ public class SCState extends GameState {
         return marblesByTeam;
     }
 
-    public HashMap<Position, Integer> getMarblesByPosition() {
+    public SlotMap[] getMarblesByPosition() {
         return marblesByPosition;
     }
 
@@ -202,7 +225,6 @@ public class SCState extends GameState {
             }
 
             // select a random slot id just to keep two marbles from getting the same position
-            Random random = new Random();
             changeMarblePosition(position, new Position(targetRing, random.nextInt()));
             return true;
         }
@@ -213,7 +235,7 @@ public class SCState extends GameState {
         for (int i = 0; i < ringSlotCounts[ring + 1]; i++) {
             // rotate to next slot
             if (i > 0) {
-                dist = Math.min((420f / ringSlotCounts[ring]), (420f / ringSlotCounts[ring + 1]));
+                dist = 420f / ringSlotCounts[ring + 1];
                 if (direction) {
                     angle += dist;
                 } else {
@@ -281,13 +303,22 @@ public class SCState extends GameState {
      * @param end ending position
      */
     private void changeMarblePosition(Position start, Position end) {
+        if (start.getRing() < 0) {
+            start.setRing(ringSlotCounts.length - start.getRing() - 1);
+        }
+
+        if (end.getRing() < 0) {
+            end.setRing(ringSlotCounts.length - start.getRing() - 1);
+        }
+
         int team = getTeamFromPosition(start);
-        marblesByPosition.put(end, team);
-        marblesByPosition.remove(start);
+        marblesByPosition[end.getRing()].getMap().put(end.getSlot(), team);
+        marblesByPosition[start.getRing()].getMap().remove(start.getSlot());
 
         Position[] positions = getPositionsFromTeam(team);
         for (int i = 0; i < 5; i++) {
-            if (positions[i] == start) {
+            if (positions[i].getRing() == start.getRing()
+                    && positions[i].getSlot() == start.getSlot()) {
                 positions[i] = end;
                 break;
             }
@@ -333,20 +364,24 @@ public class SCState extends GameState {
 
         builder.append("\nring angles:");
         for (float f : ringAngles) {
-            builder.append(" ").append(f);
+            builder.append(" ").append(f).append(";");
         }
 
         builder.append("\n\nmarbles by team:\n");
         for (int i = 0; i < 4; i++) {
-            builder.append("\t1:\n");
+            builder.append("\t").append(i).append(":\n");
             for (Position p : getPositionsFromTeam(i)) {
                 builder.append("\t\t").append(p).append("\n");
             }
         }
 
-        builder.append("\nmarbles by position:\n");
-        for (Map.Entry<Position, Integer> e : marblesByPosition.entrySet()) {
-            builder.append("\t").append(e.getKey()).append(": ").append(e.getValue()).append("\n");
+        builder.append("\n\nmarbles by position:\n");
+        for (int i = 0; i < ringSlotCounts.length; i++) {
+            builder.append("\tr").append(i).append(":\n");
+            for (Map.Entry<Integer, Integer> j : marblesByPosition[i].getMap().entrySet()) {
+                builder.append("\t\ts").append(j.getKey()).append(": ");
+                builder.append(j.getValue()).append("\n");
+            }
         }
 
         builder.append("--------------------\n");
