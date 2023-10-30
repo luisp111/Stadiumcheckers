@@ -200,12 +200,11 @@ public class SCState extends GameState {
         int currentSlots = ringSlotCounts[ring];
         int innerSlots = ringSlotCounts[ring + 1];
         float positionAngle = ringAngles[ring] + (420f / currentSlots) * position.getSlot();
-        if (currentSlots > innerSlots) {
-            // find closest slot to position
-            // find all slots that have a position difference smaller than that
-            // drop all marbles that are able to
-            // if targeted marble cannot drop but there are available slots, go again
-        }
+        // find closest slot to position
+        // find all slots that have a position difference smaller than that
+        // drop all marbles that are able to
+        // if targeted marble cannot drop but there are available slots, go again
+        //int closestSlot = closestSlot();
 
         return true;
     }

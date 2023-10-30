@@ -56,7 +56,6 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
      *
      * @param name the name of the player
      */
-
     public GameHumanPlayer(String name) {
         // set the name via the argument
 

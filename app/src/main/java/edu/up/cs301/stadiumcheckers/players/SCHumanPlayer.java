@@ -10,39 +10,68 @@ import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 import edu.up.cs301.game.GameFramework.players.GameHumanPlayer;
+import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.Position;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
 
 public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListener {
+    private static final String TAG = "SCHumanPlayer";
+    // the edittext
+    EditText multiLineEditText;
+    // id for layout to use
+    private final int layoutId;
+
     /**
-     * constructor
+     * Main constructor
      *
      * @param name the name of the player
      */
-
-    private EditText multiLineEditText;
-
-    public SCHumanPlayer(String name) {
+    public SCHumanPlayer(String name, int layoutId) {
         super(name);
+        this.layoutId = layoutId;
     }
 
+
+    /**
+     * returns the GUI's top view
+     *
+     * @return the gui's top view
+     */
     @Override
     public View getTopView() {
-
-        return null;
+        return myActivity.findViewById(R.id.top_gui_layout);
     }
 
+    /**
+     * callback method, called when player gets a message
+     *
+     * @param info the message
+     */
     @Override
     public void receiveInfo(GameInfo info) {
-
+        Logger.log(TAG, "receiving");
     }
 
+    /**
+     * sets the current player as the activity's gui
+     *
+     * @param activity the activity
+     */
     @Override
     public void setAsGui(GameMainActivity activity) {
+        activity.setContentView(layoutId);
         myActivity = activity;
+        multiLineEditText = myActivity.findViewById(R.id.multiLineEditText);
+        Logger.log("set listener", "OnClick");
+        myActivity.findViewById(R.id.runTest).setOnClickListener(this);
     }
 
+    /**
+     * callback method when button is clicked
+     *
+     * @param view the item that was clicked
+     */
     @Override
     public void onClick(View view) {
         multiLineEditText.setText("");
@@ -81,12 +110,12 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListen
         firstInstance.getPositionsFromTeam(1);
         multiLineEditText.append("The positions from team 1 are: " + firstInstance.getPositionsFromTeam(1));
 
-        firstInstance.getMarblesByTeam();
+        //firstInstance.getMarblesByTeam();
         multiLineEditText.append("The marbles are " + firstInstance.getMarblesByTeam());
         int currentTeamTurn = firstInstance.getCurrentTeamTurn();
         multiLineEditText.append("gets currents teams turn");
 
-        firstInstance.getMarblesByPosition();
+        //firstInstance.getMarblesByPosition();
         multiLineEditText.append("The marbles are " + firstInstance.getMarblesByPosition());
 
         firstInstance.rotateRing(1, position, true);
@@ -101,12 +130,12 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListen
         String secondInstanceString = secondInstance.toString();
 
         String fourthInstanceString = fourthInstance.toString();
-        if(secondInstanceString.equals(fourthInstanceString)){
-            multiLineEditText.append("String are identical");
-        }else {
+        if (secondInstanceString.equals(fourthInstanceString)) {
+            multiLineEditText.append("Strings are identical");
+        } else {
             multiLineEditText.append("Strings are not identical");
         }
-            multiLineEditText.append("Second Instance String: " + secondInstanceString);
-            multiLineEditText.append("Fourth Instance String: " + fourthInstanceString);
-      }
+        multiLineEditText.append("Second Instance String: " + secondInstanceString);
+        multiLineEditText.append("Fourth Instance String: " + fourthInstanceString);
     }
+}
