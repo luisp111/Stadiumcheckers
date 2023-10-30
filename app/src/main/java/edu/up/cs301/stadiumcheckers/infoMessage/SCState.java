@@ -10,6 +10,15 @@ import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 import edu.up.cs301.stadiumcheckers.Position;
 import edu.up.cs301.stadiumcheckers.SlotMap;
 
+/**
+ * Stadium Checkers
+ *
+ * @author Jaden Barker
+ * @author James Pham
+ * @author Luis Perez
+ * @author Mohammad Surur
+ * @author Dylan Sprigg
+ */
 public class SCState extends GameState {
     private final int[] ringSlotCounts = {20, 6, 7, 6, 5, 6, 4, 5, 4};
     private final HashMap<Integer, Position[]> marblesByTeam;

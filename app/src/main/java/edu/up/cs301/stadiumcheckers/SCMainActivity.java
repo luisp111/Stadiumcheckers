@@ -14,6 +14,15 @@ import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
 import edu.up.cs301.stadiumcheckers.players.SCHumanPlayer;
 
+/**
+ * Stadium Checkers
+ *
+ * @author Jaden Barker
+ * @author James Pham
+ * @author Luis Perez
+ * @author Mohammad Surur
+ * @author Dylan Sprigg
+ */
 public class SCMainActivity extends GameMainActivity {
     //Tag for logging
     private static final String TAG = "SCMainActivity";

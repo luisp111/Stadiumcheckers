@@ -15,6 +15,15 @@ import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.Position;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
 
+/**
+ * Stadium Checkers
+ *
+ * @author Jaden Barker
+ * @author James Pham
+ * @author Luis Perez
+ * @author Mohammad Surur
+ * @author Dylan Sprigg
+ */
 public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListener {
     private static final String TAG = "SCHumanPlayer";
     // the edittext

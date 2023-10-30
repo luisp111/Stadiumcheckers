@@ -3,6 +3,16 @@ package edu.up.cs301.stadiumcheckers;
 import androidx.annotation.NonNull;
 
 /**
+ * Stadium Checkers
+ *
+ * @author Jaden Barker
+ * @author James Pham
+ * @author Luis Perez
+ * @author Mohammad Surur
+ * @author Dylan Sprigg
+ */
+
+/**
  * Class to store the position of a marble.
  */
 public class Position {
