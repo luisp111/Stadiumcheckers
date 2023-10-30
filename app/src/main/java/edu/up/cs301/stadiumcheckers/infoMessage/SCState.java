@@ -2,8 +2,10 @@ package edu.up.cs301.stadiumcheckers.infoMessage;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 import edu.up.cs301.stadiumcheckers.Position;
@@ -187,26 +189,110 @@ public class SCState extends GameState {
             return false;
         }
 
-        int availableSlots = ringSlotCounts[ring + 1];
-        for (int i = 0; i < availableSlots; i++) {
-            if (getTeamFromPosition(new Position(ring + 1, i)) != -1) {
-                availableSlots--;
+        float angle = ringAngles[ring] + (420f / ringSlotCounts[ring]) * position.getSlot();
+        int targetSlot = closestSlot(ring + 1, angle, direction);
+
+        // special behavior for the last ring
+        if (ring == ringSlotCounts.length - 2) {
+            setRingAngle(ring, angle);
+
+            int targetRing = -2; // -2: marble fell into another team's target hole
+            if (getTeamFromPosition(position) == targetSlot) {
+                targetRing = -1; // -1: marble fell into the correct target hole
+            }
+
+            // select a random slot id just to keep two marbles from getting the same position
+            Random random = new Random();
+            changeMarblePosition(position, new Position(targetRing, random.nextInt()));
+            return true;
+        }
+
+        float dist = angle - ringAngles[ring + 1] + (420f / ringSlotCounts[ring + 1]) * targetSlot;
+
+        // continuously rotate and drop marbles until the target marble has dropped
+        for (int i = 0; i < ringSlotCounts[ring + 1]; i++) {
+            // rotate to next slot
+            if (i > 0) {
+                dist = Math.min((420f / ringSlotCounts[ring]), (420f / ringSlotCounts[ring + 1]));
+                if (direction) {
+                    angle += dist;
+                } else {
+                    angle -= dist;
+                }
+            }
+
+            dropMarbles(ring + 1, dist, direction);
+            dropMarbles(ring, dist, direction);
+            setRingAngle(ring + 1, angle);
+
+            if (getTeamFromPosition(position) == -1) {
+                break;
             }
         }
-        if (availableSlots <= 0) {
-            return false;
-        }
-
-        int currentSlots = ringSlotCounts[ring];
-        int innerSlots = ringSlotCounts[ring + 1];
-        float positionAngle = ringAngles[ring] + (420f / currentSlots) * position.getSlot();
-        // find closest slot to position
-        // find all slots that have a position difference smaller than that
-        // drop all marbles that are able to
-        // if targeted marble cannot drop but there are available slots, go again
-        //int closestSlot = closestSlot();
 
         return true;
+    }
+
+
+    /**
+     * PRIVATE
+     * Drops all valid marbles on a ring to act as a partial rotation action
+     * Doesn't have error checking for ring bounds!
+     *
+     * @param ring       ring to drop marbles from
+     * @param targetDist the distance the ring 'rotates'
+     * @param direction  the direction the ring rotates in
+     */
+    private void dropMarbles(int ring, float targetDist, boolean direction) {
+        for (int i = 0; i < ringSlotCounts[ring]; i++) {
+            Position pos = new Position(ring, i);
+
+            if (getTeamFromPosition(pos) == -1) {
+                // source slot is empty, marble cannot drop
+                continue;
+            }
+
+            float angle = ringAngles[ring] + (420f / ringSlotCounts[ring]) * i;
+            Position posDest = new Position(ring + 1,
+                    closestSlot(ring + 1, angle, direction));
+
+            if (getTeamFromPosition(posDest) != -1) {
+                // destination slot is occupied, marble cannot drop
+                continue;
+            }
+
+            float dist = angle - ringAngles[ring + 1] + (420f / ringSlotCounts[ring + 1]) * posDest.getSlot();
+
+            if (dist > targetDist) {
+                // distance to slot is larger than target marble's, marble cannot drop
+                continue;
+            }
+
+            // drop the marble
+            changeMarblePosition(pos, posDest);
+        }
+    }
+
+    /**PRIVATE
+     * Change the position of a marble
+     * Doesn't have any error checking!
+     *
+     * @param start starting position
+     * @param end ending position
+     */
+    private void changeMarblePosition(Position start, Position end) {
+        int team = getTeamFromPosition(start);
+        marblesByPosition.put(end, team);
+        marblesByPosition.remove(start);
+
+        Position[] positions = getPositionsFromTeam(team);
+        for (int i = 0; i < 5; i++) {
+            if (positions[i] == start) {
+                positions[i] = end;
+                break;
+            }
+        }
+        marblesByTeam.put(team, positions);
     }
 
     /**
@@ -227,17 +313,7 @@ public class SCState extends GameState {
             return false;
         }
 
-        marblesByPosition.put(endPosition, team);
-        marblesByPosition.remove(position);
-
-        Position[] positions = getPositionsFromTeam(team);
-        for (int i = 0; i < 5; i++) {
-            if (positions[i] == position) {
-                positions[i] = endPosition;
-                break;
-            }
-        }
-        marblesByTeam.put(team, positions);
+        changeMarblePosition(position, endPosition);
 
         return true;
     }
