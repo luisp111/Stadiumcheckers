@@ -249,6 +249,8 @@ public class SCState extends GameState {
      * @param direction  the direction the ring rotates in
      */
     private void dropMarbles(int ring, float targetDist, boolean direction) {
+        //TODO: drop shortest dist marble only, double dropping
+        // might require splitting this into 2 methods for lower and upper
         for (int i = 0; i < ringSlotCounts[ring]; i++) {
             Position pos = new Position(ring, i);
 

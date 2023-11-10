@@ -37,7 +37,7 @@ public class SCMainActivity extends GameMainActivity {
         // Main player
         playerTypes.add(new GamePlayerType("Local Human Player") {
             public GamePlayer createPlayer(String name) {
-                return new SCHumanPlayer(name, R.layout.sc_human_player1);
+                return new SCHumanPlayer(name, R.layout.sc_human_player);
             }
         });
 
