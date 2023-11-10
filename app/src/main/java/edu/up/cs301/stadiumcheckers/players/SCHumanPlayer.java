@@ -1,21 +1,12 @@
 package edu.up.cs301.stadiumcheckers.players;
 
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-
-import java.text.BreakIterator;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
-import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 import edu.up.cs301.game.GameFramework.players.GameHumanPlayer;
-import edu.up.cs301.game.GameFramework.utilities.FlashSurfaceView;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.R;
-import edu.up.cs301.stadiumcheckers.Position;
-import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
-import edu.up.cs301.stadiumcheckers.views.SCSurfaceView;
 
 /**
  * Stadium Checkers
