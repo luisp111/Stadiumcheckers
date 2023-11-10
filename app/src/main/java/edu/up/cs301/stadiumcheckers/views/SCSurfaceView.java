@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 
 import edu.up.cs301.game.GameFramework.utilities.FlashSurfaceView;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
@@ -63,20 +66,46 @@ public class SCSurfaceView extends FlashSurfaceView {
         this.state = state;
     }
 
+    /**
+     * callback method, called whenever it's time to redraw
+     * frame
+     *
+     * @param canvas
+     * 		the canvas to draw on
+     */
     @Override
     public void onDraw(Canvas canvas) {
+        updateDimensions(canvas);
+
         /*
         if (state == null) {
             return;
         }
         */
-        canvas.drawRect(0, 0, 1000, 1000, defaultPaint);
-        //canvas.drawText("doing fine", 100, 100, defaultPaint);
+
+        canvas.drawRect(0, 0, screenX, screenY, defaultPaint);
+    }
+
+    /**
+     * update the instance variables that relate to the drawing surface
+     *
+     * @param canvas
+     * 		an object that references the drawing surface
+     */
+    private void updateDimensions(Canvas canvas) {
+        screenX = canvas.getWidth();
+        screenY = canvas.getHeight();
     }
 
     private void init() {
+        setWillNotDraw(false);
         defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         defaultPaint.setColor(0xFFFFA500);
         defaultPaint.setStyle(Paint.Style.FILL);
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
     }
 }

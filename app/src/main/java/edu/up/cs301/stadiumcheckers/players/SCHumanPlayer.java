@@ -10,6 +10,7 @@ import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 import edu.up.cs301.game.GameFramework.players.GameHumanPlayer;
+import edu.up.cs301.game.GameFramework.utilities.FlashSurfaceView;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.Position;
