@@ -311,7 +311,19 @@ public class SCState extends GameState {
         }
         marblesByTeam.put(team, positions);
     }
+    public boolean isValidResetAction(Position position, int slot, int ring){
+        int team = getCurrentTeamTurn();
+        if(getTeamFromPosition(position) != team){
+            return false;
+        }
+        if (ring == -2){
+            Position outerRing = new Position(0,0);
+            return getTeamFromPosition(outerRing) == -2;//is action is valid, marble can be reset to outer slot
+        }
+        Position endPosition = new Position(0, slot);
 
+        return getTeamFromPosition(endPosition) == -2;//reset action is valid, and the marble can be reset
+    }
     /**
      * place a marble that has been invalidated back at the starting row
      *

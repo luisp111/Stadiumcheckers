@@ -4,6 +4,7 @@ import edu.up.cs301.game.GameFramework.LocalGame;
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
 import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
+import edu.up.cs301.stadiumcheckers.scActionMessage.SCResetAction;
 
 /**
  * Stadium Checkers
@@ -15,6 +16,9 @@ import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
  * @author Dylan Sprigg
  */
 public class SCLocalGame extends LocalGame {
+
+    SCState scs;
+
     public SCLocalGame() {
         super();
         super.state = new SCState();
@@ -41,6 +45,23 @@ public class SCLocalGame extends LocalGame {
 
     @Override
     protected boolean makeMove(GameAction action) {
+        scs = (SCState) super.state;
+        int team = scs.getCurrentTeamTurn();
+        if (action instanceof SCResetAction){
+            SCResetAction resetAction = (SCResetAction) action;
+
+            int resetTeam = resetAction.getCurrentTeamTurn();
+            Position resetPosition = resetAction.getPosition();
+            int resetSlot = resetAction.getSlot();
+            if(resetTeam == team){
+                if(scs.isValidResetAction(resetPosition, resetSlot, resetTeam)){
+                    scs.resetMarble(resetTeam,resetPosition, resetSlot);
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
+
 }

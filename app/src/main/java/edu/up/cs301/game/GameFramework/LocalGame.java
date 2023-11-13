@@ -16,6 +16,7 @@ import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.game.GameFramework.utilities.GameTimer;
 import edu.up.cs301.game.GameFramework.utilities.Tickable;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
+import edu.up.cs301.stadiumcheckers.Position;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -411,6 +412,7 @@ public abstract class LocalGame implements Game, Tickable {
     protected void timerTicked() {
         // default behavior is to do nothing
     }
+
 
     // an enum-class that itemizes the game stages
     protected static enum GameStage {

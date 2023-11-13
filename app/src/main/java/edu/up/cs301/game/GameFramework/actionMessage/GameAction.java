@@ -40,6 +40,10 @@ public abstract class GameAction implements Serializable {
         this.player = player;
     }
 
+    public GameAction() {
+
+    }
+
     /**
      * tells the player who created the action
      *

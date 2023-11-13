@@ -10,4 +10,5 @@ package edu.up.cs301.stadiumcheckers.scActionMessage;
  * @author Dylan Sprigg
  */
 public class SCRotateAction {
+
 }
