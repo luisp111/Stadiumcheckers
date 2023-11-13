@@ -1,5 +1,6 @@
 package edu.up.cs301.stadiumcheckers.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -7,11 +8,14 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 
 import java.util.HashMap;
 import java.util.Random;
 
 import edu.up.cs301.game.GameFramework.utilities.FlashSurfaceView;
+import edu.up.cs301.stadiumcheckers.Position;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
 
 /**
@@ -28,6 +32,10 @@ public class SCSurfaceView extends FlashSurfaceView {
     private static final String TAG = "SCSurfaceView";
     // the game's state
     protected SCState state;
+    // tracker for the positions of a player's 5 balls
+    private final HashMap<Integer, Point> positions = new HashMap<>();
+    // id of selected ball if there is one
+    private int selectedBall = -1;
 
     // bounds for displaying the view
     // base the display off of these values instead of hardcoding positions
@@ -36,6 +44,7 @@ public class SCSurfaceView extends FlashSurfaceView {
     private int maxX;
     private int minY;
     private int maxY;
+    private int rBase;
     private int widthH;
     private int heightH;
 
@@ -50,13 +59,14 @@ public class SCSurfaceView extends FlashSurfaceView {
     private Paint[] colorPaints2;
     private Paint whitePaint;
     private Paint blackPaint;
-    private final int[] ringSlots = {4, 5, 4, 6, 5, 6, 7, 6};
-    private final HashMap<Point, Integer> positions = new HashMap<>();
-    private final int[] securedMarbles = new int[4];
     private boolean ringB = false;
 
+    // for the status on the top left
+    private final String[] teamNames = {"RED", "YELLOW", "GREEN", "BLUE"};
+    private String statusText;
+
     /**
-     * Constructor for the TTTSurfaceView class.
+     * Constructor for the SCSurfaceView class.
      *
      * @param context - a reference to the activity this animation is run under
      */
@@ -77,7 +87,35 @@ public class SCSurfaceView extends FlashSurfaceView {
         init();
     }
 
+    public HashMap<Integer, Point> getPositions() {
+        return positions;
+    }
+
+    public int getSelectedBall() {
+        return selectedBall;
+    }
+
+    public void setSelectedBall(int selectedBall) {
+        this.selectedBall = selectedBall;
+    }
+
+    public SCState getState() {
+        return state;
+    }
+
+    public Point getScreen() {
+        return new Point(screenX, screenY);
+    }
+
+    public int getRBase() {
+        return rBase;
+    }
+
+    @SuppressLint("DefaultLocale")
     public void setState(SCState state) {
+        selectedBall = -1;
+        statusText = String.format("TURN %d: %s",
+                state.getTurnCount(), teamNames[state.getCurrentTeamTurn()]);
         this.state = state;
     }
 
@@ -92,41 +130,63 @@ public class SCSurfaceView extends FlashSurfaceView {
     public void onDraw(Canvas canvas) {
         updateDimensions(canvas);
 
-        /*
         if (state == null) {
             return;
         }
-        */
 
-        canvas.drawRect(0, 0, 250, 50, whitePaint);
-        canvas.drawText("Turn 36: RED", 10, 38, colorPaints2[0]);
+        // hardcoded :( info display on top left
+        canvas.drawRect(0, 0, 350, 50, whitePaint);
+        canvas.drawCircle(350, 0, 50, whitePaint);
+        canvas.drawText(statusText, 10, 38, colorPaints2[state.getCurrentTeamTurn()]);
+
+        // clockwise/counterclockwise selector
+        if (selectedBall >= 0) {
+            canvas.drawRect(0, screenY - 100, 250, screenY, whitePaint);
+            canvas.drawCircle(250, screenY - 75, 25, whitePaint);
+            canvas.drawText("clockwise", 40, screenY - 62, blackPaint);
+
+            canvas.drawRect(0, screenY - 50, 350, screenY, whitePaint);
+            canvas.drawCircle(350, screenY - 25, 25, whitePaint);
+            canvas.drawText("counter-clockwise", 20, screenY - 12, blackPaint);
+        }
 
         int w = (maxX - minX);
         int h = (maxY - minY);
-        int rBase = (Math.min(w, h) * 3) / 8;
+        rBase = (Math.min(w, h) * 3) / 8;
         ringB = false;
 
+        //this draws the secured marbles on the bottom right
+        float top = h - rBase / 1.6f - rBase / 16f;
         for (int i = 0; i < 4; i++) {
-            canvas.drawRect(w - (rBase / 8f) * (1.5f * i), h - rBase / 1.6f,
-                    w - (rBase / 8f) * (1.5f * i + 1), h, colorPaints[i]);
-            for (int j = 0; j < securedMarbles[i]; j++) {
-                drawMarble(w - (rBase / 8f) * (1.5f * i + 0.5f),
-                        h - (rBase / 8f) * (j + 0.5f), i, rBase, canvas);
+            float x = w - (rBase / 8f) * (1.5f * i + 1);
+
+            canvas.drawRect(w - (rBase / 8f) * (1.5f * i + 0.5f), top,
+                    w - (rBase / 8f) * (1.5f * i + 1.5f), h, colorPaints[i]);
+            canvas.drawCircle(x, top,
+                    (rBase / 16f), colorPaints[i]);
+
+            int k = 0;
+            Position[] teamPos = state.getPositionsFromTeam(i);
+            for (int j = 0; j < 5; j++) {
+                if (teamPos[j].getRing() != -1) {
+                    continue;
+                }
+                drawMarble(x, h - (rBase / 8f) * (k + 0.5f), i, j, canvas);
+                k++;
             }
         }
 
-        drawOuterRing(canvas, rBase);
-        for (int i = 7; i >= 1; i--) {
+        drawOuterRing(canvas);
+        for (int i = (state.getRingCount() - 2); i >= 1; i--) {
             int r = rBase * (i + 1) / 8;
-            drawRing(canvas, r, i, rBase);
+            drawRing(canvas, r, 8 - i);
         }
+        drawOuterRingMarbles(canvas);
 
-        drawOuterRingMarbles(canvas, rBase);
-
-        drawInnerRing(canvas, rBase / 8f, rBase);
+        drawInnerRing(canvas, rBase / 8f);
     }
 
-    private void drawRing(Canvas canvas, int r, int id, float rBase) {
+    private void drawRing(Canvas canvas, int r, int ring) {
         if (ringB) {
             canvas.drawCircle(widthH, heightH, r, ringPaint2);
         } else {
@@ -135,64 +195,87 @@ public class SCSurfaceView extends FlashSurfaceView {
 
         RectF oval = new RectF();
         oval.set(widthH - r, heightH - r, widthH + r, heightH + r);
-        float random = (float) Math.random() * 360;
-        float angle = 360f / ringSlots[id];
 
-        float sweep = 5 * rBase / r;
-        for (int i = 0; i < ringSlots[id]; i++) {
-            float mA = (angle * i) + random;
+        float angle = state.getRingAngle(ring);
+        int slotCount = state.getRingSlotCount(ring);
+        float sector = 360f / slotCount;
+        float sweep = 5f * rBase / r;
+        for (int i = 0; i < slotCount; i++) {
+            float mA = (sector * i) + angle - (sweep / 2);
             canvas.drawArc(oval, mA, sweep, true, slotPaint);
 
-            Integer point = positions.get(new Point(id, i));
-            if (point == null) {
+            Position pos = new Position(ring, i);
+            int team = state.getTeamFromPosition(pos);
+            if (team == -1) {
                 continue;
             }
 
+            int num = 0;
+            if (state.getColorHighlight() == team) {
+                Position[] positions = state.getPositionsFromTeam(team);
+                for (int j = 0; j < 5; j++) {
+                    if (positions[j].equals(pos)) {
+                        num = j;
+                    }
+                }
+            }
+
             mA = (float) ((mA + sweep / 2) * (Math.PI / 180));
-            float mR = rBase * (id + 0.5f) / 8;
+            float mR = rBase * ring / 8f;
             float x = widthH + (float) (mR * Math.cos(mA));
             float y = heightH + (float) (mR * Math.sin(mA));
-            drawMarble(x, y, point, rBase, canvas);
+            drawMarble(x, y, team, num, canvas);
         }
 
         ringB = !ringB;
     }
 
-    private void drawOuterRing(Canvas canvas, float rBase) {
+    private void drawOuterRing(Canvas canvas) {
         int j = 0;
         double angleBase = Math.PI / 10;
         for (int c = 0; c < 4; c++) {
             for (int i = 0; i < 5; i++) {
-                double angle = angleBase * j + angleBase / 2;
+                double angle = angleBase * (j - 2);
                 float x = widthH + (float) (rBase * Math.sin(angle) * 1.02);
                 float y = heightH + (float) (rBase * Math.cos(angle) * 1.02);
-                canvas.drawCircle(x, y, rBase / 15, colorPaints[c]);
+                canvas.drawCircle(x, y, rBase / 15f, colorPaints[c]);
                 j++;
             }
         }
     }
 
-    private void drawOuterRingMarbles(Canvas canvas, float rBase) {
+    private void drawOuterRingMarbles(Canvas canvas) {
         int j = 0;
         double angleBase = Math.PI / 10;
         for (int c = 0; c < 4; c++) {
             for (int i = 0; i < 5; i++) {
-                Integer point = positions.get(new Point(0, j));
-                if (point == null) {
-                    j++;
+                j++;
+
+                Position pos = new Position(0, i);
+                int team = state.getTeamFromPosition(pos);
+                if (team == -1) {
                     continue;
                 }
 
-                double angle = angleBase * j + angleBase / 2;
+                int num = 0;
+                if (state.getColorHighlight() == team) {
+                    Position[] positions = state.getPositionsFromTeam(team);
+                    for (int k = 0; k < 5; k++) {
+                        if (positions[k].equals(pos)) {
+                            num = k;
+                        }
+                    }
+                }
+
+                double angle = angleBase * (j - 3);
                 float x = widthH + (float) (rBase * Math.sin(angle) * 1.02);
                 float y = heightH + (float) (rBase * Math.cos(angle) * 1.02);
-                drawMarble(x, y, c, rBase, canvas);
-                j++;
+                drawMarble(x, y, c, num, canvas);
             }
         }
     }
 
-    private void drawInnerRing(Canvas canvas, float r, float rBase) {
+    private void drawInnerRing(Canvas canvas, float r) {
         double angleBase = Math.PI / 2;
 
         canvas.drawCircle(widthH, heightH, r, ringPaint2);
@@ -202,19 +285,25 @@ public class SCSurfaceView extends FlashSurfaceView {
         canvas.clipPath(circlePath);
 
         for (int i = 0; i < 4; i++) {
-            double angle = angleBase * i + angleBase / 2;
+            double angle = angleBase * i;
             canvas.drawCircle(widthH + (float) (r * Math.sin(angle) * 0.8),
-                    heightH + (float) (r * Math.cos(angle) * 0.8), rBase / 15, colorPaints[i]);
+                    heightH + (float) (r * Math.cos(angle) * 0.8), rBase / 15f, colorPaints[i]);
         }
     }
 
-    private void drawMarble(float x, float y, int team, float rBase, Canvas canvas) {
-        if (team == 0) {
+    private void drawMarble(float x, float y, int team, int num, Canvas canvas) {
+        if (state.getColorHighlight() == team && (selectedBall < 0 || selectedBall == num)) {
             canvas.drawCircle(x, y, rBase / 20f, whitePaint);
         } else {
             canvas.drawCircle(x, y, rBase / 20f, blackPaint);
         }
+
         canvas.drawCircle(x, y, rBase / 24f, colorPaints2[team]);
+
+        if (state.getColorHighlight() == team) {
+            positions.put(num, new Point((int) x, (int) y));
+            canvas.drawText("" + num, x, y + rBase / 48f, whitePaint);
+        }
     }
 
     /**
@@ -245,7 +334,6 @@ public class SCSurfaceView extends FlashSurfaceView {
     private void init() {
         setWillNotDraw(false);
 
-        // TODO: replace randomized values with values from state
         // TODO: probably find a neat way of configuring paints?
 
         ringPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -300,41 +388,12 @@ public class SCSurfaceView extends FlashSurfaceView {
         whitePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         whitePaint.setColor(0xFFFFFFFF);
         whitePaint.setStyle(Paint.Style.FILL);
+        whitePaint.setTextSize(30);
+        whitePaint.setTextAlign(Paint.Align.CENTER);
 
         blackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         blackPaint.setColor(0xFF000000);
         blackPaint.setStyle(Paint.Style.FILL);
-
-        Random random = new Random();
-        securedMarbles[0] = 0;
-        for (int i = 1; i < 4; i++) {
-            securedMarbles[i] = random.nextInt(5);
-        }
-
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 5 - securedMarbles[i]; j++) {
-                Point p;
-                do {
-                    int ring = random.nextInt(8);
-
-                    int boundMin = 0;
-                    int boundMax;
-                    if (ring == 0) {
-                        boundMin = i * 5;
-                        boundMax = (i + 1) * 5;
-                    } else {
-                        boundMax = ringSlots[ring - 1];
-                    }
-
-                    int slot = random.nextInt(boundMax - boundMin) + boundMin;
-                    p = new Point(ring, slot);
-                } while (positions.putIfAbsent(p, i) != null);
-            }
-        }
-    }
-
-    @Override
-    public boolean performClick() {
-        return super.performClick();
+        blackPaint.setTextSize(40);
     }
 }
