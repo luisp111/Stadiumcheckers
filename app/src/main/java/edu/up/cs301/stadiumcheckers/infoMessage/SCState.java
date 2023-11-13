@@ -255,30 +255,6 @@ public class SCState extends GameState {
     }
 
     /**
-     * determines whether a reset action is valid
-     *
-     * @param position position of the target marble to reset
-     * @param slot     the slot that the marble is set to return to on the starting row
-     * @param ring     the ring that the marble is coming from
-     * @return whether the action is valid
-     */
-    public boolean isValidResetAction(Position position, int slot, int ring){
-        // is the third variable really for ring or is it for team?
-        // the usage of this puts in a team value for the third
-        int team = getCurrentTeamTurn();
-        if(getTeamFromPosition(position) != team){
-            return false;
-        }
-        if (ring == -2){
-            Position outerRing = new Position(0,0);
-            return getTeamFromPosition(outerRing) == -2;//is action is valid, marble can be reset to outer slot
-        }
-        Position endPosition = new Position(0, slot);
-
-        return getTeamFromPosition(endPosition) == -2;//reset action is valid, and the marble can be reset
-    }
-
-    /**
      * place a marble that has been invalidated back at the starting row
      *
      * @param team     the team trying to rotate the ring
