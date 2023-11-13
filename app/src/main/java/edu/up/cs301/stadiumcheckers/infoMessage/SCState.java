@@ -27,6 +27,9 @@ public class SCState extends GameState {
     private int currentTeamTurn;
     private final Random random;
 
+    // team color to highlight balls for
+    private int colorHighlight = -1;
+
     /**
      * Basic constructor for state
      */
@@ -67,6 +70,14 @@ public class SCState extends GameState {
         marblesByTeam = state.getMarblesByTeam();
         ringAngles = state.getRingAngles();
         marblesByPosition = state.getMarblesByPosition();
+    }
+
+    public int getColorHighlight() {
+        return colorHighlight;
+    }
+
+    public void setColorHighlight(int colorHighlight) {
+        this.colorHighlight = colorHighlight;
     }
 
     public int getTurnCount() {
@@ -117,6 +128,10 @@ public class SCState extends GameState {
             return;
         }
         ringAngles[ring] = angle;
+    }
+
+    public int getRingCount() {
+        return ringSlotCounts.length;
     }
 
     public float[] getRingAngles() {
@@ -249,6 +264,8 @@ public class SCState extends GameState {
      * @param direction  the direction the ring rotates in
      */
     private void dropMarbles(int ring, float targetDist, boolean direction) {
+        //TODO: drop shortest dist marble only, double dropping
+        // might require splitting this into 2 methods for lower and upper
         for (int i = 0; i < ringSlotCounts[ring]; i++) {
             Position pos = new Position(ring, i);
 

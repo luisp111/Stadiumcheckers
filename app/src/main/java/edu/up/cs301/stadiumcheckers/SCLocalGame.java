@@ -31,15 +31,27 @@ public class SCLocalGame extends LocalGame {
 
     @Override
     protected void sendUpdatedStateTo(GamePlayer p) {
+        p.sendInfo(super.state);
     }
 
     @Override
-    protected boolean canMove(int playerIdx) {
+    protected boolean canMove(int playerId) {
+        if (super.state instanceof SCState) {
+            SCState state = (SCState) super.state;
+            return state.getCurrentTeamTurn() == playerId;
+        }
         return false;
     }
 
     @Override
     protected String checkIfGameOver() {
+        if (!(super.state instanceof SCState)) {
+            return null;
+        }
+        SCState state = (SCState) super.state;
+
+        for (GamePlayer ply : getPlayers()) {
+        }
         return null;
     }
 

@@ -1,19 +1,21 @@
 package edu.up.cs301.stadiumcheckers.players;
 
+import android.annotation.SuppressLint;
+import android.graphics.Point;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
-import java.text.BreakIterator;
+import java.util.Map;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
-import edu.up.cs301.game.GameFramework.infoMessage.GameState;
 import edu.up.cs301.game.GameFramework.players.GameHumanPlayer;
 import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.Position;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
+import edu.up.cs301.stadiumcheckers.views.SCSurfaceView;
 
 /**
  * Stadium Checkers
@@ -24,11 +26,8 @@ import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
  * @author Mohammad Surur
  * @author Dylan Sprigg
  */
-public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListener {
+public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListener {
     private static final String TAG = "SCHumanPlayer";
-    // the edittext
-    EditText multiLineEditText;
-    // id for layout to use
     private final int layoutId;
 
     /**
@@ -40,7 +39,6 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListen
         super(name);
         this.layoutId = layoutId;
     }
-
 
     /**
      * returns the GUI's top view
@@ -59,6 +57,15 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListen
      */
     @Override
     public void receiveInfo(GameInfo info) {
+        SCSurfaceView view = myActivity.findViewById(R.id.surfaceView);
+        if (info instanceof SCState) {
+            SCState newState = new SCState((SCState) info);
+            if (newState.getCurrentTeamTurn() == playerNum) {
+                newState.setColorHighlight(playerNum);
+            }
+            view.setState(newState);
+        }
+        view.invalidate();
         Logger.log(TAG, "receiving");
     }
 
@@ -71,101 +78,57 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnClickListen
     public void setAsGui(GameMainActivity activity) {
         activity.setContentView(layoutId);
         myActivity = activity;
-        multiLineEditText = myActivity.findViewById(R.id.multiLineEditText);
-        Logger.log("set listener", "OnClick");
-        myActivity.findViewById(R.id.runTest).setOnClickListener(this);
+        activity.findViewById(R.id.surfaceView).setOnTouchListener(this);
     }
 
-    /**
-     * callback method when button is clicked
-     *
-     * @param view the item that was clicked
-     */
+    @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onClick(View view) {
-        multiLineEditText.setText("");
-        SCState firstInstance = new SCState();
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (!(view instanceof SCSurfaceView)) {
+            return false;
+        }
+        SCSurfaceView sView = (SCSurfaceView) view;
 
-        SCState secondInstance = new SCState(firstInstance);
-
-        int turnCount = firstInstance.getTurnCount();
-        multiLineEditText.append("Current turn count: ");
-        multiLineEditText.append("" + turnCount);
-        multiLineEditText.append("\n");
-
-        firstInstance.setTurnCount(turnCount + 1);
-        multiLineEditText.append("Setting the turn count up by 1.\n");
-
-        multiLineEditText.append("Current turn count: ");
-        multiLineEditText.append("" + firstInstance.getTurnCount());
-        multiLineEditText.append("\n");
-
-        int ring = 0;
-        int slotCount = firstInstance.getRingSlotCount(ring);
-        multiLineEditText.append("Number of slots on ring 0: ");
-        multiLineEditText.append("" + slotCount);
-        multiLineEditText.append("\n");
-
-        float ringAngle = firstInstance.getRingAngle(ring);
-        multiLineEditText.append("Angle of ring 0: ");
-        multiLineEditText.append("" + ringAngle);
-        multiLineEditText.append("\n");
-
-        float newAngle = 45.0f;
-        firstInstance.setRingAngle(ring, newAngle);
-        multiLineEditText.append("Setting ring angle of slot 0 to 45\n");
-
-        multiLineEditText.append("Angle of ring 0: ");
-        multiLineEditText.append("" + firstInstance.getRingAngle(ring));
-        multiLineEditText.append("\n");
-
-        float[] ringAngles = firstInstance.getRingAngles();
-        multiLineEditText.append("Angle of all rings: ");
-        for (float angle : ringAngles) {
-            multiLineEditText.append("\t" + angle);
-            multiLineEditText.append("\n");
+        SCState state = sView.getState();
+        if (state.getCurrentTeamTurn() != playerNum) {
+            return false;
         }
 
-        firstInstance.setCurrentTeamTurn(1);
-        multiLineEditText.append("It's now team 1's turn\n");
-
-        Position position = new Position(0, 4);
-        multiLineEditText.append("The team is " + firstInstance.getTeamFromPosition(position) + "!\n");
-
-        firstInstance.rotateRing(1, position, true);
-        multiLineEditText.append("Team 1 in " + position + " rotated the ring clockwise\n");
-
-        position = new Position(0, 5);
-        firstInstance.rotateRing(1, position, false);
-        multiLineEditText.append("Team 1 in " + position + " rotated the ring counter-clockwise\n");
-
-        position = new Position(0, 7);
-        firstInstance.rotateRing(1, position, true);
-        multiLineEditText.append("Team 1 in " + position + " rotated the ring clockwise\n");
-
-        Position[] positions = firstInstance.getPositionsFromTeam(1);
-        multiLineEditText.append("The positions from team 1 are: ");
-        for (Position pos : positions) {
-            multiLineEditText.append("\t" + pos);
-            multiLineEditText.append("\n");
+        float x = motionEvent.getX();
+        float y = motionEvent.getY();
+        float bound = sView.getRBase() / 16f;
+        for (Map.Entry<Integer, Point> entry : sView.getPositions().entrySet()) {
+            Point p = entry.getValue();
+            if (x < p.x + bound && x > p.x - bound && y < p.y + bound && y > p.y - bound) {
+                Log.d(TAG, "onTouch: ball selected");
+                sView.setSelectedBall(entry.getKey());
+                sView.invalidate();
+                return false;
+            }
         }
 
-        firstInstance.resetMarble(1, position, 1);
-        multiLineEditText.append(("Team 1's marble in " + position + " has been reset back in slot 1\n"));
-        SCState thirdInstance = new SCState();
-
-        SCState fourthInstance = new SCState(thirdInstance);
-
-        String secondInstanceString = secondInstance.toString();
-
-        String fourthInstanceString = fourthInstance.toString();
-        if (secondInstanceString.equals(fourthInstanceString)) {
-            multiLineEditText.append("Strings are identical\n");
-        } else {
-            multiLineEditText.append("Strings are not identical\n");
+        int selectedBall = sView.getSelectedBall();
+        if (selectedBall < 0) {
+            return false;
         }
-        multiLineEditText.append("Second Instance String: " + secondInstanceString);
-        multiLineEditText.append("Fourth Instance String: " + fourthInstanceString);
-        multiLineEditText.append("First Instance String: " + firstInstance);
+
+        Point screen = sView.getScreen();
+        if (x < 250 && x > 0 && y < screen.y - 50 && y > screen.y - 100) {
+            Log.d(TAG, "onTouch: clockwise selected");
+            // TODO: call rotate action here
+            // the sView.getSelectedBall() returns the id of the ball
+            // from its position that you get in SCState's getPositionsFromTeam() function
+            // that means you can get the correct position by doing
+            Position pos = state.getPositionsFromTeam(playerNum)[selectedBall];
+            return false;
+        }
+
+        if (x < 350 && x > 0 && y < screen.y && y > screen.y - 50) {
+            Log.d(TAG, "onTouch: counter-clockwise selected");
+            // TODO: call rotate action here
+            return false;
+        }
+
+        return false;
     }
 }
