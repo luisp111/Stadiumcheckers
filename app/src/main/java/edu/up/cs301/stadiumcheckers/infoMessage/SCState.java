@@ -255,6 +255,53 @@ public class SCState extends GameState {
     }
 
     /**
+     * determines whether a reset action is valid
+     *
+     * @param position position of the target marble to reset
+     * @param slot     the slot that the marble is set to return to on the starting row
+     * @param ring     the ring that the marble is coming from
+     * @return whether the action is valid
+     */
+    public boolean isValidResetAction(Position position, int slot, int ring){
+        // is the third variable really for ring or is it for team?
+        // the usage of this puts in a team value for the third
+        int team = getCurrentTeamTurn();
+        if(getTeamFromPosition(position) != team){
+            return false;
+        }
+        if (ring == -2){
+            Position outerRing = new Position(0,0);
+            return getTeamFromPosition(outerRing) == -2;//is action is valid, marble can be reset to outer slot
+        }
+        Position endPosition = new Position(0, slot);
+
+        return getTeamFromPosition(endPosition) == -2;//reset action is valid, and the marble can be reset
+    }
+
+    /**
+     * place a marble that has been invalidated back at the starting row
+     *
+     * @param team     the team trying to rotate the ring
+     * @param position position of the target marble to reset
+     * @param slot     the slot that the marble is set to return to on the starting row
+     * @return whether the action was successful
+     */
+    public boolean resetMarble(int team, Position position, int slot) {
+        if (currentTeamTurn != team || getTeamFromPosition(position) != team) {
+            return false;
+        }
+
+        Position endPosition = new Position(0, slot);
+        if (getTeamFromPosition(endPosition) != -1) {
+            return false;
+        }
+
+        changeMarblePosition(position, endPosition);
+
+        return true;
+    }
+
+    /**
      * PRIVATE
      * Drops all valid marbles on a ring to act as a partial rotation action
      * Doesn't have error checking for ring bounds!
@@ -327,41 +374,6 @@ public class SCState extends GameState {
             }
         }
         marblesByTeam.put(team, positions);
-    }
-    public boolean isValidResetAction(Position position, int slot, int ring){
-        int team = getCurrentTeamTurn();
-        if(getTeamFromPosition(position) != team){
-            return false;
-        }
-        if (ring == -2){
-            Position outerRing = new Position(0,0);
-            return getTeamFromPosition(outerRing) == -2;//is action is valid, marble can be reset to outer slot
-        }
-        Position endPosition = new Position(0, slot);
-
-        return getTeamFromPosition(endPosition) == -2;//reset action is valid, and the marble can be reset
-    }
-    /**
-     * place a marble that has been invalidated back at the starting row
-     *
-     * @param team     the team trying to rotate the ring
-     * @param position position of the target marble to reset
-     * @param slot     the slot that the marble is set to return to on the starting row
-     * @return whether the action was successful
-     */
-    public boolean resetMarble(int team, Position position, int slot) {
-        if (currentTeamTurn != team || getTeamFromPosition(position) != team) {
-            return false;
-        }
-
-        Position endPosition = new Position(0, slot);
-        if (getTeamFromPosition(endPosition) != -1) {
-            return false;
-        }
-
-        changeMarblePosition(position, endPosition);
-
-        return true;
     }
 
     @NonNull

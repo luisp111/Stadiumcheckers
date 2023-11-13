@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -131,6 +132,7 @@ public class SCSurfaceView extends FlashSurfaceView {
         updateDimensions(canvas);
 
         if (state == null) {
+            Log.d(TAG, "onDraw: Tried rendering w/o a state??");
             return;
         }
 
@@ -141,6 +143,8 @@ public class SCSurfaceView extends FlashSurfaceView {
 
         // clockwise/counterclockwise selector
         if (selectedBall >= 0) {
+            canvas.drawText("rotate:", 50, screenY - 112, whitePaint);
+
             canvas.drawRect(0, screenY - 100, 250, screenY, whitePaint);
             canvas.drawCircle(250, screenY - 75, 25, whitePaint);
             canvas.drawText("clockwise", 40, screenY - 62, blackPaint);

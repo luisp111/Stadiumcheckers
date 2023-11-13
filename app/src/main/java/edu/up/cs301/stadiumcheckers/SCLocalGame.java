@@ -1,5 +1,10 @@
 package edu.up.cs301.stadiumcheckers;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
+import java.util.Map;
+
 import edu.up.cs301.game.GameFramework.LocalGame;
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
 import edu.up.cs301.game.GameFramework.players.GamePlayer;
@@ -16,8 +21,8 @@ import edu.up.cs301.stadiumcheckers.scActionMessage.SCResetAction;
  * @author Dylan Sprigg
  */
 public class SCLocalGame extends LocalGame {
-
-    SCState scs;
+    // Tag for logging
+    private static final String TAG = "SCLocalGame";
 
     public SCLocalGame() {
         super();
@@ -27,6 +32,19 @@ public class SCLocalGame extends LocalGame {
     public SCLocalGame(SCState state) {
         super();
         super.state = new SCState(state);
+    }
+
+    /**
+     * increment the turn value for the next player
+     */
+    private void incrementTurn() {
+        if (!(super.state instanceof SCState)) {
+            return;
+        }
+        SCState state = (SCState) super.state;
+
+        state.setCurrentTeamTurn((state.getCurrentTeamTurn() + 1) % players.length);
+        state.setTurnCount(state.getTurnCount() + 1);
     }
 
     @Override
@@ -43,6 +61,7 @@ public class SCLocalGame extends LocalGame {
         return false;
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     protected String checkIfGameOver() {
         if (!(super.state instanceof SCState)) {
@@ -50,24 +69,46 @@ public class SCLocalGame extends LocalGame {
         }
         SCState state = (SCState) super.state;
 
-        for (GamePlayer ply : getPlayers()) {
+        for (Map.Entry<Integer, Position[]> e : state.getMarblesByTeam().entrySet()) {
+            if (e.getKey() >= players.length) {
+                Log.d(TAG, "checkIfGameOver: Tried checking win state for an invalid player");
+                continue;
+            }
+
+            int cnt = 0;
+            for (Position p : e.getValue()) {
+                if (p.getRing() == -2) {
+                    cnt++;
+                }
+            }
+            if (cnt >= 5) {
+                return String.format("%s has won the game in %d turns", playerNames[e.getKey()],
+                        state.getTurnCount());
+            }
         }
+
         return null;
     }
 
     @Override
     protected boolean makeMove(GameAction action) {
-        scs = (SCState) super.state;
-        int team = scs.getCurrentTeamTurn();
-        if (action instanceof SCResetAction){
+        if (!(super.state instanceof SCState)) {
+            return false;
+        }
+        SCState state = (SCState) super.state;
+
+        int team = state.getCurrentTeamTurn();
+        if (action instanceof SCResetAction) {
             SCResetAction resetAction = (SCResetAction) action;
 
             int resetTeam = resetAction.getCurrentTeamTurn();
             Position resetPosition = resetAction.getPosition();
             int resetSlot = resetAction.getSlot();
-            if(resetTeam == team){
-                if(scs.isValidResetAction(resetPosition, resetSlot, resetTeam)){
-                    scs.resetMarble(resetTeam,resetPosition, resetSlot);
+            if (resetTeam == team) {
+                if (state.isValidResetAction(resetPosition, resetSlot, resetTeam)) {
+                    // try calling canMove at the top of this method
+                    // instead of checking directly here
+                    state.resetMarble(resetTeam, resetPosition, resetSlot);
                     return true;
                 }
             }
@@ -75,5 +116,4 @@ public class SCLocalGame extends LocalGame {
 
         return false;
     }
-
 }
