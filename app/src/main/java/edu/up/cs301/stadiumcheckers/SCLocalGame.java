@@ -106,8 +106,8 @@ public class SCLocalGame extends LocalGame {
             int resetSlot = resetAction.getSlot();
             if (resetTeam == team) {
                 if (state.isValidResetAction(resetPosition, resetSlot, resetTeam)) {
-                    // try calling canMove at the top of this method
-                    // instead of checking directly here
+                    // canMove is called before this method, put checks in there instead
+                    // of here (middle click the method name to go to its usages)
                     state.resetMarble(resetTeam, resetPosition, resetSlot);
                     return true;
                 }
