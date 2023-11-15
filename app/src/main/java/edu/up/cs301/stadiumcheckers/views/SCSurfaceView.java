@@ -36,6 +36,7 @@ public class SCSurfaceView extends FlashSurfaceView {
     // tracker for the positions of a player's 5 balls
     private final HashMap<Integer, Point> positions = new HashMap<>();
     // id of selected ball if there is one
+    // id is based on the order of the ball returned from state.getPositionsFromTeam()
     private int selectedBall = -1;
 
     // bounds for displaying the view
@@ -45,7 +46,12 @@ public class SCSurfaceView extends FlashSurfaceView {
     private int maxX;
     private int minY;
     private int maxY;
+
+    // the projected width of the board
     private int rBase;
+
+    // half of the bound width and height
+    // for deducing the center position
     private int widthH;
     private int heightH;
 
@@ -53,18 +59,25 @@ public class SCSurfaceView extends FlashSurfaceView {
     private int screenX;
     private int screenY;
 
+    // fun paints
     private Paint ringPaint;
     private Paint ringPaint2;
     private Paint slotPaint;
-    private Paint[] colorPaints;
-    private Paint[] colorPaints2;
     private Paint whitePaint;
     private Paint blackPaint;
+    private Paint[] colorPaints;
+    private Paint[] colorPaints2;
+
+    // for making the board have alternating colors
     private boolean ringB = false;
 
     // for the status on the top left
     private final String[] teamNames = {"RED", "YELLOW", "GREEN", "BLUE"};
     private String statusText;
+
+    // team color that should have highlighted balls
+    // -1 == no balls highlighted
+    private int colorHighlight = -1;
 
     /**
      * Constructor for the SCSurfaceView class.
@@ -112,9 +125,19 @@ public class SCSurfaceView extends FlashSurfaceView {
         return rBase;
     }
 
+    public void setColorHighlight(int colorHighlight) {
+        this.colorHighlight = colorHighlight;
+    }
+
+    /**
+     * Sets a new state to display
+     *
+     * @param state the state to display
+     */
     @SuppressLint("DefaultLocale")
     public void setState(SCState state) {
         selectedBall = -1;
+        colorHighlight = -1;
         statusText = String.format("TURN %d: %s",
                 state.getTurnCount(), teamNames[state.getCurrentTeamTurn()]);
         this.state = state;
@@ -122,10 +145,8 @@ public class SCSurfaceView extends FlashSurfaceView {
 
     /**
      * callback method, called whenever it's time to redraw
-     * frame
      *
-     * @param canvas
-     * 		the canvas to draw on
+     * @param canvas the canvas to draw on
      */
     @Override
     public void onDraw(Canvas canvas) {
@@ -190,6 +211,13 @@ public class SCSurfaceView extends FlashSurfaceView {
         drawInnerRing(canvas, rBase / 8f);
     }
 
+    /**
+     * draws a ring based on state data
+     *
+     * @param canvas the canvas to draw on
+     * @param r      the radius to draw the ring
+     * @param ring   the actual ring value this ring represents
+     */
     private void drawRing(Canvas canvas, int r, int ring) {
         if (ringB) {
             canvas.drawCircle(widthH, heightH, r, ringPaint2);
@@ -215,7 +243,7 @@ public class SCSurfaceView extends FlashSurfaceView {
             }
 
             int num = 0;
-            if (state.getColorHighlight() == team) {
+            if (colorHighlight == team) {
                 Position[] positions = state.getPositionsFromTeam(team);
                 for (int j = 0; j < 5; j++) {
                     if (positions[j].equals(pos)) {
@@ -234,6 +262,11 @@ public class SCSurfaceView extends FlashSurfaceView {
         ringB = !ringB;
     }
 
+    /**
+     * draws the starting ring
+     *
+     * @param canvas the canvas to draw on
+     */
     private void drawOuterRing(Canvas canvas) {
         int j = 0;
         double angleBase = Math.PI / 10;
@@ -248,6 +281,13 @@ public class SCSurfaceView extends FlashSurfaceView {
         }
     }
 
+    /**
+     * draw the marbles to go on the outer ring
+     * separate from drawOuterRing to draw in the correct order
+     * (outer ring -> ring -> outer ring marbles)
+     *
+     * @param canvas the canvas to draw on
+     */
     private void drawOuterRingMarbles(Canvas canvas) {
         int j = 0;
         double angleBase = Math.PI / 10;
@@ -262,7 +302,7 @@ public class SCSurfaceView extends FlashSurfaceView {
                 }
 
                 int num = 0;
-                if (state.getColorHighlight() == team) {
+                if (colorHighlight == team) {
                     Position[] positions = state.getPositionsFromTeam(team);
                     for (int k = 0; k < 5; k++) {
                         if (positions[k].equals(pos)) {
@@ -279,6 +319,12 @@ public class SCSurfaceView extends FlashSurfaceView {
         }
     }
 
+    /**
+     * draws the very inner ring that the marbles go towards
+     *
+     * @param canvas the canvas to draw on
+     * @param r      the radius of the ring
+     */
     private void drawInnerRing(Canvas canvas, float r) {
         double angleBase = Math.PI / 2;
 
@@ -291,12 +337,22 @@ public class SCSurfaceView extends FlashSurfaceView {
         for (int i = 0; i < 4; i++) {
             double angle = angleBase * i;
             canvas.drawCircle(widthH + (float) (r * Math.sin(angle) * 0.8),
-                    heightH + (float) (r * Math.cos(angle) * 0.8), rBase / 15f, colorPaints[i]);
+                    heightH + (float) (r * Math.cos(angle) * 0.8),
+                    rBase / 15f, colorPaints[i]);
         }
     }
 
+    /**
+     * draws a marble
+     *
+     * @param x x-position to draw at
+     * @param y y-position to draw at
+     * @param team the team of the marble
+     * @param num id based on the order of the ball returned from state.getPositionsFromTeam()
+     * @param canvas the canvas to draw on
+     */
     private void drawMarble(float x, float y, int team, int num, Canvas canvas) {
-        if (state.getColorHighlight() == team && (selectedBall < 0 || selectedBall == num)) {
+        if (colorHighlight == team && (selectedBall < 0 || selectedBall == num)) {
             canvas.drawCircle(x, y, rBase / 20f, whitePaint);
         } else {
             canvas.drawCircle(x, y, rBase / 20f, blackPaint);
@@ -304,7 +360,7 @@ public class SCSurfaceView extends FlashSurfaceView {
 
         canvas.drawCircle(x, y, rBase / 24f, colorPaints2[team]);
 
-        if (state.getColorHighlight() == team) {
+        if (colorHighlight == team) {
             positions.put(num, new Point((int) x, (int) y));
             canvas.drawText("" + num, x, y + rBase / 48f, whitePaint);
         }
@@ -313,8 +369,7 @@ public class SCSurfaceView extends FlashSurfaceView {
     /**
      * update the instance variables that relate to the drawing surface
      *
-     * @param canvas
-     * 		an object that references the drawing surface
+     * @param canvas an object that references the drawing surface
      */
     private void updateDimensions(Canvas canvas) {
         int screenX = canvas.getWidth();
@@ -335,6 +390,9 @@ public class SCSurfaceView extends FlashSurfaceView {
         heightH = screenY / 2;
     }
 
+    /**
+     * convenience method for initializing vars that the instance needs
+     */
     private void init() {
         setWillNotDraw(false);
 
@@ -351,6 +409,19 @@ public class SCSurfaceView extends FlashSurfaceView {
         slotPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         slotPaint.setColor(0xFFFFA500);
         slotPaint.setStyle(Paint.Style.FILL);
+
+        whitePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        whitePaint.setColor(0xFFFFFFFF);
+        whitePaint.setStyle(Paint.Style.FILL);
+        whitePaint.setTextSize(30);
+        whitePaint.setTextAlign(Paint.Align.CENTER);
+
+        blackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        blackPaint.setColor(0xFF000000);
+        blackPaint.setStyle(Paint.Style.FILL);
+        blackPaint.setTextSize(40);
+
+        // team paint
 
         Paint redPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         redPaint.setColor(0xFFEF4020);
@@ -370,6 +441,8 @@ public class SCSurfaceView extends FlashSurfaceView {
 
         colorPaints = new Paint[]{redPaint, yellowPaint, greenPaint, bluePaint};
 
+        // secondary team paint
+
         Paint redPaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
         redPaint2.setColor(0xFFFF1010);
         redPaint2.setStyle(Paint.Style.FILL);
@@ -388,16 +461,5 @@ public class SCSurfaceView extends FlashSurfaceView {
         bluePaint2.setStyle(Paint.Style.FILL);
 
         colorPaints2 = new Paint[]{redPaint2, yellowPaint2, greenPaint2, bluePaint2};
-
-        whitePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        whitePaint.setColor(0xFFFFFFFF);
-        whitePaint.setStyle(Paint.Style.FILL);
-        whitePaint.setTextSize(30);
-        whitePaint.setTextAlign(Paint.Align.CENTER);
-
-        blackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        blackPaint.setColor(0xFF000000);
-        blackPaint.setStyle(Paint.Style.FILL);
-        blackPaint.setTextSize(40);
     }
 }
