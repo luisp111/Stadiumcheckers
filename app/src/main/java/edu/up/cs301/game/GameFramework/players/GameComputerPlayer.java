@@ -30,6 +30,7 @@ import android.os.Looper;
 public abstract class GameComputerPlayer implements GamePlayer, Tickable {
     //Tag for logging
     private static final String TAG = "GameComputerPlayer";
+
     /**
      * the current game state
      */
@@ -64,7 +65,7 @@ public abstract class GameComputerPlayer implements GamePlayer, Tickable {
      * ====================================================================
      * Abstract Methods
      *
-     * Create the game specific functionality for this human player by
+     * Create the game specific functionality for this computer player by
      * sub-classing this class and implementing the following methods.
      * --------------------------------------------------------------------
      */
@@ -84,6 +85,9 @@ public abstract class GameComputerPlayer implements GamePlayer, Tickable {
     public GameComputerPlayer(String name) {
         this.name = name;
     }
+
+    //public abstract class recieveInfo(GameInfo info) {GameInfo info};
+
 
     /**
      * Sets this player to be the one connected to the GUI.
