@@ -42,7 +42,7 @@ public class SCMainActivity extends GameMainActivity {
         });
 
         // Create a game configuration class for stadium checkers
-        GameConfig defaultConfig = new GameConfig(playerTypes, 2, 2,
+        GameConfig defaultConfig = new GameConfig(playerTypes, 4, 4,
                 "Stadium Checkers", PORT_NUMBER);
 
         // Add the default players

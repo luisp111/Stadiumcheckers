@@ -56,11 +56,22 @@ public class SCLocalGame extends LocalGame {
         state.setTurnCount(state.getTurnCount() + 1);
     }
 
+    /**
+     * sends the current game state to a player
+     *
+     * @param p the player to notify
+     */
     @Override
     protected void sendUpdatedStateTo(GamePlayer p) {
         p.sendInfo(super.state);
     }
 
+    /**
+     * determines whether it's a certain player's turn or not
+     *
+     * @param playerId the player's player-number (ID)
+     * @return true if it's their turn, false if it's not
+     */
     @Override
     protected boolean canMove(int playerId) {
         if (super.state instanceof SCState) {
@@ -70,6 +81,11 @@ public class SCLocalGame extends LocalGame {
         return false;
     }
 
+    /**
+     * checks if the game has ended
+     *
+     * @return any string to end the game, null to continue
+     */
     @SuppressLint("DefaultLocale")
     @Override
     protected String checkIfGameOver() {
@@ -99,6 +115,12 @@ public class SCLocalGame extends LocalGame {
         return null;
     }
 
+    /**
+     * make a move on behalf of a player
+     *
+     * @param action The move that the player has sent to the game
+     * @return true if the action was successful, false otherwise
+     */
     @Override
     protected boolean makeMove(GameAction action) {
         if (!(super.state instanceof SCState)) {

@@ -36,9 +36,6 @@ public class SCState extends GameState {
     private int currentTeamTurn;
     // random
     private final Random random;
-    // team color that should have highlighted balls (ui purposes only)
-    // -1 == no balls highlighted
-    private int colorHighlight = -1;
 
     // ALSO IMPORTANT: for any Position value,
     // the ring value goes from 0 to (ring count), 0 being the starting ring
@@ -75,6 +72,7 @@ public class SCState extends GameState {
 
     /**
      * Copy constructor for state
+     * Doesn't copy colorHighlight as that value is irrelevant non-clientside
      *
      * @param state the constructor to copy values from
      */
@@ -87,14 +85,6 @@ public class SCState extends GameState {
         marblesByPosition = state.getMarblesByPosition();
     }
 
-    public int getColorHighlight() {
-        return colorHighlight;
-    }
-
-    public void setColorHighlight(int colorHighlight) {
-        this.colorHighlight = colorHighlight;
-    }
-
     public int getTurnCount() {
         return turnCount;
     }
@@ -103,6 +93,12 @@ public class SCState extends GameState {
         this.turnCount = turnCount;
     }
 
+    /**
+     * Gets the number of slots for a current ring
+     *
+     * @param ring the ring to check
+     * @return the number of slots for the ring, or -1 if the ring entered was invalid
+     */
     public int getRingSlotCount(int ring) {
         if (ring >= ringSlotCounts.length || ring < 0) {
             return -1;
@@ -161,6 +157,13 @@ public class SCState extends GameState {
         this.currentTeamTurn = currentTeamTurn;
     }
 
+    /**
+     * Gets a team value from a certain position
+     * Allows inferring a marble's existence
+     *
+     * @param pos the position to check
+     * @return the team, or -1 if the slot is empty
+     */
     public int getTeamFromPosition(Position pos) {
         Integer team = marblesByPosition.get(pos);
         if (team == null) {
@@ -169,6 +172,14 @@ public class SCState extends GameState {
         return team;
     }
 
+    /**
+     * Gets a list of positions from a team
+     * The order of positions returned is consistent every time,
+     * allowing one to "index" marbles by team and marble order
+     *
+     * @param team the team to check
+     * @return an array of positions of the team's marbles
+     */
     public Position[] getPositionsFromTeam(int team) {
         Position[] positions = marblesByTeam.get(team);
         if (positions == null) {
@@ -177,10 +188,20 @@ public class SCState extends GameState {
         return positions;
     }
 
+    /**
+     * Not to be confused with {@link #getPositionsFromTeam(int)}
+     *
+     * @return the entire marblesByTeam hashmap
+     */
     public HashMap<Integer, Position[]> getMarblesByTeam() {
         return marblesByTeam;
     }
 
+    /**
+     * Not to be confused with {@link #getTeamFromPosition(Position)}
+     *
+     * @return the entire marblesByPosition hashmap
+     */
     public HashMap<Position, Integer> getMarblesByPosition() {
         return marblesByPosition;
     }

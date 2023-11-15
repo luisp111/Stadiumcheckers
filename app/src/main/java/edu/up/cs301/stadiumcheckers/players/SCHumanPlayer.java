@@ -27,7 +27,9 @@ import edu.up.cs301.stadiumcheckers.views.SCSurfaceView;
  * @author Dylan Sprigg
  */
 public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListener {
+    // Tag for logging
     private static final String TAG = "SCHumanPlayer";
+    // Id of the layout for the player
     private final int layoutId;
 
     /**
@@ -60,10 +62,11 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         SCSurfaceView view = myActivity.findViewById(R.id.surfaceView);
         if (info instanceof SCState) {
             SCState newState = new SCState((SCState) info);
-            if (newState.getCurrentTeamTurn() == playerNum) {
-                newState.setColorHighlight(playerNum);
-            }
             view.setState(newState);
+
+            if (newState.getCurrentTeamTurn() == playerNum) {
+                view.setColorHighlight(playerNum);
+            }
         }
         view.invalidate();
         Logger.log(TAG, "receiving");
@@ -81,6 +84,13 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         activity.findViewById(R.id.surfaceView).setOnTouchListener(this);
     }
 
+    /**
+     * Called when the player clicks their tablet
+     *
+     * @param view        the view that was pressed
+     * @param motionEvent the MotionEvent of the press
+     * @return true to repeat pressing, false to end the press
+     */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
