@@ -181,7 +181,7 @@ public class SCSurfaceView extends FlashSurfaceView {
         ringB = false;
 
         //this draws the secured marbles on the bottom right
-        float top = h - rBase / 1.6f - rBase / 16f;
+        float top = h - rBase / 1.6f + rBase / 16f;
         for (int i = 0; i < 4; i++) {
             float x = w - (rBase / 8f) * (1.5f * i + 1);
 
@@ -232,9 +232,20 @@ public class SCSurfaceView extends FlashSurfaceView {
         int slotCount = state.getRingSlotCount(ring);
         float sector = 360f / slotCount;
         float sweep = 5f * rBase / r;
-        for (int i = 0; i < slotCount; i++) {
-            float mA = (sector * i) + angle - (sweep / 2);
+        for (int i = 0; i < slotCount;  i++) {
+            float mA = sector * (-i) - angle - sweep / 2 + 126f; // fun magic number to align rings
+
             canvas.drawArc(oval, mA, sweep, true, slotPaint);
+
+            /* for displaying first and second slots
+            if (i == 0) {
+                canvas.drawArc(oval, mA, sweep, true, blackPaint);
+            } else if (i == 1) {
+                canvas.drawArc(oval, mA, sweep, true, whitePaint);
+            } else {
+                canvas.drawArc(oval, mA, sweep, true, slotPaint);
+            }
+            //*/
 
             Position pos = new Position(ring, i);
             int team = state.getTeamFromPosition(pos);
@@ -253,7 +264,7 @@ public class SCSurfaceView extends FlashSurfaceView {
             }
 
             mA = (float) ((mA + sweep / 2) * (Math.PI / 180));
-            float mR = rBase * ring / 8f;
+            float mR = rBase * (8.5f - ring) / 8f;
             float x = widthH + (float) (mR * Math.cos(mA));
             float y = heightH + (float) (mR * Math.sin(mA));
             drawMarble(x, y, team, num, canvas);
@@ -295,7 +306,7 @@ public class SCSurfaceView extends FlashSurfaceView {
             for (int i = 0; i < 5; i++) {
                 j++;
 
-                Position pos = new Position(0, i);
+                Position pos = new Position(0, i + c * 5);
                 int team = state.getTeamFromPosition(pos);
                 if (team == -1) {
                     continue;
@@ -314,7 +325,7 @@ public class SCSurfaceView extends FlashSurfaceView {
                 double angle = angleBase * (j - 3);
                 float x = widthH + (float) (rBase * Math.sin(angle) * 1.02);
                 float y = heightH + (float) (rBase * Math.cos(angle) * 1.02);
-                drawMarble(x, y, c, num, canvas);
+                drawMarble(x, y, team, num, canvas);
             }
         }
     }
@@ -451,14 +462,17 @@ public class SCSurfaceView extends FlashSurfaceView {
         Paint greenPaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
         greenPaint2.setColor(0xFF10FF10);
         greenPaint2.setStyle(Paint.Style.FILL);
+        greenPaint2.setTextSize(40);
 
         Paint yellowPaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
         yellowPaint2.setColor(0xFFF0F010);
         yellowPaint2.setStyle(Paint.Style.FILL);
+        yellowPaint2.setTextSize(40);
 
         Paint bluePaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
         bluePaint2.setColor(0xFF1010FF);
         bluePaint2.setStyle(Paint.Style.FILL);
+        bluePaint2.setTextSize(40);
 
         colorPaints2 = new Paint[]{redPaint2, yellowPaint2, greenPaint2, bluePaint2};
     }

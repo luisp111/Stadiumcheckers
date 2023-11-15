@@ -169,8 +169,8 @@ public abstract class GameMainActivity extends Activity implements
 
         // if there is a saved configuration, modify the default configuration accordingly
         if (!this.config.restoreSavedConfig(saveFileName(), this)) {
-            MessageBox.popUpMessage(Resources.getSystem().getString(R.string.Config_Error_Msg),
-                    this);
+            // why does this crash????
+            //MessageBox.popUpMessage(Resources.getSystem().getString(R.string.Config_Error_Msg), this);
         }
 
         if (this.config.isUserModifiable()) { // normal run: user has chance to modify configuration

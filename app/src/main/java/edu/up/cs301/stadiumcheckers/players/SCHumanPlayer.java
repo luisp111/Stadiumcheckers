@@ -15,6 +15,7 @@ import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.Position;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
+import edu.up.cs301.stadiumcheckers.scActionMessage.SCRotateAction;
 import edu.up.cs301.stadiumcheckers.views.SCSurfaceView;
 
 /**
@@ -125,17 +126,18 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         Point screen = sView.getScreen();
         if (x < 250 && x > 0 && y < screen.y - 50 && y > screen.y - 100) {
             Log.d(TAG, "onTouch: clockwise selected");
-            // TODO: call rotate action here
             // the sView.getSelectedBall() returns the id of the ball
             // from its position that you get in SCState's getPositionsFromTeam() function
             // that means you can get the correct position by doing
             Position pos = state.getPositionsFromTeam(playerNum)[selectedBall];
+            game.sendAction(new SCRotateAction(this, pos, true));
             return false;
         }
 
         if (x < 350 && x > 0 && y < screen.y && y > screen.y - 50) {
             Log.d(TAG, "onTouch: counter-clockwise selected");
-            // TODO: call rotate action here
+            Position pos = state.getPositionsFromTeam(playerNum)[selectedBall];
+            game.sendAction(new SCRotateAction(this, pos, false));
             return false;
         }
 

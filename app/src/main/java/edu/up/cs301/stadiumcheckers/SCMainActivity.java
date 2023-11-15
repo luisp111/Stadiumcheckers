@@ -12,6 +12,7 @@ import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.GameFramework.utilities.Saving;
 import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
+import edu.up.cs301.stadiumcheckers.players.SCDumbComputerPlayer;
 import edu.up.cs301.stadiumcheckers.players.SCHumanPlayer;
 
 /**
@@ -41,12 +42,36 @@ public class SCMainActivity extends GameMainActivity {
             }
         });
 
+        // random selector ai
+        playerTypes.add(new GamePlayerType("Random Randy") {
+            public GamePlayer createPlayer(String name) {
+                return new SCDumbComputerPlayer(name, 0);
+            }
+        });
+
+        // lowest first ai
+        playerTypes.add(new GamePlayerType("Downward Dale") {
+            public GamePlayer createPlayer(String name) {
+                return new SCDumbComputerPlayer(name, 1);
+            }
+        });
+
+        // highest first ai
+        playerTypes.add(new GamePlayerType("Flat Fenris") {
+            public GamePlayer createPlayer(String name) {
+                return new SCDumbComputerPlayer(name, 2);
+            }
+        });
+
         // Create a game configuration class for stadium checkers
-        GameConfig defaultConfig = new GameConfig(playerTypes, 4, 4,
+        GameConfig defaultConfig = new GameConfig(playerTypes, 1, 4,
                 "Stadium Checkers", PORT_NUMBER);
 
         // Add the default players
         defaultConfig.addPlayer("Human", 0);
+        defaultConfig.addPlayer("Random Randy", 1);
+        defaultConfig.addPlayer("Downward Dale", 2);
+        defaultConfig.addPlayer("Flat Fenris", 3);
 
         // Set the initial information for the remote player
         // defaultConfig.setRemoteData("Remote Player", "", 1);

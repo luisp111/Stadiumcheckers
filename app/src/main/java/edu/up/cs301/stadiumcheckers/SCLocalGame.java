@@ -107,7 +107,7 @@ public class SCLocalGame extends LocalGame {
                 }
             }
             if (cnt >= 5) {
-                return String.format("%s has won the game in %d turns", playerNames[e.getKey()],
+                return String.format("%s has won the game in %d turns!\n", playerNames[e.getKey()],
                         state.getTurnCount());
             }
         }

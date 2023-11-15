@@ -1,6 +1,7 @@
 package edu.up.cs301.stadiumcheckers.scActionMessage;
 
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
+import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.stadiumcheckers.Position;
 
 /**
@@ -16,8 +17,8 @@ public class SCRotateAction extends GameAction {
     private final boolean direction;
     private final Position position;
 
-    public SCRotateAction(Position Position, boolean direction) {
-        super();
+    public SCRotateAction(GamePlayer player, Position Position, boolean direction) {
+        super(player);
 
         this.position = Position;
         this.direction = direction;

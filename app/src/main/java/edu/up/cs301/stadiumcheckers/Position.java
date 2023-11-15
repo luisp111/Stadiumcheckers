@@ -46,6 +46,11 @@ public class Position {
         this.slot = slot;
     }
 
+    public void setPosition(Position position) {
+        this.ring = position.getRing();
+        this.slot = position.getSlot();
+    }
+
     @NonNull
     @Override
     public String toString() {
