@@ -16,7 +16,11 @@ import java.util.Objects;
  * Class to store the position of a marble.
  */
 public class Position {
+    // the ring value goes from 0 to (ring count), 0 being the starting ring
+    // a ring value is -2 when the ball needs to be reset
+    // a ring value is -1 when the ball is secured (players need all 5 secured to win)
     private int ring;
+    // the slot the marble occupies on the current ring
     private int slot;
 
     public Position(int slot) {
@@ -29,25 +33,12 @@ public class Position {
         this.slot = slot;
     }
 
-    public Position(Position position) {
-        this.ring = position.getRing();
-        this.slot = position.getSlot();
-    }
-
     public int getRing() {
         return ring;
     }
 
-    public void setRing(int ring) {
-        this.ring = ring;
-    }
-
     public int getSlot() {
         return slot;
-    }
-
-    public void setSlot(int slot) {
-        this.slot = slot;
     }
 
     public void setPosition(int ring, int slot) {

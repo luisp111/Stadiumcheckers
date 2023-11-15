@@ -1,8 +1,5 @@
 package edu.up.cs301.stadiumcheckers.scActionMessage;
 
-import java.io.ObjectInputStream;
-import java.util.HashMap;
-
 import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
 import edu.up.cs301.stadiumcheckers.Position;
 
@@ -16,21 +13,14 @@ import edu.up.cs301.stadiumcheckers.Position;
  * @author Dylan Sprigg
  */
 public class SCResetAction extends GameAction {
-    private int team;
-    private int slot;
-    private Position position;
+    private final int slot;
+    private final Position position;
 
-    private int currentTeamTurn;
-
-    public SCResetAction(int team, Position Position, int slot) {
+    public SCResetAction(Position Position, int slot) {
         super();
 
-        this.currentTeamTurn = team;
         this.position = Position;
         this.slot = slot;
-    }
-    public int getCurrentTeamTurn() {
-        return currentTeamTurn;
     }
 
     public int getSlot(){return slot;}

@@ -19,16 +19,31 @@ import edu.up.cs301.stadiumcheckers.Position;
  * @author Dylan Sprigg
  */
 public class SCState extends GameState {
+    // the number of slots for each ring (going from outside -> inside)
     private final int[] ringSlotCounts = {20, 6, 7, 6, 5, 6, 4, 5, 4};
+    // all marbles in the game, indexed by team
+    // so <team, marble> -> the getPositionFromTeam method returns an empty array if team is invalid
     private final HashMap<Integer, Position[]> marblesByTeam;
+    // all marbles in the game, indexed by position
+    // so <marble, team> -> the getTeamFromPosition method returns -1 if the position is empty
     private final HashMap<Position, Integer> marblesByPosition;
-    private final float[] ringAngles; //angles are a range of 0-420 so as to be divisible by 7
+    // the angles of each ring (going from outside -> inside)
+    // angles are a range of 0-420 so as to be divisible by 7
+    private final float[] ringAngles;
+    // the total number of turns the game has gone through
     private int turnCount;
+    // the current team's turn
     private int currentTeamTurn;
+    // random
     private final Random random;
-
-    // team color to highlight balls for
+    // team color that should have highlighted balls (ui purposes only)
+    // -1 == no balls highlighted
     private int colorHighlight = -1;
+
+    // ALSO IMPORTANT: for any Position value,
+    // the ring value goes from 0 to (ring count), 0 being the starting ring
+    // a ring value is -2 when the ball needs to be reset
+    // a ring value is -1 when the ball is secured (players need all 5 secured to win)
 
     /**
      * Basic constructor for state
@@ -180,6 +195,7 @@ public class SCState extends GameState {
      */
     public int closestSlot(int ring, float angle, boolean direction) {
         if (ring < 0 || ring >= ringSlotCounts.length) {
+            // ring is invalid
             return -1;
         }
 
@@ -210,12 +226,21 @@ public class SCState extends GameState {
      */
     public boolean rotateRing(int team, Position position, boolean direction) {
         if (currentTeamTurn != team || getTeamFromPosition(position) != team) {
+            // not your turn / not your marble
             return false;
         }
 
         int ring = position.getRing();
         if (ring >= ringSlotCounts.length - 1 || ring < 0) {
+            // ring is invalid
             return false;
+        }
+
+        for (Position p : getPositionsFromTeam(team)) {
+            if (p.getRing() == -2) {
+                // you have marbles to reset first
+                return false;
+            }
         }
 
         float angle = ringAngles[ring] + (420f / ringSlotCounts[ring]) * position.getSlot();
@@ -263,12 +288,19 @@ public class SCState extends GameState {
      * @return whether the action was successful
      */
     public boolean resetMarble(int team, Position position, int slot) {
-        if (currentTeamTurn != team || getTeamFromPosition(position) != team) {
+        if (position.getRing() != -2) {
+            // the marble isn't actually out of the game
             return false;
         }
 
-        Position endPosition = new Position(0, slot);
+        if (currentTeamTurn != team || getTeamFromPosition(position) != team) {
+            // not your turn / not your marble
+            return false;
+        }
+
+        Position endPosition = new Position(slot);
         if (getTeamFromPosition(endPosition) != -1) {
+            // target position is occupied
             return false;
         }
 

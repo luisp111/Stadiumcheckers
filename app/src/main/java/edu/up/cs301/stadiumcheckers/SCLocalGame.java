@@ -10,6 +10,7 @@ import edu.up.cs301.game.GameFramework.actionMessage.GameAction;
 import edu.up.cs301.game.GameFramework.players.GamePlayer;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
 import edu.up.cs301.stadiumcheckers.scActionMessage.SCResetAction;
+import edu.up.cs301.stadiumcheckers.scActionMessage.SCRotateAction;
 
 /**
  * Stadium Checkers
@@ -24,18 +25,26 @@ public class SCLocalGame extends LocalGame {
     // Tag for logging
     private static final String TAG = "SCLocalGame";
 
+    /**
+     * Basic constructor for game
+     */
     public SCLocalGame() {
         super();
         super.state = new SCState();
     }
 
+    /**
+     * Constructor for game including state definition
+     *
+     * @param state the state for the new instance to track
+     */
     public SCLocalGame(SCState state) {
         super();
         super.state = new SCState(state);
     }
 
     /**
-     * increment the turn value for the next player
+     * Increment the turn value for the next player
      */
     private void incrementTurn() {
         if (!(super.state instanceof SCState)) {
@@ -77,7 +86,7 @@ public class SCLocalGame extends LocalGame {
 
             int cnt = 0;
             for (Position p : e.getValue()) {
-                if (p.getRing() == -2) {
+                if (p.getRing() == -1) {
                     cnt++;
                 }
             }
@@ -100,8 +109,20 @@ public class SCLocalGame extends LocalGame {
         if (action instanceof SCResetAction) {
             SCResetAction resetAction = (SCResetAction) action;
 
-            return state.resetMarble(resetAction.getCurrentTeamTurn(), resetAction.getPosition(),
+            return state.resetMarble(state.getCurrentTeamTurn(), resetAction.getPosition(),
                     resetAction.getSlot());
+        }
+
+        if (action instanceof SCRotateAction) {
+            SCRotateAction rotateAction = (SCRotateAction) action;
+
+            boolean ret = state.rotateRing(state.getCurrentTeamTurn(), rotateAction.getPosition(),
+                    rotateAction.getDirection());
+
+            if (ret) {
+                incrementTurn();
+            }
+            return ret;
         }
 
         return false;
