@@ -49,23 +49,26 @@ public class SCDumbComputerPlayer extends GameComputerPlayer {
         Position[] marbles = state.getPositionsFromTeam(playerNum);
 
         // randomly selects a marble
-        Position selectedMarble;
+        Position selectedMarble = marbles[0];
         switch (type) {
             case 0: // random
             default:
-                int t = marbles.length;
-                do {
-                    selectedMarble = marbles[random.nextInt(marbles.length)];
-                    t--;
-                } while (selectedMarble.getRing() < 0 && t > 0);
+                int[] base = {0, 1, 2, 3, 4};
+                for (int i = 1; i < 5; i++) {
+                    int r = random.nextInt(marbles.length - i) + i;
+                    int tmp = base[i];
+                    base[i] = base[r];
+                    base[r] = tmp;
 
-                if (t <= 0) {
-                    return; // no slots!
+                    selectedMarble = marbles[base[i]];
+
+                    if (selectedMarble.getRing() >= 0) {
+                        break;
+                    }
                 }
 
                 break;
             case 1: // lowest first
-                selectedMarble = marbles[0];
                 for (Position p : marbles) {
                     if (p.getRing() > selectedMarble.getRing()) {
                         selectedMarble = p;
@@ -74,7 +77,6 @@ public class SCDumbComputerPlayer extends GameComputerPlayer {
 
                 break;
             case 2: // highest first
-                selectedMarble = marbles[0];
                 for (Position p : marbles) {
                     if (selectedMarble.getRing() < 0
                             || (p.getRing() > 0 && p.getRing() < selectedMarble.getRing())) {
