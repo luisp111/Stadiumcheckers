@@ -78,11 +78,13 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
      *
      * @param activity the activity
      */
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void setAsGui(GameMainActivity activity) {
         activity.setContentView(layoutId);
         myActivity = activity;
-        activity.findViewById(R.id.surfaceView).setOnTouchListener(this);
+        SCSurfaceView view = activity.findViewById(R.id.surfaceView);
+        view.setOnTouchListener(this);
     }
 
     /**

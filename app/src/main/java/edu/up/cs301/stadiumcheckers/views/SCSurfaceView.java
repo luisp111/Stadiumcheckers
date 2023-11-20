@@ -9,13 +9,11 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 
 import java.util.HashMap;
-import java.util.Random;
 
 import edu.up.cs301.game.GameFramework.utilities.FlashSurfaceView;
+import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.stadiumcheckers.Position;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
 
@@ -34,7 +32,7 @@ public class SCSurfaceView extends FlashSurfaceView {
     // the game's state
     protected SCState state;
     // tracker for the positions of a player's 5 balls
-    private final HashMap<Integer, Point> positions = new HashMap<>();
+    private HashMap<Integer, Point> positions = new HashMap<>();
     // id of selected ball if there is one
     // id is based on the order of the ball returned from state.getPositionsFromTeam()
     private int selectedBall = -1;
@@ -196,7 +194,7 @@ public class SCSurfaceView extends FlashSurfaceView {
                 if (teamPos[j].getRing() != -1) {
                     continue;
                 }
-                drawMarble(x, h - (rBase / 8f) * (k + 0.5f), i, j, canvas);
+                drawMarble(x, h - (rBase / 8f) * (k + 0.5f), i, -j, canvas);
                 k++;
             }
         }
@@ -235,17 +233,17 @@ public class SCSurfaceView extends FlashSurfaceView {
         for (int i = 0; i < slotCount;  i++) {
             float mA = sector * (-i) - angle - sweep / 2 + 126f; // fun magic number to align rings
 
-            canvas.drawArc(oval, mA, sweep, true, slotPaint);
-
-            /* for displaying first and second slots
-            if (i == 0) {
-                canvas.drawArc(oval, mA, sweep, true, blackPaint);
-            } else if (i == 1) {
-                canvas.drawArc(oval, mA, sweep, true, whitePaint);
+            if (Logger.getDebugValue()) {
+                if (i == 0) {
+                    canvas.drawArc(oval, mA, sweep, true, blackPaint);
+                } else if (i == 1) {
+                    canvas.drawArc(oval, mA, sweep, true, whitePaint);
+                } else {
+                    canvas.drawArc(oval, mA, sweep, true, slotPaint);
+                }
             } else {
                 canvas.drawArc(oval, mA, sweep, true, slotPaint);
             }
-            //*/
 
             Position pos = new Position(ring, i);
             int team = state.getTeamFromPosition(pos);
@@ -339,7 +337,7 @@ public class SCSurfaceView extends FlashSurfaceView {
     private void drawInnerRing(Canvas canvas, float r) {
         double angleBase = Math.PI / 2;
 
-        canvas.drawCircle(widthH, heightH, r, ringPaint2);
+        canvas.drawCircle(widthH, heightH, r, blackPaint);
 
         Path circlePath = new Path();
         circlePath.addCircle(widthH, heightH, r, Path.Direction.CW);
@@ -363,7 +361,7 @@ public class SCSurfaceView extends FlashSurfaceView {
      * @param canvas the canvas to draw on
      */
     private void drawMarble(float x, float y, int team, int num, Canvas canvas) {
-        if (colorHighlight == team && (selectedBall < 0 || selectedBall == num)) {
+        if (colorHighlight == team && (selectedBall < 0 || selectedBall == num) && num >= 0) {
             canvas.drawCircle(x, y, rBase / 20f, whitePaint);
         } else {
             canvas.drawCircle(x, y, rBase / 20f, blackPaint);
@@ -371,7 +369,7 @@ public class SCSurfaceView extends FlashSurfaceView {
 
         canvas.drawCircle(x, y, rBase / 24f, colorPaints2[team]);
 
-        if (colorHighlight == team) {
+        if (colorHighlight == team && num >= 0) {
             positions.put(num, new Point((int) x, (int) y));
             canvas.drawText("" + num, x, y + rBase / 48f, whitePaint);
         }
@@ -383,6 +381,8 @@ public class SCSurfaceView extends FlashSurfaceView {
      * @param canvas an object that references the drawing surface
      */
     private void updateDimensions(Canvas canvas) {
+        positions = new HashMap<>();
+
         int screenX = canvas.getWidth();
         int screenY = canvas.getHeight();
 
@@ -406,8 +406,6 @@ public class SCSurfaceView extends FlashSurfaceView {
      */
     private void init() {
         setWillNotDraw(false);
-
-        // TODO: probably find a neat way of configuring paints?
 
         ringPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         ringPaint.setColor(0xFFFFD700);

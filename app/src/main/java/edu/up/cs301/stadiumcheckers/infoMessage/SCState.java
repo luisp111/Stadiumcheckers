@@ -69,7 +69,7 @@ public class SCState extends GameState {
 
         ringAngles = new float[ringSlotCounts.length];
         ringAngles[0] = 0;
-        ringAngles[ringSlotCounts.length - 1] = 52.5f;
+        ringAngles[ringSlotCounts.length - 1] = 42f;
         for (int i = 1; i < ringSlotCounts.length - 1; i++) {
             ringAngles[i] = random.nextFloat() * 420;
         }
@@ -249,7 +249,11 @@ public class SCState extends GameState {
      * @return whether the action was successful
      */
     public boolean rotateRing(int team, Position position, boolean direction) {
-        //clockwise is negative
+        // clockwise is negative
+
+        // TODO: make sure rotating always sets the next ring to the right angle
+        // TODO: make sure double dropping lets marbles be secured
+        // TODO: figure out why marbles sometimes disappear (possibly being overridden?)
 
         if (currentTeamTurn != team || getTeamFromPosition(position) != team) {
             // not your turn / not your marble
@@ -276,13 +280,13 @@ public class SCState extends GameState {
 
         // special behavior for the last ring
         if (ring == ringSlotCounts.length - 2) {
-            dropMarblesLower(ring, dist, direction);
-            dropMarblesUpper(ring - 1, dist, !direction);
+            dropMarblesLower(ring, dist, !direction);
+            dropMarblesUpper(ring - 1, dist, direction);
             setRingAngle(ring, angle);
             return true;
         }
 
-        //changeMarblePosition(position, new Position(ring + 1, 1));
+        // changeMarblePosition(position, new Position(ring + 1, 1));
         // changeMarblePosition(position, new Position(ring + 1, targetSlot));
         // setRingAngle(ring + 1, angle - (420f / ringSlotCounts[ring + 1]) * targetSlot);
 
@@ -436,6 +440,8 @@ public class SCState extends GameState {
             // if the marble reaches the final slot, set the "ring" accordingly
             if (ring == ringSlotCounts.length - 2) {
                 int team = getTeamFromPosition(cand.pos);
+                Log.d(TAG, String.format("dropMarblesLower: Marble of team %d tried to drop on slot %d of final ring",
+                        team, cand.targetPos.getSlot()));
                 if (team == cand.targetPos.getSlot()) {
                     cand.targetPos.setPosition(-1, random.nextInt());
                 } else {
