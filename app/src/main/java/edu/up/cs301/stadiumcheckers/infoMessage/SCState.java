@@ -69,7 +69,7 @@ public class SCState extends GameState {
 
         ringAngles = new float[ringSlotCounts.length];
         ringAngles[0] = 0;
-        ringAngles[ringSlotCounts.length - 1] = 63;
+        ringAngles[ringSlotCounts.length - 1] = 52.5f;
         for (int i = 1; i < ringSlotCounts.length - 1; i++) {
             ringAngles[i] = random.nextFloat() * 420;
         }

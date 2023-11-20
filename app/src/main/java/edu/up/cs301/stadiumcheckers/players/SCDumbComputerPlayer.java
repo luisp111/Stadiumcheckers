@@ -48,13 +48,13 @@ public class SCDumbComputerPlayer extends GameComputerPlayer {
         // Gets all marbles for current team
         Position[] marbles = state.getPositionsFromTeam(playerNum);
 
-        // randomly selects a marble
+        // selects a marble based on ai type
         Position selectedMarble = marbles[0];
         switch (type) {
             case 0: // random
             default:
                 int[] base = {0, 1, 2, 3, 4};
-                for (int i = 1; i < 5; i++) {
+                for (int i = 0; i < 5; i++) {
                     int r = random.nextInt(marbles.length - i) + i;
                     int tmp = base[i];
                     base[i] = base[r];
