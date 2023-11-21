@@ -14,6 +14,7 @@ import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
 import edu.up.cs301.stadiumcheckers.players.SCDumbComputerPlayer;
 import edu.up.cs301.stadiumcheckers.players.SCHumanPlayer;
+import edu.up.cs301.stadiumcheckers.players.SCSmartComputerPlayer;
 
 /**
  * Stadium Checkers
@@ -60,6 +61,13 @@ public class SCMainActivity extends GameMainActivity {
         playerTypes.add(new GamePlayerType("Flat Fenris") {
             public GamePlayer createPlayer(String name) {
                 return new SCDumbComputerPlayer(name, 2);
+            }
+        });
+
+        // smart ai
+        playerTypes.add(new GamePlayerType("Smart Alec") {
+            public GamePlayer createPlayer(String name) {
+                return new SCSmartComputerPlayer(name);
             }
         });
 

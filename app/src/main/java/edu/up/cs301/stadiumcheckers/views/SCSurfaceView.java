@@ -121,10 +121,6 @@ public class SCSurfaceView extends FlashSurfaceView {
         return state;
     }
 
-    public Point getScreen() {
-        return new Point(screenX, screenY);
-    }
-
     public int getRBase() {
         return rBase;
     }
