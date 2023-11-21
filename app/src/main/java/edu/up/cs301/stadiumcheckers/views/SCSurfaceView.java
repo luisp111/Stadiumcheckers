@@ -36,6 +36,12 @@ public class SCSurfaceView extends FlashSurfaceView {
     // id of selected ball if there is one
     // id is based on the order of the ball returned from state.getPositionsFromTeam()
     private int selectedBall = -1;
+    private float selectedBallMag;
+    private float selectedBallAng;
+
+    // positions of clockwise/counterclock arrows
+    private Point cPos;
+    private Point ccPos;
 
     // bounds for displaying the view
     // base the display off of these values instead of hardcoding positions
@@ -127,6 +133,14 @@ public class SCSurfaceView extends FlashSurfaceView {
         this.colorHighlight = colorHighlight;
     }
 
+    public Point getcPos() {
+        return cPos;
+    }
+
+    public Point getCcPos() {
+        return ccPos;
+    }
+
     /**
      * Sets a new state to display
      *
@@ -146,37 +160,24 @@ public class SCSurfaceView extends FlashSurfaceView {
      *
      * @param canvas the canvas to draw on
      */
+    @SuppressLint("DrawAllocation")
     @Override
     public void onDraw(Canvas canvas) {
-        updateDimensions(canvas);
-
         if (state == null) {
             Log.d(TAG, "onDraw: Tried rendering w/o a state??");
             return;
         }
 
-        // hardcoded :( info display on top left
-        canvas.drawRect(0, 0, 350, 50, whitePaint);
-        canvas.drawCircle(350, 0, 50, whitePaint);
-        canvas.drawText(statusText, 10, 38, colorPaints2[state.getCurrentTeamTurn()]);
-
-        // clockwise/counterclockwise selector
-        if (selectedBall >= 0) {
-            canvas.drawText("rotate:", 50, screenY - 112, whitePaint);
-
-            canvas.drawRect(0, screenY - 100, 250, screenY, whitePaint);
-            canvas.drawCircle(250, screenY - 75, 25, whitePaint);
-            canvas.drawText("clockwise", 40, screenY - 62, blackPaint);
-
-            canvas.drawRect(0, screenY - 50, 350, screenY, whitePaint);
-            canvas.drawCircle(350, screenY - 25, 25, whitePaint);
-            canvas.drawText("counter-clockwise", 20, screenY - 12, blackPaint);
-        }
-
+        updateDimensions(canvas);
         int w = (maxX - minX);
         int h = (maxY - minY);
         rBase = (Math.min(w, h) * 3) / 8;
         ringB = false;
+
+        // hardcoded :( info display on top left
+        canvas.drawRect(0, 0, 350, 50, whitePaint);
+        canvas.drawCircle(350, 0, 50, whitePaint);
+        canvas.drawText(statusText, 10, 38, colorPaints2[state.getCurrentTeamTurn()]);
 
         //this draws the secured marbles on the bottom right
         float top = h - rBase / 1.6f + rBase / 16f;
@@ -206,6 +207,20 @@ public class SCSurfaceView extends FlashSurfaceView {
         }
         drawOuterRingMarbles(canvas);
 
+        if (selectedBall >= 0) {
+            float shift = 45f / selectedBallMag;
+
+            float rX = widthH + (float) (selectedBallMag * Math.cos(selectedBallAng + shift));
+            float rY = heightH + (float) (selectedBallMag * Math.sin(selectedBallAng + shift));
+            drawArrow(rX, rY, selectedBallAng + (float) (Math.PI / 2) + shift, canvas);
+            cPos = new Point((int) rX, (int) rY);
+
+            float lX = widthH + (float) (selectedBallMag * Math.cos(selectedBallAng - shift));
+            float lY = heightH + (float) (selectedBallMag * Math.sin(selectedBallAng - shift));
+            drawArrow(lX, lY, selectedBallAng - (float) (Math.PI / 2) - shift, canvas);
+            ccPos = new Point((int) lX, (int) lY);
+        }
+
         drawInnerRing(canvas, rBase / 8f);
     }
 
@@ -230,7 +245,7 @@ public class SCSurfaceView extends FlashSurfaceView {
         int slotCount = state.getRingSlotCount(ring);
         float sector = 360f / slotCount;
         float sweep = 5f * rBase / r;
-        for (int i = 0; i < slotCount;  i++) {
+        for (int i = 0; i < slotCount; i++) {
             float mA = sector * (-i) - angle - sweep / 2 + 126f; // fun magic number to align rings
 
             if (Logger.getDebugValue()) {
@@ -251,17 +266,27 @@ public class SCSurfaceView extends FlashSurfaceView {
                 continue;
             }
 
+            mA = (float) ((mA + sweep / 2) * (Math.PI / 180));
+
             int num = 0;
-            if (colorHighlight == team) {
+            if (colorHighlight == team || Logger.getDebugValue()) {
                 Position[] positions = state.getPositionsFromTeam(team);
                 for (int j = 0; j < 5; j++) {
                     if (positions[j].equals(pos)) {
                         num = j;
                     }
                 }
+
+                if (colorHighlight == team && selectedBall == num) {
+                    selectedBallAng = mA;
+                    if (ring == state.getRingCount() - 2) {
+                        selectedBallMag = rBase * (8.5f - ring) / 8f;
+                    } else {
+                        selectedBallMag = rBase * (7.5f - ring) / 8f;
+                    }
+                }
             }
 
-            mA = (float) ((mA + sweep / 2) * (Math.PI / 180));
             float mR = rBase * (8.5f - ring) / 8f;
             float x = widthH + (float) (mR * Math.cos(mA));
             float y = heightH + (float) (mR * Math.sin(mA));
@@ -311,12 +336,17 @@ public class SCSurfaceView extends FlashSurfaceView {
                 }
 
                 int num = 0;
-                if (colorHighlight == team) {
+                if (colorHighlight == team || Logger.getDebugValue()) {
                     Position[] positions = state.getPositionsFromTeam(team);
                     for (int k = 0; k < 5; k++) {
                         if (positions[k].equals(pos)) {
                             num = k;
                         }
+                    }
+
+                    if (colorHighlight == team && selectedBall == num) {
+                        selectedBallAng = (float) (-angleBase * (j - 3) + Math.PI / 2);
+                        selectedBallMag = rBase * 7.5f / 8f;
                     }
                 }
 
@@ -354,10 +384,10 @@ public class SCSurfaceView extends FlashSurfaceView {
     /**
      * draws a marble
      *
-     * @param x x-position to draw at
-     * @param y y-position to draw at
-     * @param team the team of the marble
-     * @param num id based on the order of the ball returned from state.getPositionsFromTeam()
+     * @param x      x-position to draw at
+     * @param y      y-position to draw at
+     * @param team   the team of the marble
+     * @param num    id based on the order of the ball returned from state.getPositionsFromTeam()
      * @param canvas the canvas to draw on
      */
     private void drawMarble(float x, float y, int team, int num, Canvas canvas) {
@@ -369,10 +399,51 @@ public class SCSurfaceView extends FlashSurfaceView {
 
         canvas.drawCircle(x, y, rBase / 24f, colorPaints2[team]);
 
-        if (colorHighlight == team && num >= 0) {
+        if ((colorHighlight == team && num >= 0) || Logger.getDebugValue()) {
             positions.put(num, new Point((int) x, (int) y));
             canvas.drawText("" + num, x, y + rBase / 48f, whitePaint);
         }
+    }
+
+    /**
+     * draws an arrow centered on the coords
+     *
+     * @param x      x-position of arrow
+     * @param y      y-position of arrow
+     * @param angle  angle that arrow points to (0 = right)
+     * @param canvas canvas to draw on
+     */
+    private void drawArrow(float x, float y, float angle, Canvas canvas) {
+        Path path = new Path();
+
+        //angle = angle * (float) (Math.PI / 180);
+        float ninety = (float) (Math.PI / 2);
+        float threeHalves = 153.4349f * (float) (Math.PI / 180);
+
+        // in distance, angle
+        float[][] linePos = {
+                {rBase / 15f, threeHalves},
+                {rBase / 32f, ninety},
+                {rBase / 16f, ninety},
+                {rBase / 16f, 0},
+                {rBase / 16f, -ninety},
+                {rBase / 32f, -ninety},
+                {rBase / 15f, -threeHalves},
+        };
+
+        int max = linePos.length - 1;
+        float x1 = (float) Math.cos(linePos[max][1] + angle) * linePos[max][0] + x;
+        float y1 = (float) Math.sin(linePos[max][1] + angle) * linePos[max][0] + y;
+        path.moveTo(x1, y1);
+
+        for (float[] pos : linePos) {
+            float xi = (float) Math.cos(pos[1] + angle) * pos[0] + x;
+            float yi = (float) Math.sin(pos[1] + angle) * pos[0] + y;
+            path.lineTo(xi, yi);
+        }
+        path.close();
+
+        canvas.drawPath(path, whitePaint);
     }
 
     /**

@@ -125,8 +125,8 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
             return false;
         }
 
-        Point screen = sView.getScreen();
-        if (x < 250 && x > 0 && y < screen.y - 50 && y > screen.y - 100) {
+        Point cPos = sView.getcPos();
+        if (x < cPos.x + bound && x > cPos.x - bound && y < cPos.y + bound && y > cPos.y - bound) {
             Log.d(TAG, "onTouch: clockwise selected");
             // the sView.getSelectedBall() returns the id of the ball
             // from its position that you get in SCState's getPositionsFromTeam() function
@@ -136,7 +136,8 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
             return false;
         }
 
-        if (x < 350 && x > 0 && y < screen.y && y > screen.y - 50) {
+        Point ccPos = sView.getCcPos();
+        if (x < ccPos.x + bound && x > ccPos.x - bound && y < ccPos.y + bound && y > ccPos.y - bound) {
             Log.d(TAG, "onTouch: counter-clockwise selected");
             Position pos = state.getPositionsFromTeam(playerNum)[selectedBall];
             game.sendAction(new SCRotateAction(this, pos, false));
