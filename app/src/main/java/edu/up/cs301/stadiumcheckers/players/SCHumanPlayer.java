@@ -63,6 +63,7 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         SCSurfaceView view = myActivity.findViewById(R.id.surfaceView);
         if (info instanceof SCState) {
             SCState newState = new SCState((SCState) info);
+            view.setTeamNames(allPlayerNames);
             view.setState(newState);
 
             if (Logger.getDebugValue()) {
