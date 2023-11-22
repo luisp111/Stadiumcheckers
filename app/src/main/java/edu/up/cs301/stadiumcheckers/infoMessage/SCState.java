@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Random;
 
 import edu.up.cs301.game.GameFramework.infoMessage.GameState;
-import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.stadiumcheckers.Position;
 
 /**
@@ -72,7 +71,7 @@ public class SCState extends GameState {
         ringAngles[0] = 0;
         ringAngles[ringSlotCounts.length - 1] = 42f;
         for (int i = 1; i < ringSlotCounts.length - 1; i++) {
-            ringAngles[i] = 0; //random.nextInt(420);
+            ringAngles[i] = random.nextInt(420);
         }
     }
 
@@ -270,12 +269,12 @@ public class SCState extends GameState {
             }
         }
 
-        float angle = ringAngles[ring] + (420f / ringSlotCounts[ring]) * position.getSlot();
+        float angle = getPosAngle(position);
 
         // special behavior for the last ring
         if (ring == ringSlotCounts.length - 2) {
             int targetSlot = closestSlot(ring + 1, angle, !direction);
-            float targetAngle = ringAngles[ring + 1] + (420f / ringSlotCounts[ring + 1]) * targetSlot;
+            float targetAngle = getPosAngle(new Position(ring + 1, targetSlot));
             float dist = angleDist(angle, targetAngle);
 
             dropMarblesLower(ring, dist, position, !direction);
@@ -294,7 +293,7 @@ public class SCState extends GameState {
         }
 
         int targetSlot = closestSlot(ring + 1, angle, direction);
-        float targetAngle = ringAngles[ring + 1] + (420f / ringSlotCounts[ring + 1]) * targetSlot;
+        float targetAngle = getPosAngle(new Position(ring + 1, targetSlot));
         float dist = angleDist(angle, targetAngle);
 
         // continuously rotate and drop marbles until the target marble has dropped
@@ -372,7 +371,6 @@ public class SCState extends GameState {
      */
     private void dropMarblesUpper(int ring, float targetDist, Position sourcePos, boolean direction) {
         HashMap<DropCandidate, Float> marblesToDrop = new HashMap<>();
-        float angle = ringAngles[ring];
         for (int i = 0; i < ringSlotCounts[ring]; i++) {
             Position pos = new Position(ring, i);
 
@@ -392,7 +390,7 @@ public class SCState extends GameState {
 
             // extra checks to see if about-to-be-overridden candidates can drop first
             if (val > result.dist) {
-                float angle1 = ringAngles[ring] + (420f / ringSlotCounts[ring]) * cand.pos.getSlot();
+                float angle1 = getPosAngle(cand.pos);
                 Position posDest = new Position(ring + 2,
                         closestSlot(ring + 2, angle1, direction));
 
@@ -403,8 +401,7 @@ public class SCState extends GameState {
 
                 }
 
-                float dist = angleDist(angle1,
-                        ringAngles[ring + 1] + (420f / ringSlotCounts[ring + 1]) * posDest.getSlot());
+                float dist = angleDist(angle1, getPosAngle(posDest));
 
                 if (dist > targetDist) {
                     // distance to slot is larger than target marble's, marble cannot drop
@@ -413,8 +410,6 @@ public class SCState extends GameState {
                 }
 
                 // marble can double drop!
-                float targetAngle = ringAngles[ring + 1] + (420f / ringSlotCounts[ring + 1]) * cand.targetPos.getSlot();
-                setRingAngle(ring, targetAngle);
                 changeMarblePosition(cand.pos, posDest);
                 marblesToDrop.put(cand, result.dist);
             }
@@ -422,11 +417,8 @@ public class SCState extends GameState {
 
         // drop all candidates
         for (DropCandidate cand : marblesToDrop.keySet()) {
-            float targetAngle = ringAngles[ring + 1] + (420f / ringSlotCounts[ring + 1]) * cand.targetPos.getSlot();
-            setRingAngle(ring, targetAngle);
             changeMarblePosition(cand.pos, cand.targetPos);
         }
-        setRingAngle(ring, angle);
     }
 
     /**
@@ -459,13 +451,9 @@ public class SCState extends GameState {
         }
 
         // drop all candidates
-        float angle = ringAngles[ring];
         for (DropCandidate cand : marblesToDrop.keySet()) {
-            float targetAngle = ringAngles[ring + 1] + (420f / ringSlotCounts[ring + 1]) * cand.targetPos.getSlot();
-            setRingAngle(ring, targetAngle);
             changeMarblePosition(cand.pos, cand.targetPos);
         }
-        setRingAngle(ring, angle);
     }
 
     /**
@@ -489,11 +477,10 @@ public class SCState extends GameState {
         }
 
         int ring = pos.getRing();
-        float angle = ringAngles[ring] + (420f / ringSlotCounts[ring]) * pos.getSlot();
+        float angle = getPosAngle(pos);
         Position posDest = new Position(ring + 1,
                 closestSlot(ring + 1, angle, direction));
-        float dist = angleDist(angle,
-                ringAngles[ring + 1] + (420f / ringSlotCounts[ring + 1]) * posDest.getSlot());
+        float dist = angleDist(angle, getPosAngle(posDest));
 
         if (getTeamFromPosition(posDest) != -1) {
             if (dist <= 0.001) {
@@ -539,9 +526,36 @@ public class SCState extends GameState {
      * @param angle2 second angle to check
      * @return the angular distance
      */
-    private float angleDist(float angle1, float angle2) {
+    public float angleDist(float angle1, float angle2) {
+        return angleDist(angle1, angle2, false);
+    }
+
+    /**
+     * checks the distance between two angles
+     *
+     * @param angle1 first angle to check
+     * @param angle2 second angle to check
+     * @param signed whether counterclockwise distances are negative
+     * @return the angular distance
+     */
+    public float angleDist(float angle1, float angle2, boolean signed) {
         float result = (angle1 - angle2) + 210;
-        return Math.abs((result % 420 + 420) % 420 - 210);
+
+        if (signed) {
+            return (result % 420 + 420) % 420 - 210;
+        } else {
+            return Math.abs((result % 420 + 420) % 420 - 210);
+        }
+    }
+
+    /**
+     * Get the angle of a particular position
+     *
+     * @param pos position to find the angle of
+     * @return angle of the position
+     */
+    public float getPosAngle(Position pos) {
+        return ringAngles[pos.getRing()] + (420f / ringSlotCounts[pos.getRing()]) * pos.getSlot();
     }
 
     /**
@@ -630,7 +644,12 @@ public class SCState extends GameState {
 
         // make upper slot drop too if it can
         int cRing = start.getRing();
-        float angle = ringAngles[cRing] + (420f / ringSlotCounts[cRing]) * start.getSlot();
+        float angle;
+        if (end.getRing() < 0) {
+            angle = ringAngles[cRing] + (420f / ringSlotCounts[cRing]) * start.getSlot();
+        } else {
+            angle = ringAngles[end.getRing()] + (420f / ringSlotCounts[end.getRing()]) * end.getSlot();
+        }
         int targetSlot = closestSlot(cRing - 1, angle, true);
         float targetAngle = ringAngles[cRing - 1] + (420f / ringSlotCounts[cRing - 1]) * targetSlot;
         float dist = angleDist(angle, targetAngle);
