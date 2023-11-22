@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -85,9 +86,12 @@ public class SCState extends GameState {
         random = new Random();
         turnCount = state.getTurnCount();
         currentTeamTurn = state.getCurrentTeamTurn();
-        marblesByTeam = state.getMarblesByTeam();
-        ringAngles = state.getRingAngles();
-        marblesByPosition = state.getMarblesByPosition();
+        ringAngles = Arrays.copyOf(state.getRingAngles(), state.getRingAngles().length);
+        marblesByPosition = new HashMap<>(state.getMarblesByPosition());
+        marblesByTeam = new HashMap<>();
+        for (Map.Entry<Integer, Position[]> entry : state.getMarblesByTeam().entrySet()) {
+            marblesByTeam.put(entry.getKey(), Arrays.copyOf(entry.getValue(), entry.getValue().length));
+        }
     }
 
     public int getTurnCount() {

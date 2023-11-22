@@ -14,6 +14,7 @@ import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
 import edu.up.cs301.stadiumcheckers.players.SCDumbComputerPlayer;
 import edu.up.cs301.stadiumcheckers.players.SCHumanPlayer;
+import edu.up.cs301.stadiumcheckers.players.SCMastermindComputerPlayer;
 import edu.up.cs301.stadiumcheckers.players.SCSmartComputerPlayer;
 
 /**
@@ -79,6 +80,13 @@ public class SCMainActivity extends GameMainActivity {
         playerTypes.add(new GamePlayerType("Smart Alec") {
             public GamePlayer createPlayer(String name) {
                 return new SCSmartComputerPlayer(name);
+            }
+        });
+
+        // exhaustive-search ai
+        playerTypes.add(new GamePlayerType("Mastermind Michael") {
+            public GamePlayer createPlayer(String name) {
+                return new SCMastermindComputerPlayer(name);
             }
         });
 

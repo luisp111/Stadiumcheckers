@@ -47,6 +47,21 @@ public class SCDumbComputerPlayer extends GameComputerPlayer {
 
         // Gets all marbles for current team
         Position[] marbles = state.getPositionsFromTeam(playerNum);
+        int targetAngle = playerNum * 105 + 42;
+
+        // step 1: find marbles on the bottom that can get secured
+        for (Position pos : marbles) {
+            if (pos.getRing() != state.getRingCount() - 2) {
+                continue;
+            }
+
+            float angle = state.getPosAngle(pos);
+            float distS = state.angleDist(angle, targetAngle, true);
+            if (Math.abs(distS) < 105) {
+                game.sendAction(new SCRotateAction(this, pos, distS > 0));
+                return;
+            }
+        }
 
         // selects a marble based on ai type
         Position selectedMarble = marbles[0];

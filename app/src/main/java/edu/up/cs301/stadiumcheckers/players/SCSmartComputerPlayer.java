@@ -57,9 +57,8 @@ public class SCSmartComputerPlayer extends GameComputerPlayer {
         // always rotate last ring towards target slot
         // when resetting a marble, always choose the middle slot first
 
-        int targetAngle = playerNum * 105 + 42;
-
         Position[] marbles = state.getPositionsFromTeam(playerNum);
+        int targetAngle = playerNum * 105 + 42;
 
         // step 1: find marbles on the bottom that can get secured
         for (Position pos : marbles) {
