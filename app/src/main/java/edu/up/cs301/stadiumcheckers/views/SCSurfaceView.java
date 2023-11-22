@@ -191,18 +191,32 @@ public class SCSurfaceView extends FlashSurfaceView {
                 if (teamPos[j].getRing() != -1) {
                     continue;
                 }
-                drawMarble(x, h - (rBase / 8f) * (k + 0.5f), i, -j, canvas);
+                drawMarble(x, h - (rBase / 8f) * (k + 0.5f), i, -1, canvas);
                 k++;
             }
         }
 
-        drawOuterRing(canvas);
-        for (int i = (state.getRingCount() - 2); i >= 1; i--) {
+        if (!Logger.getDebugValue()) {
+            drawOuterRing(canvas);
+        }
+
+        // draw rings
+        int start = 2;
+        int end = 1;
+        if (Logger.getDebugValue()) {
+            start = 1;
+            end = 0;
+        }
+        for (int i = (state.getRingCount() - start); i >= end; i--) {
             int r = rBase * (i + 1) / 8;
             drawRing(canvas, r, 8 - i);
         }
-        drawOuterRingMarbles(canvas);
 
+        if (!Logger.getDebugValue()) {
+            drawOuterRingMarbles(canvas);
+        }
+
+        // arrows for selecting rotation
         if (selectedBall >= 0) {
             float shift = 45f / selectedBallMag;
 
@@ -217,7 +231,9 @@ public class SCSurfaceView extends FlashSurfaceView {
             ccPos = new Point((int) lX, (int) lY);
         }
 
-        drawInnerRing(canvas, rBase / 8f);
+        if (!Logger.getDebugValue()) {
+            drawInnerRing(canvas, rBase / 8f);
+        }
     }
 
     /**
@@ -395,8 +411,10 @@ public class SCSurfaceView extends FlashSurfaceView {
 
         canvas.drawCircle(x, y, rBase / 24f, colorPaints2[team]);
 
-        if ((colorHighlight == team && num >= 0) || Logger.getDebugValue()) {
+        if (colorHighlight == team && num >= 0) {
             positions.put(num, new Point((int) x, (int) y));
+            canvas.drawText("" + num, x, y + rBase / 48f, whitePaint);
+        } else if (Logger.getDebugValue()) {
             canvas.drawText("" + num, x, y + rBase / 48f, whitePaint);
         }
     }
@@ -412,7 +430,6 @@ public class SCSurfaceView extends FlashSurfaceView {
     private void drawArrow(float x, float y, float angle, Canvas canvas) {
         Path path = new Path();
 
-        //angle = angle * (float) (Math.PI / 180);
         float ninety = (float) (Math.PI / 2);
         float threeHalves = 153.4349f * (float) (Math.PI / 180);
 

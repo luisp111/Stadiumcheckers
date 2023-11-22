@@ -65,6 +65,10 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
             SCState newState = new SCState((SCState) info);
             view.setState(newState);
 
+            if (Logger.getDebugValue()) {
+                Log.d(TAG, "receiveInfo: " + newState);
+            }
+
             if (newState.getCurrentTeamTurn() == playerNum) {
                 view.setColorHighlight(playerNum);
             }
