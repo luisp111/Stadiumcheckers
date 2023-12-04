@@ -66,7 +66,7 @@ public class SCStateTest {
         float[] angles = state.getRingAngles();
         assertEquals(63f, angles[1], 0.001f);
         assertEquals(0f, angles[0], 0.001f);
-        assertEquals(42f, state.getRingCount() - 1, 0.001f);
+        assertEquals(42f, angles[state.getRingCount() - 1], 0.001f);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class SCStateTest {
         assertEquals(state.angleDist(a1, a2), state.angleDist(a2, a1), 0.001f);
         assertEquals(160f, state.angleDist(a1, a2), 0.001f);
         assertEquals(state.angleDist(a1, a2, true), -state.angleDist(a2, a1, true), 0.001f);
-        assertEquals(-160f, state.angleDist(a2, a1, true), 0.001f);
+        assertEquals(-160f, state.angleDist(a1, a2, true), 0.001f);
     }
 
     @Test
