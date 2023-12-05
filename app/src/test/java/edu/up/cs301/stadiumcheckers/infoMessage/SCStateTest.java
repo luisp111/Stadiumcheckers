@@ -141,10 +141,19 @@ public class SCStateTest {
 
     @Test
     public void resetMarble() {
-        SCState state = new SCState();
-        Position test = new Position(0, 0);
+        SCState state = new SCState(2); // test state 2
+        Position test = new Position(0);
         assertFalse(state.resetMarble(0, test, 0));
-        // TODO: finish unit testing
+        Position test1 = new Position(-2, 0);
+        assertFalse(state.resetMarble(1, test1, 0));
+        Position test2 = new Position(-2, 5);
+        assertFalse(state.resetMarble(0, test2, 0));
+        assertTrue(state.resetMarble(0, test1, 0));
+        assertEquals(0, state.getTeamFromPosition(new Position(0)));
+        Position test3 = new Position(-2, 1);
+        assertFalse(state.resetMarble(0, test3, 0));
+        assertTrue(state.resetMarble(0, test3, 1));
+        assertEquals(0, state.getTeamFromPosition(new Position(state.getRingCount() - 2,0)));
     }
 
     @Test
