@@ -389,6 +389,11 @@ public class SCState extends GameState {
             return false;
         }
 
+        if ((int) (slot / 5f) != team) {
+            // you don't own that slot
+            return false;
+        }
+
         Position endPosition = new Position(slot);
         if (getTeamFromPosition(endPosition) != -1) {
             // target position is occupied

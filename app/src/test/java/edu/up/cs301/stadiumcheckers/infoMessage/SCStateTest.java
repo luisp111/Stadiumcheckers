@@ -152,6 +152,7 @@ public class SCStateTest {
         assertEquals(0, state.getTeamFromPosition(new Position(0)));
         Position test3 = new Position(-2, 1);
         assertFalse(state.resetMarble(0, test3, 0));
+        assertFalse(state.resetMarble(0, test3, 5));
         assertTrue(state.resetMarble(0, test3, 1));
         assertEquals(0, state.getTeamFromPosition(new Position(state.getRingCount() - 2,0)));
     }

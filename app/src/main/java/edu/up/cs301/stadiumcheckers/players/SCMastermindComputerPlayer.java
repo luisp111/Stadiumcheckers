@@ -1,9 +1,12 @@
 package edu.up.cs301.stadiumcheckers.players;
 
+import android.util.Log;
+
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 import edu.up.cs301.game.GameFramework.players.GameComputerPlayer;
 import edu.up.cs301.stadiumcheckers.Position;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
+import edu.up.cs301.stadiumcheckers.scActionMessage.SCResetAction;
 import edu.up.cs301.stadiumcheckers.scActionMessage.SCRotateAction;
 
 public class SCMastermindComputerPlayer extends GameComputerPlayer {
@@ -46,6 +49,25 @@ public class SCMastermindComputerPlayer extends GameComputerPlayer {
 
         Position[] marbles = state.getPositionsFromTeam(playerNum);
         int targetAngle = playerNum * 105 + 42;
+
+        // step 0: reset any marbles that need it
+        int[] order = {2, 1, 3, 0, 4};
+        for (Position pos : marbles) {
+            if (pos.getRing() != -2) {
+                continue;
+            }
+
+            for (int i = 0; i < 5; i++) {
+                int slot = playerNum * 5 + order[i];
+                if (state.getTeamFromPosition(new Position(slot)) == -1) {
+                    game.sendAction(new SCResetAction(this, pos, slot));
+                    return;
+                }
+            }
+
+            Log.d(TAG, "receiveInfo: Tried resetting a marble, but all starter slots full??");
+            return;
+        }
 
         // exhaustively deduce the best move
         float maxTotal = -999999;

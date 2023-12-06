@@ -131,8 +131,13 @@ public class SCLocalGame extends LocalGame {
         if (action instanceof SCResetAction) {
             SCResetAction resetAction = (SCResetAction) action;
 
-            return state.resetMarble(state.getCurrentTeamTurn(), resetAction.getPosition(),
+            boolean ret = state.resetMarble(state.getCurrentTeamTurn(), resetAction.getPosition(),
                     resetAction.getSlot());
+
+            if (ret) {
+                incrementTurn();
+            }
+            return ret;
         }
 
         if (action instanceof SCRotateAction) {

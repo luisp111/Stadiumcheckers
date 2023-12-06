@@ -1,10 +1,13 @@
 package edu.up.cs301.stadiumcheckers.players;
+import android.util.Log;
+
 import java.util.Random;
 
 import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
 import edu.up.cs301.game.GameFramework.players.GameComputerPlayer;
 import edu.up.cs301.stadiumcheckers.Position;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
+import edu.up.cs301.stadiumcheckers.scActionMessage.SCResetAction;
 import edu.up.cs301.stadiumcheckers.scActionMessage.SCRotateAction;
 
 public class SCDumbComputerPlayer extends GameComputerPlayer {
@@ -22,13 +25,6 @@ public class SCDumbComputerPlayer extends GameComputerPlayer {
         this.type = type;
     }
 
-    /*
-    public Position selectNextMove(ScState state){
-        Position[] marbles = getPositionsFromTeam(state.getCurrentTeamTurn());
-        return marbles[random.nextInt(marbles.length)];
-    }
-     */
-
     /**
      * Receive game info (and immediately play if able)
      *
@@ -45,9 +41,40 @@ public class SCDumbComputerPlayer extends GameComputerPlayer {
             return;
         }
 
+        // Add reaction time
+        try {
+            Thread.sleep(Math.max(1400 - (long) state.getTurnCount() * 10, 500)); // Adjust the sleep duration as needed
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Gets all marbles for current team
         Position[] marbles = state.getPositionsFromTeam(playerNum);
         int targetAngle = playerNum * 105 + 42;
+
+        // step 0: reset any marbles that need it
+        for (Position pos : marbles) {
+            if (pos.getRing() != -2) {
+                continue;
+            }
+
+            int[] order = {0, 1, 2, 3, 4};
+            for (int i = 0; i < 5; i++) {
+                int r = random.nextInt(5 - i) + i;
+                int tmp = order[i];
+                order[i] = order[r];
+                order[r] = tmp;
+
+                int slot = playerNum * 5 + order[i];
+                if (state.getTeamFromPosition(new Position(slot)) == -1) {
+                    game.sendAction(new SCResetAction(this, pos, slot));
+                    return;
+                }
+            }
+
+            Log.d(TAG, "receiveInfo: Tried resetting a marble, but all starter slots full??");
+            return;
+        }
 
         // step 1: find marbles on the bottom that can get secured
         for (Position pos : marbles) {
@@ -70,7 +97,7 @@ public class SCDumbComputerPlayer extends GameComputerPlayer {
             default:
                 int[] base = {0, 1, 2, 3, 4};
                 for (int i = 0; i < 5; i++) {
-                    int r = random.nextInt(marbles.length - i) + i;
+                    int r = random.nextInt(5 - i) + i;
                     int tmp = base[i];
                     base[i] = base[r];
                     base[r] = tmp;
@@ -100,17 +127,7 @@ public class SCDumbComputerPlayer extends GameComputerPlayer {
                 }
         }
 
-        // Randomly decide the direction of rotation (clockwise or counterclockwise
-        boolean rotateClockwise = random.nextBoolean();
-
-        // Add reaction time
-        try {
-            Thread.sleep(Math.max(1400 - (long) state.getTurnCount() * 10, 500)); // Adjust the sleep duration as needed
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        game.sendAction(new SCRotateAction(this, selectedMarble, rotateClockwise));
+        game.sendAction(new SCRotateAction(this, selectedMarble, random.nextBoolean()));
     }
 }
 //check for positions from what I get goes by -2 and then do the reset action
