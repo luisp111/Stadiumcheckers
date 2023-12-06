@@ -87,7 +87,12 @@ public class SCState extends GameState {
         turnCount = state.getTurnCount();
         currentTeamTurn = state.getCurrentTeamTurn();
         ringAngles = Arrays.copyOf(state.getRingAngles(), state.getRingAngles().length);
-        marblesByPosition = new HashMap<>(state.getMarblesByPosition());
+
+        marblesByPosition = new HashMap<>();
+        synchronized(state.marblesByPosition) {
+            marblesByPosition.putAll(state.getMarblesByPosition());
+        }
+
         marblesByTeam = new HashMap<>();
         for (Map.Entry<Integer, Position[]> entry : state.getMarblesByTeam().entrySet()) {
             marblesByTeam.put(entry.getKey(), Arrays.copyOf(entry.getValue(), entry.getValue().length));
