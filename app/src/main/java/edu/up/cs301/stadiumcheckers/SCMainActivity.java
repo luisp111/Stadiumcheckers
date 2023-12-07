@@ -1,5 +1,7 @@
 package edu.up.cs301.stadiumcheckers;
 
+import static edu.up.cs301.game.GameFramework.utilities.Saving.readFromFile;
+
 import java.util.ArrayList;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
@@ -147,6 +149,10 @@ public class SCMainActivity extends GameMainActivity {
         String appName = getGameString(gameName);
         super.loadGame(appName);
         Logger.log(TAG, "Loading: " + gameName);
-        return (GameState) new SCState((SCState) Saving.readFromFile(appName, this.getApplicationContext()));
+        GameState state = Saving.readFromFile(appName, this.getApplicationContext());
+        if (!(state instanceof SCState)) {
+            return null;
+        }
+        return new SCState((SCState) state);
     }
 }

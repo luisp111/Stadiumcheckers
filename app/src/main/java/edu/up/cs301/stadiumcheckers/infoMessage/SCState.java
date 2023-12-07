@@ -83,6 +83,11 @@ public class SCState extends GameState {
      * @param state the constructor to copy values from
      */
     public SCState(SCState state) {
+        if (state == null) {
+            state = new SCState();
+            Log.d(TAG, "SCState: Tried copying a null state!");
+        }
+        
         random = new Random();
         turnCount = state.getTurnCount();
         currentTeamTurn = state.getCurrentTeamTurn();
