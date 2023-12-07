@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
@@ -118,7 +119,7 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         SCSurfaceView sView = (SCSurfaceView) view;
 
         SCState state = sView.getState();
-        if (state.getCurrentTeamTurn() != playerNum) {
+        if (state == null || state.getCurrentTeamTurn() != playerNum) {
             return false;
         }
 
