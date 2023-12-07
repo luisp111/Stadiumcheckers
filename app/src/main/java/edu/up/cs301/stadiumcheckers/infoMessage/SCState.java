@@ -117,6 +117,15 @@ public class SCState extends GameState {
         for (int i = 0; i < 4; i++) {
             Position[] marbles = new Position[5];
             for (int j = 0; j < 5; j++) {
+                if (j == 4) {
+                    if (test == 3) {
+                        row = -1;
+                    } else if (test == 4) {
+                        row = -2;
+                    }
+                } else if (test != 2) {
+                    row = 0;
+                }
                 marbles[j] = new Position(row, j + i * 5);
                 marblesByPosition.put(marbles[j], i);
             }

@@ -136,7 +136,22 @@ public class SCStateTest {
 
     @Test
     public void rotateRing() {
-        // TODO: finish unit testing
+        SCState state = new SCState(3); // test state 3
+        Position test = new Position(0);
+        assertFalse(state.rotateRing(1, test, true));
+        Position test1 = new Position(5);
+        assertFalse(state.rotateRing(0, test1, false));
+        Position test2 = new Position(4);
+        assertFalse(state.rotateRing(0, test2, true));
+
+        SCState state1 = new SCState(4); // test state 4
+        assertFalse(state1.rotateRing(0, test, true));
+        assertTrue(state.rotateRing(0, test, true));
+
+        SCState state2 = new SCState(1); // test state 1
+        Position test3 = new Position(1);
+        assertTrue(state2.rotateRing(0, test3, false));
+        assertEquals(0, state.getTeamFromPosition(new Position(state.getRingCount() - 2, 0)));
     }
 
     @Test
