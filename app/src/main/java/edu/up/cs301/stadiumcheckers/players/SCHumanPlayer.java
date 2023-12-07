@@ -93,6 +93,16 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
     }
 
     /**
+     * Behavior for when the game ends
+     *
+     * @param msg the "game over" message sent by the game
+     */
+    @Override
+    protected void gameIsOver(String msg) {
+        myActivity.recreate();
+    }
+
+    /**
      * Called when the player clicks their tablet
      *
      * @param view        the view that was pressed
