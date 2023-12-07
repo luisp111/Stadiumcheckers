@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
@@ -63,6 +64,7 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         SCSurfaceView view = myActivity.findViewById(R.id.surfaceView);
         if (info instanceof SCState) {
             SCState newState = new SCState((SCState) info);
+            view.setTeamNames(allPlayerNames);
             view.setState(newState);
 
             if (Logger.getDebugValue()) {
@@ -92,6 +94,16 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
     }
 
     /**
+     * Behavior for when the game ends
+     *
+     * @param msg the "game over" message sent by the game
+     */
+    @Override
+    protected void gameIsOver(String msg) {
+        myActivity.recreate();
+    }
+
+    /**
      * Called when the player clicks their tablet
      *
      * @param view        the view that was pressed
@@ -107,7 +119,7 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         SCSurfaceView sView = (SCSurfaceView) view;
 
         SCState state = sView.getState();
-        if (state.getCurrentTeamTurn() != playerNum) {
+        if (state == null || state.getCurrentTeamTurn() != playerNum) {
             return false;
         }
 

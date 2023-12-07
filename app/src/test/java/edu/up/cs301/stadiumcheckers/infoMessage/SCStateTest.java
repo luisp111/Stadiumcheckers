@@ -4,6 +4,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import java.util.HashMap;
+
+import edu.up.cs301.stadiumcheckers.Position;
+
 public class SCStateTest {
     @Test
     public void getTurnCount() {
@@ -51,45 +55,140 @@ public class SCStateTest {
 
     @Test
     public void getRingCount() {
+        SCState state = new SCState();
+        assertEquals(9, state.getRingCount());
     }
 
     @Test
     public void getRingAngles() {
+        SCState state = new SCState();
+        state.setRingAngle(1, 63f);
+        float[] angles = state.getRingAngles();
+        assertEquals(63f, angles[1], 0.001f);
+        assertEquals(0f, angles[0], 0.001f);
+        assertEquals(42f, angles[state.getRingCount() - 1], 0.001f);
     }
 
     @Test
     public void getCurrentTeamTurn() {
+        SCState state = new SCState();
+        assertEquals(0, state.getCurrentTeamTurn());
     }
 
     @Test
     public void setCurrentTeamTurn() {
+        SCState state = new SCState();
+        assertEquals(0, state.getCurrentTeamTurn());
+        state.setCurrentTeamTurn(1);
+        assertEquals(1, state.getCurrentTeamTurn());
     }
 
     @Test
     public void getTeamFromPosition() {
+        SCState state = new SCState();
+        assertEquals(-1, state.getTeamFromPosition(new Position(-999, 999)));
+        assertEquals(-1, state.getTeamFromPosition(new Position(0, 25)));
+        assertEquals(0, state.getTeamFromPosition(new Position(0, 0)));
+        assertEquals(1, state.getTeamFromPosition(new Position(0, 5)));
+        assertEquals(2, state.getTeamFromPosition(new Position(0, 10)));
+        assertEquals(3, state.getTeamFromPosition(new Position(0, 15)));
     }
 
     @Test
     public void getPositionsFromTeam() {
+        SCState state = new SCState();
+        assertEquals(0, state.getPositionsFromTeam(-1).length);
+        Position[] red = state.getPositionsFromTeam(0);
+        assertEquals(5, red.length);
+        assertEquals(0, state.getTeamFromPosition(red[0]));
+        assertEquals(0, state.getTeamFromPosition(red[1]));
+        assertEquals(0, state.getTeamFromPosition(red[2]));
+        assertEquals(0, state.getTeamFromPosition(red[3]));
+        assertEquals(0, state.getTeamFromPosition(red[4]));
     }
 
     @Test
     public void getMarblesByTeam() {
+        SCState state = new SCState();
+        HashMap<Integer, Position[]> mTeam = state.getMarblesByTeam();
+        assertArrayEquals(mTeam.get(0), state.getPositionsFromTeam(0));
+        assertArrayEquals(mTeam.get(1), state.getPositionsFromTeam(1));
+        assertArrayEquals(mTeam.get(2), state.getPositionsFromTeam(2));
+        assertArrayEquals(mTeam.get(3), state.getPositionsFromTeam(3));
     }
 
     @Test
     public void getMarblesByPosition() {
+        SCState state = new SCState();
+        HashMap<Position, Integer> mPos = state.getMarblesByPosition();
+        Position test = new Position(0, 0);
+        Integer t = mPos.get(test);
+        assertNotNull(t);
+        assertEquals(state.getTeamFromPosition(test), (int) t);
     }
 
     @Test
     public void closestSlot() {
+        SCState state = new SCState();
+        assertEquals(0, state.closestSlot(0, 0, true));
+        assertEquals(0, state.closestSlot(0, 0, false));
     }
 
     @Test
     public void rotateRing() {
+        SCState state = new SCState(3); // test state 3
+        Position test = new Position(0);
+        assertFalse(state.rotateRing(1, test, true));
+        Position test1 = new Position(5);
+        assertFalse(state.rotateRing(0, test1, false));
+        Position test2 = new Position(4);
+        assertFalse(state.rotateRing(0, test2, true));
+
+        SCState state1 = new SCState(4); // test state 4
+        assertFalse(state1.rotateRing(0, test, true));
+        assertTrue(state.rotateRing(0, test, true));
+
+        SCState state2 = new SCState(1); // test state 1
+        Position test3 = new Position(1);
+        assertTrue(state2.rotateRing(0, test3, false));
+        assertEquals(0, state.getTeamFromPosition(new Position(state.getRingCount() - 2, 0)));
     }
 
     @Test
     public void resetMarble() {
+        SCState state = new SCState(2); // test state 2
+        Position test = new Position(0);
+        assertFalse(state.resetMarble(0, test, 0));
+        Position test1 = new Position(-2, 0);
+        assertFalse(state.resetMarble(1, test1, 0));
+        Position test2 = new Position(-2, 5);
+        assertFalse(state.resetMarble(0, test2, 0));
+        assertTrue(state.resetMarble(0, test1, 0));
+        assertEquals(0, state.getTeamFromPosition(new Position(0)));
+        Position test3 = new Position(-2, 1);
+        assertFalse(state.resetMarble(0, test3, 0));
+        assertFalse(state.resetMarble(0, test3, 5));
+        assertTrue(state.resetMarble(0, test3, 1));
+        assertEquals(0, state.getTeamFromPosition(new Position(state.getRingCount() - 2,0)));
+    }
+
+    @Test
+    public void angleDist() {
+        SCState state = new SCState();
+        float a1 = 50f;
+        float a2 = 210f;
+        assertEquals(state.angleDist(a1, a2, false), state.angleDist(a1, a2), 0.001f);
+        assertEquals(state.angleDist(a1, a2), state.angleDist(a2, a1), 0.001f);
+        assertEquals(160f, state.angleDist(a1, a2), 0.001f);
+        assertEquals(state.angleDist(a1, a2, true), -state.angleDist(a2, a1, true), 0.001f);
+        assertEquals(-160f, state.angleDist(a1, a2, true), 0.001f);
+    }
+
+    @Test
+    public void getPosAngle() {
+        SCState state = new SCState();
+        assertEquals(0f, state.getPosAngle(new Position(0, 0)), 0.001f);
+        assertEquals(21f, state.getPosAngle(new Position(0, 1)), 0.001f);
+        assertEquals(42f, state.getPosAngle(new Position(state.getRingCount() - 1, 0)), 0.001f);
     }
 }

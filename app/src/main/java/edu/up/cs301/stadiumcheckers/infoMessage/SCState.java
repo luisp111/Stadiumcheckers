@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -82,12 +83,66 @@ public class SCState extends GameState {
      * @param state the constructor to copy values from
      */
     public SCState(SCState state) {
+        if (state == null) {
+            state = new SCState();
+            Log.d(TAG, "SCState: Tried copying a null state!");
+        }
+        
         random = new Random();
         turnCount = state.getTurnCount();
         currentTeamTurn = state.getCurrentTeamTurn();
-        marblesByTeam = state.getMarblesByTeam();
-        ringAngles = state.getRingAngles();
-        marblesByPosition = state.getMarblesByPosition();
+        ringAngles = Arrays.copyOf(state.getRingAngles(), state.getRingAngles().length);
+
+        marblesByPosition = new HashMap<>();
+        synchronized(state.marblesByPosition) {
+            marblesByPosition.putAll(state.getMarblesByPosition());
+        }
+
+        marblesByTeam = new HashMap<>();
+        for (Map.Entry<Integer, Position[]> entry : state.getMarblesByTeam().entrySet()) {
+            marblesByTeam.put(entry.getKey(), Arrays.copyOf(entry.getValue(), entry.getValue().length));
+        }
+    }
+
+    /**
+     * Testing constructor for state
+     */
+    public SCState(int test) {
+        turnCount = 0;
+        currentTeamTurn = 0;
+        random = new Random();
+
+        marblesByTeam = new HashMap<>();
+        marblesByPosition = new HashMap<>();
+
+        int row = 0;
+        if (test == 2) {
+            row = -2;
+        }
+        for (int i = 0; i < 4; i++) {
+            Position[] marbles = new Position[5];
+            for (int j = 0; j < 5; j++) {
+                if (j == 4) {
+                    if (test == 3) {
+                        row = -1;
+                    } else if (test == 4) {
+                        row = -2;
+                    }
+                } else if (test != 2) {
+                    row = 0;
+                }
+                marbles[j] = new Position(row, j + i * 5);
+                marblesByPosition.put(marbles[j], i);
+            }
+            marblesByTeam.put(i, marbles);
+        }
+
+        ringAngles = new float[ringSlotCounts.length];
+        ringAngles[0] = 0;
+        ringAngles[ringSlotCounts.length - 1] = 42f;
+        for (int i = 1; i < ringSlotCounts.length - 1; i++) {
+            ringAngles[i] = 21f;
+        }
     }
 
     public int getTurnCount() {
@@ -345,6 +400,11 @@ public class SCState extends GameState {
 
         if (currentTeamTurn != team || getTeamFromPosition(position) != team) {
             // not your turn / not your marble
+            return false;
+        }
+
+        if ((int) (slot / 5f) != team) {
+            // you don't own that slot
             return false;
         }
 
@@ -608,7 +668,7 @@ public class SCState extends GameState {
                 // select a random slot id just to keep two marbles from getting the same position
                 cand.targetPos.setPosition(targetRing, random.nextInt());
                 */
-        } else {
+        } else if (end.getRing() >= 0) {
             // make marble drop further if it can
             float angle = ringAngles[end.getRing()] + (420f / ringSlotCounts[end.getRing()]) * end.getSlot();
             int targetSlot = closestSlot(end.getRing() + 1, angle, true);
@@ -638,7 +698,7 @@ public class SCState extends GameState {
         }
         marblesByTeam.put(team, positions);
 
-        if (start.getRing() == 0) {
+        if (start.getRing() <= 0) {
             return !start.equals(end);
         }
 

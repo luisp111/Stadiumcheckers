@@ -1,5 +1,7 @@
 package edu.up.cs301.stadiumcheckers;
 
+import static edu.up.cs301.game.GameFramework.utilities.Saving.readFromFile;
+
 import java.util.ArrayList;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
@@ -14,6 +16,7 @@ import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
 import edu.up.cs301.stadiumcheckers.players.SCDumbComputerPlayer;
 import edu.up.cs301.stadiumcheckers.players.SCHumanPlayer;
+import edu.up.cs301.stadiumcheckers.players.SCMastermindComputerPlayer;
 import edu.up.cs301.stadiumcheckers.players.SCSmartComputerPlayer;
 
 /**
@@ -82,6 +85,13 @@ public class SCMainActivity extends GameMainActivity {
             }
         });
 
+        // exhaustive-search ai
+        playerTypes.add(new GamePlayerType("Mastermind Michael") {
+            public GamePlayer createPlayer(String name) {
+                return new SCMastermindComputerPlayer(name);
+            }
+        });
+
         // Create a game configuration class for stadium checkers
         GameConfig defaultConfig = new GameConfig(playerTypes, 1, 4,
                 "Stadium Checkers", PORT_NUMBER);
@@ -139,6 +149,10 @@ public class SCMainActivity extends GameMainActivity {
         String appName = getGameString(gameName);
         super.loadGame(appName);
         Logger.log(TAG, "Loading: " + gameName);
-        return (GameState) new SCState((SCState) Saving.readFromFile(appName, this.getApplicationContext()));
+        GameState state = Saving.readFromFile(appName, this.getApplicationContext());
+        if (!(state instanceof SCState)) {
+            return null;
+        }
+        return new SCState((SCState) state);
     }
 }

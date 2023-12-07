@@ -2,6 +2,7 @@ package edu.up.cs301.stadiumcheckers;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Objects;
  * <p>
  * Class to store the position of a marble.
  */
-public class Position {
+public class Position implements Serializable {
     // the ring value goes from 0 to (ring count), 0 being the starting ring
     // a ring value is -2 when the ball needs to be reset
     // a ring value is -1 when the ball is secured (players need all 5 secured to win)

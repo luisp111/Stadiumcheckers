@@ -529,6 +529,7 @@ public abstract class GameMainActivity extends Activity implements
         if(itemId == menu_help)
         {
             Logger.log(TAG, "This is the help button!");
+            MessageBox.popUpMessage("Get all 5 of your color marbles to fall into your color slot in the middle. First to secure all 5 of their marbles wins.", this);
         }
         else if(itemId == save_gave)
         {

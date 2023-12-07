@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import edu.up.cs301.game.GameFramework.utilities.FlashSurfaceView;
@@ -76,7 +77,7 @@ public class SCSurfaceView extends FlashSurfaceView {
     private boolean ringB = false;
 
     // for the status on the top left
-    private final String[] teamNames = {"RED", "YELLOW", "GREEN", "BLUE"};
+    private String[] teamNames;
     private String statusText;
 
     // team color that should have highlighted balls
@@ -146,9 +147,20 @@ public class SCSurfaceView extends FlashSurfaceView {
     public void setState(SCState state) {
         selectedBall = -1;
         colorHighlight = -1;
-        statusText = String.format("TURN %d: %s",
-                state.getTurnCount(), teamNames[state.getCurrentTeamTurn()]);
+        if (teamNames != null) {
+            statusText = String.format("TURN %d: %s",
+                    state.getTurnCount(), teamNames[state.getCurrentTeamTurn()]);
+        }
         this.state = state;
+    }
+
+    /**
+     * sets the team names
+     *
+     * @param teamNames the name of each team member
+     */
+    public void setTeamNames(String[] teamNames) {
+        this.teamNames = Arrays.copyOf(teamNames, teamNames.length);
     }
 
     /**
@@ -171,9 +183,11 @@ public class SCSurfaceView extends FlashSurfaceView {
         ringB = false;
 
         // hardcoded :( info display on top left
-        canvas.drawRect(0, 0, 350, 50, whitePaint);
-        canvas.drawCircle(350, 0, 50, whitePaint);
-        canvas.drawText(statusText, 10, 38, colorPaints2[state.getCurrentTeamTurn()]);
+        if (teamNames != null) {
+            canvas.drawRect(0, 0, 450, 50, whitePaint);
+            canvas.drawCircle(450, 0, 50, whitePaint);
+            canvas.drawText(statusText, 10, 38, colorPaints2[state.getCurrentTeamTurn()]);
+        }
 
         //this draws the secured marbles on the bottom right
         float top = h - rBase / 1.6f + rBase / 16f;
