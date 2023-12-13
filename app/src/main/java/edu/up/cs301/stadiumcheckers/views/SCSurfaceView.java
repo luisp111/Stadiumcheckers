@@ -83,7 +83,10 @@ public class SCSurfaceView extends FlashSurfaceView {
     // team color that should have highlighted balls
     // -1 == no balls highlighted
     private int colorHighlight = -1;
+    // whether you can move or reset on your turn
     private boolean resetMode = false;
+    // keep track of "displayed" angles for simple exponential tweening
+    private final Float[] animAngles = new Float[9];
 
     /**
      * Constructor for the SCSurfaceView class.
@@ -160,6 +163,12 @@ public class SCSurfaceView extends FlashSurfaceView {
             statusText = String.format("TURN %d: %s",
                     state.getTurnCount(), teamNames[state.getCurrentTeamTurn()]);
         }
+        if (animAngles[0] == null) {
+            float[] angs = state.getRingAngles();
+            for (int i = 0; i < state.getRingCount(); i++) {
+                animAngles[i] = angs[i];
+            }
+        }
         this.state = state;
     }
 
@@ -198,7 +207,7 @@ public class SCSurfaceView extends FlashSurfaceView {
             canvas.drawText(statusText, 10, 38, colorPaints2[state.getCurrentTeamTurn()]);
         }
 
-        //this draws the secured marbles on the bottom right
+        // this draws the secured marbles on the bottom right
         float top = h - rBase / 1.6f + rBase / 16f;
         for (int i = 0; i < 4; i++) {
             float x = w - (rBase / 8f) * (1.5f * i + 1);
@@ -215,6 +224,25 @@ public class SCSurfaceView extends FlashSurfaceView {
                     continue;
                 }
                 drawMarble(x, h - (rBase / 8f) * (k + 0.5f), i, -1, canvas);
+                k++;
+            }
+        }
+
+        // draw marbles needing to be reset
+        double angleBase = Math.PI / 10;
+        for (int i = 0; i < 4; i++) {
+
+            int k = 0;
+            Position[] teamPos = state.getPositionsFromTeam(i);
+            for (int j = 0; j < 5; j++) {
+                if (teamPos[j].getRing() != -2) {
+                    continue;
+                }
+
+                double angle = angleBase * k / 3 + angleBase * i * 5;
+                float x = widthH + (float) (rBase * Math.sin(angle) * 1.24);
+                float y = heightH + (float) (rBase * Math.cos(angle) * 1.24);
+                drawMarble(x, y, i, -1, canvas);
                 k++;
             }
         }

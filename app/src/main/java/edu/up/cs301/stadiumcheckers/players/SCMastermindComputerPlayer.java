@@ -96,7 +96,7 @@ public class SCMastermindComputerPlayer extends GameComputerPlayer {
                         continue;
                     }
                     if (p.getRing() == -2) {
-                        absDist--;
+                        secMarbs--;
                         continue;
                     }
                     angDist += state.angleDist(targetAngle, state.getPosAngle(p));

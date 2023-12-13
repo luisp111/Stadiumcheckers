@@ -644,21 +644,6 @@ public class SCState extends GameState {
                 end.setPosition(-1, random.nextInt());
             } else {
                 end.setPosition(-2, random.nextInt());
-                /*
-                int[] elems = {0, 1, 2, 3, 4};
-                for (int i = 0; i < 5; i++) {
-                    int r = random.nextInt(elems.length - i) + i;
-                    int tmp = elems[i];
-                    elems[i] = elems[r];
-                    elems[r] = tmp;
-
-                    Position possiblePos = new Position(0, elems[i] + team * 5);
-                    if (getTeamFromPosition(possiblePos) == -1) {
-                        end.setPosition(possiblePos);
-                        break;
-                    }
-                }
-                */
             }
         } else if (end.getRing() >= 0) {
             // make marble drop further if it can
