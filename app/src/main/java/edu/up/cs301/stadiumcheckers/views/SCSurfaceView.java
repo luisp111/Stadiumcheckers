@@ -83,6 +83,7 @@ public class SCSurfaceView extends FlashSurfaceView {
     // team color that should have highlighted balls
     // -1 == no balls highlighted
     private int colorHighlight = -1;
+    private boolean resetMode = false;
 
     /**
      * Constructor for the SCSurfaceView class.
@@ -136,6 +137,14 @@ public class SCSurfaceView extends FlashSurfaceView {
 
     public Point getCcPos() {
         return ccPos;
+    }
+
+    public void setResetMode(boolean resetMode) {
+        this.resetMode = resetMode;
+    }
+
+    public boolean getResetMode() {
+        return resetMode;
     }
 
     /**
@@ -336,6 +345,17 @@ public class SCSurfaceView extends FlashSurfaceView {
                 float x = widthH + (float) (rBase * Math.sin(angle) * 1.02);
                 float y = heightH + (float) (rBase * Math.cos(angle) * 1.02);
                 canvas.drawCircle(x, y, rBase / 15f, colorPaints[c]);
+
+                if (resetMode && c == colorHighlight) {
+                    Position pos = new Position(0, i + c * 5);
+                    int team = state.getTeamFromPosition(pos);
+                    if (team == -1) {
+                        x = widthH + (float) (rBase * Math.sin(angle) * 1.12);
+                        y = heightH + (float) (rBase * Math.cos(angle) * 1.12);
+                        drawArrow(x, y, -(float) (angle + Math.PI / 2), canvas);
+                        positions.put(i, new Point((int) x, (int) y));
+                    }
+                }
                 j++;
             }
         }
@@ -417,7 +437,7 @@ public class SCSurfaceView extends FlashSurfaceView {
      * @param canvas the canvas to draw on
      */
     private void drawMarble(float x, float y, int team, int num, Canvas canvas) {
-        if (colorHighlight == team && (selectedBall < 0 || selectedBall == num) && num >= 0) {
+        if (!resetMode && colorHighlight == team && (selectedBall < 0 || selectedBall == num) && num >= 0) {
             canvas.drawCircle(x, y, rBase / 20f, whitePaint);
         } else {
             canvas.drawCircle(x, y, rBase / 20f, blackPaint);
@@ -425,7 +445,7 @@ public class SCSurfaceView extends FlashSurfaceView {
 
         canvas.drawCircle(x, y, rBase / 24f, colorPaints2[team]);
 
-        if (colorHighlight == team && num >= 0) {
+        if (!resetMode && colorHighlight == team && num >= 0) {
             positions.put(num, new Point((int) x, (int) y));
             canvas.drawText("" + num, x, y + rBase / 48f, whitePaint);
         } else if (Logger.getDebugValue()) {

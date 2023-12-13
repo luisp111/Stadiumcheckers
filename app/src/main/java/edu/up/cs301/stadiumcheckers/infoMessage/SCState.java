@@ -28,10 +28,10 @@ public class SCState extends GameState {
     // the number of slots for each ring (going from outside -> inside)
     private final int[] ringSlotCounts = {20, 6, 7, 6, 5, 6, 4, 5, 4};
     // all marbles in the game, indexed by team
-    // so <team, marble> -> the getPositionFromTeam method returns an empty array if team is invalid
+    // so <team, marble[]> -- the getPositionFromTeam method returns an empty array if team is invalid
     private final HashMap<Integer, Position[]> marblesByTeam;
     // all marbles in the game, indexed by position
-    // so <marble, team> -> the getTeamFromPosition method returns -1 if the position is empty
+    // so <marble, team> -- the getTeamFromPosition method returns -1 if the position is empty
     private final HashMap<Position, Integer> marblesByPosition;
     // the angles of each ring (going from outside -> inside)
     // angles are a range of 0-420 so as to be divisible by 7
@@ -643,8 +643,8 @@ public class SCState extends GameState {
             if (team == end.getSlot()) {
                 end.setPosition(-1, random.nextInt());
             } else {
-                // auto-reset for alpha
-                // TODO: replace with proper implementation
+                end.setPosition(-2, random.nextInt());
+                /*
                 int[] elems = {0, 1, 2, 3, 4};
                 for (int i = 0; i < 5; i++) {
                     int r = random.nextInt(elems.length - i) + i;
@@ -658,16 +658,8 @@ public class SCState extends GameState {
                         break;
                     }
                 }
-            }
-                /*
-                int targetRing = -2; // -2: marble fell into another team's target hole
-                if (getTeamFromPosition(cand.pos) == cand.targetPos.getSlot()) {
-                    targetRing = -1; // -1: marble fell into the correct target hole
-                }
-
-                // select a random slot id just to keep two marbles from getting the same position
-                cand.targetPos.setPosition(targetRing, random.nextInt());
                 */
+            }
         } else if (end.getRing() >= 0) {
             // make marble drop further if it can
             float angle = ringAngles[end.getRing()] + (420f / ringSlotCounts[end.getRing()]) * end.getSlot();

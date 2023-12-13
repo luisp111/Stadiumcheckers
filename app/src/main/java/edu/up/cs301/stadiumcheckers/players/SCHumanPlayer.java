@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
@@ -16,6 +15,7 @@ import edu.up.cs301.game.GameFramework.utilities.Logger;
 import edu.up.cs301.game.R;
 import edu.up.cs301.stadiumcheckers.Position;
 import edu.up.cs301.stadiumcheckers.infoMessage.SCState;
+import edu.up.cs301.stadiumcheckers.scActionMessage.SCResetAction;
 import edu.up.cs301.stadiumcheckers.scActionMessage.SCRotateAction;
 import edu.up.cs301.stadiumcheckers.views.SCSurfaceView;
 
@@ -66,6 +66,15 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
             SCState newState = new SCState((SCState) info);
             view.setTeamNames(allPlayerNames);
             view.setState(newState);
+
+            boolean resetMode = false;
+            for (Position p : newState.getPositionsFromTeam(playerNum)) {
+                if (p.getRing() == -2) {
+                    resetMode = true;
+                    break;
+                }
+            }
+            view.setResetMode(resetMode);
 
             if (Logger.getDebugValue()) {
                 Log.d(TAG, "receiveInfo: " + newState);
@@ -130,6 +139,14 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
             Point p = entry.getValue();
             if (x < p.x + bound && x > p.x - bound && y < p.y + bound && y > p.y - bound) {
                 Log.d(TAG, "onTouch: ball selected");
+                if (sView.getResetMode()) {
+                    for (Position pos : state.getPositionsFromTeam(playerNum)) {
+                        if (pos.getRing() == -2) {
+                            game.sendAction(new SCResetAction(this, pos, entry.getKey()));
+                        }
+                    }
+                    return false;
+                }
                 sView.setSelectedBall(entry.getKey());
                 sView.invalidate();
                 return false;
