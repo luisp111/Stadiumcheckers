@@ -36,6 +36,8 @@ public class SCState extends GameState {
     // the angles of each ring (going from outside -> inside)
     // angles are a range of 0-420 so as to be divisible by 7
     private final float[] ringAngles;
+    // tracker for ring rotations
+    private final boolean[] lastRingRotations;
     // the total number of turns the game has gone through
     private int turnCount;
     // the current team's turn
@@ -69,10 +71,12 @@ public class SCState extends GameState {
         }
 
         ringAngles = new float[ringSlotCounts.length];
+        lastRingRotations = new boolean[ringSlotCounts.length];
         ringAngles[0] = 0;
         ringAngles[ringSlotCounts.length - 1] = 42f;
         for (int i = 1; i < ringSlotCounts.length - 1; i++) {
             ringAngles[i] = random.nextInt(420);
+            lastRingRotations[i] = false;
         }
     }
 
@@ -91,7 +95,8 @@ public class SCState extends GameState {
         random = new Random();
         turnCount = state.getTurnCount();
         currentTeamTurn = state.getCurrentTeamTurn();
-        ringAngles = Arrays.copyOf(state.getRingAngles(), state.getRingAngles().length);
+        ringAngles = Arrays.copyOf(state.getRingAngles(), state.getRingCount());
+        lastRingRotations = Arrays.copyOf(state.getLastRingRotations(), state.getRingCount());
 
         marblesByPosition = new HashMap<>();
         synchronized(state.marblesByPosition) {
@@ -138,10 +143,12 @@ public class SCState extends GameState {
         }
 
         ringAngles = new float[ringSlotCounts.length];
+        lastRingRotations = new boolean[ringSlotCounts.length];
         ringAngles[0] = 0;
         ringAngles[ringSlotCounts.length - 1] = 42f;
         for (int i = 1; i < ringSlotCounts.length - 1; i++) {
             ringAngles[i] = 21f;
+            lastRingRotations[i] = false;
         }
     }
 
@@ -215,6 +222,10 @@ public class SCState extends GameState {
 
     public void setCurrentTeamTurn(int currentTeamTurn) {
         this.currentTeamTurn = currentTeamTurn;
+    }
+
+    public boolean[] getLastRingRotations() {
+        return lastRingRotations;
     }
 
     /**
@@ -331,6 +342,7 @@ public class SCState extends GameState {
             int targetSlot = closestSlot(ring + 1, angle, !direction);
             float targetAngle = getPosAngle(new Position(ring + 1, targetSlot));
             float dist = angleDist(angle, targetAngle);
+            lastRingRotations[ring] = direction;
 
             dropMarblesLower(ring, dist, position, !direction);
             dropMarblesUpper(ring - 1, dist, position, direction);
@@ -350,6 +362,7 @@ public class SCState extends GameState {
         int targetSlot = closestSlot(ring + 1, angle, direction);
         float targetAngle = getPosAngle(new Position(ring + 1, targetSlot));
         float dist = angleDist(angle, targetAngle);
+        lastRingRotations[ring + 1] = direction;
 
         // continuously rotate and drop marbles until the target marble has dropped
         int skips = 0;

@@ -179,5 +179,4 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
 
         return false;
     }
-
 }

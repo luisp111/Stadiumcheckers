@@ -85,8 +85,11 @@ public class SCSurfaceView extends FlashSurfaceView {
     private int colorHighlight = -1;
     // whether you can move or reset on your turn
     private boolean resetMode = false;
-    // keep track of "displayed" angles for simple exponential tweening
+
+    // variables for animating
     private final Float[] animAngles = new Float[9];
+    private boolean keepUpdating = false;
+    private SCSurfaceViewThread thread;
 
     /**
      * Constructor for the SCSurfaceView class.
@@ -150,6 +153,10 @@ public class SCSurfaceView extends FlashSurfaceView {
         return resetMode;
     }
 
+    public boolean shouldKeepUpdating() {
+        return keepUpdating;
+    }
+
     /**
      * Sets a new state to display
      *
@@ -164,9 +171,8 @@ public class SCSurfaceView extends FlashSurfaceView {
                     state.getTurnCount(), teamNames[state.getCurrentTeamTurn()]);
         }
         if (animAngles[0] == null) {
-            float[] angs = state.getRingAngles();
             for (int i = 0; i < state.getRingCount(); i++) {
-                animAngles[i] = angs[i];
+                animAngles[i] = state.getRingAngle(i);
             }
         }
         this.state = state;
@@ -179,6 +185,19 @@ public class SCSurfaceView extends FlashSurfaceView {
      */
     public void setTeamNames(String[] teamNames) {
         this.teamNames = Arrays.copyOf(teamNames, teamNames.length);
+    }
+
+    /**
+     * called to cause a redraw
+     */
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        if (thread == null || !thread.isAlive()) {
+            keepUpdating = true;
+            thread = new SCSurfaceViewThread(this);
+            thread.start();
+        }
     }
 
     /**
@@ -231,7 +250,6 @@ public class SCSurfaceView extends FlashSurfaceView {
         // draw marbles needing to be reset
         double angleBase = Math.PI / 10;
         for (int i = 0; i < 4; i++) {
-
             int k = 0;
             Position[] teamPos = state.getPositionsFromTeam(i);
             for (int j = 0; j < 5; j++) {
@@ -247,25 +265,19 @@ public class SCSurfaceView extends FlashSurfaceView {
             }
         }
 
-        if (!Logger.getDebugValue()) {
-            drawOuterRing(canvas);
-        }
+        drawOuterRing(canvas);
 
         // draw rings
-        int start = 2;
         int end = 1;
         if (Logger.getDebugValue()) {
-            start = 1;
             end = 0;
         }
-        for (int i = (state.getRingCount() - start); i >= end; i--) {
+        for (int i = (state.getRingCount() - 2); i >= end; i--) {
             int r = rBase * (i + 1) / 8;
             drawRing(canvas, r, 8 - i);
         }
 
-        if (!Logger.getDebugValue()) {
-            drawOuterRingMarbles(canvas);
-        }
+        drawOuterRingMarbles(canvas);
 
         // arrows for selecting rotation
         if (selectedBall >= 0) {
@@ -304,7 +316,7 @@ public class SCSurfaceView extends FlashSurfaceView {
         RectF oval = new RectF();
         oval.set(widthH - r, heightH - r, widthH + r, heightH + r);
 
-        float angle = state.getRingAngle(ring);
+        float angle = animAngles[ring];
         int slotCount = state.getRingSlotCount(ring);
         float sector = 360f / slotCount;
         float sweep = 5f * rBase / r;
@@ -528,6 +540,37 @@ public class SCSurfaceView extends FlashSurfaceView {
      */
     private void updateDimensions(Canvas canvas) {
         positions = new HashMap<>();
+
+
+        boolean keepUpdating = false;
+        boolean[] lastRot = state.getLastRingRotations();
+        for (int i = 1; i < state.getRingCount() - 1; i++) {
+            float ang = state.getRingAngle(i);
+            if (lastRot[i]) {
+                if (animAngles[i] < ang) {
+                    animAngles[i] = (7 * animAngles[i] + ang - 360) / 8;
+                    if (animAngles[i] < 0) {
+                        animAngles[i] += 360;
+                    }
+                } else {
+                    animAngles[i] = (7 * animAngles[i] + ang) / 8;
+                }
+            } else {
+                if (animAngles[i] > ang) {
+                    animAngles[i] = (7 * animAngles[i] + ang + 360) / 8;
+                    animAngles[i] %= 360;
+                } else {
+                    animAngles[i] = (7 * animAngles[i] + ang) / 8;
+                }
+            }
+
+            if (Math.abs(animAngles[i] - ang) > 0.1f) {
+                keepUpdating = true;
+            } else {
+                animAngles[i] = ang;
+            }
+        }
+        this.keepUpdating = keepUpdating;
 
         int screenX = canvas.getWidth();
         int screenY = canvas.getHeight();
