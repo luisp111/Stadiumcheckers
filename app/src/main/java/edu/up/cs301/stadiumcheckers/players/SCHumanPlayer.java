@@ -172,6 +172,7 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         if (x < cPos.x + bound && x > cPos.x - bound && y < cPos.y + bound && y > cPos.y - bound) {
             Log.d(TAG, "onTouch: clockwise selected");
             // the sView.getSelectedBall() returns the id of the ball
+            // the sView.getSelectedBall() returns the id of the ball
             // from its position that you get in SCState's getPositionsFromTeam() function
             // that means you can get the correct position by doing
             Position pos = state.getPositionsFromTeam(playerNum)[selectedBall];
