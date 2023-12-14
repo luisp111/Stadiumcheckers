@@ -20,9 +20,9 @@ public class SCMastermindComputerPlayer extends GameComputerPlayer {
     // how strongly the ai considers the number of secured marbles on a turn
     private static final float securedMarblesWeight = 1000f;
     // how strongly the ai considers the number of opponent secured marbles on a turn
-    private static final float oppAbsoluteDistanceWeight = -16f;
+    private static final float oppAbsoluteDistanceWeight = -12f;
     // how strongly the ai considers the total angular distance to the target slot
-    private static final float oppAngularDistanceWeight = 2f;
+    private static final float oppAngularDistanceWeight = 1.5f;
     // how strongly the ai considers the number of secured marbles on a turn
     private static final float oppSecuredMarblesWeight = -2000f;
 

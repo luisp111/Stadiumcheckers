@@ -176,8 +176,10 @@ public class SCSurfaceView extends FlashSurfaceView {
                     state.getTurnCount(), teamNames[state.getCurrentTeamTurn()]);
         }
         if (animAngles[0] == null) {
+            float a = 52;
             for (int i = 0; i < state.getRingCount(); i++) {
-                animAngles[i] = state.getRingAngle(i);
+                animAngles[i] = a;
+                a = (a * a + 149) % 360;
             }
         }
         this.state = state;

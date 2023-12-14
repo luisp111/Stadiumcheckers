@@ -1,7 +1,5 @@
 package edu.up.cs301.stadiumcheckers;
 
-import static edu.up.cs301.game.GameFramework.utilities.Saving.readFromFile;
-
 import java.util.ArrayList;
 
 import edu.up.cs301.game.GameFramework.GameMainActivity;
