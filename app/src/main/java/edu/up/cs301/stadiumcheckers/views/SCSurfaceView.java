@@ -48,7 +48,7 @@ public class SCSurfaceView extends FlashSurfaceView {
     // base the display off of these values instead of hardcoding positions
     // so as to allow for zooming in the future perhaps
     private int minX;
-    private int maxX;
+    private int maxX = 0;
     private int minY;
     private int maxY;
 
@@ -59,10 +59,6 @@ public class SCSurfaceView extends FlashSurfaceView {
     // for deducing the center position
     private int widthH;
     private int heightH;
-
-    // actual screen measurements
-    private int screenX;
-    private int screenY;
 
     // fun paints
     private Paint ringPaint;
@@ -157,6 +153,15 @@ public class SCSurfaceView extends FlashSurfaceView {
         return keepUpdating;
     }
 
+    public void setScreenSize(int width, int height) {
+        minX = 0;
+        minY = 0;
+        maxX = width;
+        maxY = height;
+        widthH = width / 2;
+        heightH = height / 2;
+    }
+
     /**
      * Sets a new state to display
      *
@@ -226,26 +231,7 @@ public class SCSurfaceView extends FlashSurfaceView {
             canvas.drawText(statusText, 10, 38, colorPaints2[state.getCurrentTeamTurn()]);
         }
 
-        // this draws the secured marbles on the bottom right
-        float top = h - rBase / 1.6f + rBase / 16f;
-        for (int i = 0; i < 4; i++) {
-            float x = w - (rBase / 8f) * (1.5f * i + 1);
-
-            canvas.drawRect(w - (rBase / 8f) * (1.5f * i + 0.5f), top,
-                    w - (rBase / 8f) * (1.5f * i + 1.5f), h, colorPaints[i]);
-            canvas.drawCircle(x, top,
-                    (rBase / 16f), colorPaints[i]);
-
-            int k = 0;
-            Position[] teamPos = state.getPositionsFromTeam(i);
-            for (int j = 0; j < 5; j++) {
-                if (teamPos[j].getRing() != -1) {
-                    continue;
-                }
-                drawMarble(x, h - (rBase / 8f) * (k + 0.5f), i, -1, canvas);
-                k++;
-            }
-        }
+        drawSecuredMarbles(canvas, w, h);
 
         // draw marbles needing to be reset
         double angleBase = Math.PI / 10;
@@ -296,6 +282,35 @@ public class SCSurfaceView extends FlashSurfaceView {
 
         if (!Logger.getDebugValue()) {
             drawInnerRing(canvas, rBase / 8f);
+        }
+    }
+
+    /**
+     * draws the secured marbles of each team
+     *
+     * @param canvas canvas to draw on
+     * @param w width of drawable area
+     * @param h height of drawable area
+     */
+    private void drawSecuredMarbles(Canvas canvas, int w, int h) {
+        float top = h - rBase / 1.6f + rBase / 16f;
+        for (int i = 0; i < 4; i++) {
+            float x = w - (rBase / 8f) * (1.5f * i + 1);
+
+            canvas.drawRect(w - (rBase / 8f) * (1.5f * i + 0.5f), top,
+                    w - (rBase / 8f) * (1.5f * i + 1.5f), h, colorPaints[i]);
+            canvas.drawCircle(x, top,
+                    (rBase / 16f), colorPaints[i]);
+
+            int k = 0;
+            Position[] teamPos = state.getPositionsFromTeam(i);
+            for (int j = 0; j < 5; j++) {
+                if (teamPos[j].getRing() != -1) {
+                    continue;
+                }
+                drawMarble(x, h - (rBase / 8f) * (k + 0.5f), i, -1, canvas);
+                k++;
+            }
         }
     }
 
@@ -572,22 +587,9 @@ public class SCSurfaceView extends FlashSurfaceView {
         }
         this.keepUpdating = keepUpdating;
 
-        int screenX = canvas.getWidth();
-        int screenY = canvas.getHeight();
-
-        if (this.screenX == screenX && this.screenY == screenY) {
-            return;
+        if (maxX == 0) {
+            setScreenSize(canvas.getWidth(), canvas.getHeight());
         }
-
-        this.screenX = screenX;
-        this.screenY = screenY;
-
-        minX = 0;
-        minY = 0;
-        maxX = screenX;
-        maxY = screenY;
-        widthH = screenX / 2;
-        heightH = screenY / 2;
     }
 
     /**

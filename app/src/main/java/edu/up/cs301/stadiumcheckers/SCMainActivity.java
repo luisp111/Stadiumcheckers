@@ -21,17 +21,6 @@ import edu.up.cs301.stadiumcheckers.players.SCSmartComputerPlayer;
 
 /**
  * Stadium Checkers
- * <p>
- * BETA RELEASE:
- * The rotation action still has some rare cases where the selected marble will
- * rotate in some unexpected way. It's rarer now, but still happens.
- * <p>
- * The ability to reset your marble manually isn't implemented yet, mainly due to the fact that
- * this isn't a very impactful feature and it'd take a pretty significant amount of time to
- * get working right. The game still feels perfectly fine without it.
- * <p>
- * Animations aren't present, as trying to get them in would take a *huge* amount of effort
- * due to the complexity of the game's singular action.
  *
  * @author Jaden Barker
  * @author James Pham
@@ -107,7 +96,6 @@ public class SCMainActivity extends GameMainActivity {
 
         //done!
         return defaultConfig;
-
     }//createDefaultConfig
 
 

@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import java.util.Map;
 
@@ -28,11 +29,14 @@ import edu.up.cs301.stadiumcheckers.views.SCSurfaceView;
  * @author Mohammad Surur
  * @author Dylan Sprigg
  */
-public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListener {
+public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListener,
+        ViewTreeObserver.OnGlobalLayoutListener {
     // Tag for logging
     private static final String TAG = "SCHumanPlayer";
     // Id of the layout for the player
     private final int layoutId;
+    // track the game state here for rotation
+    private SCState myState;
 
     /**
      * Main constructor
@@ -64,8 +68,10 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         SCSurfaceView view = myActivity.findViewById(R.id.surfaceView);
         if (info instanceof SCState) {
             SCState newState = new SCState((SCState) info);
+            myState = newState;
             view.setTeamNames(allPlayerNames);
             view.setState(newState);
+            view.setScreenSize(view.getWidth(), view.getHeight());
 
             boolean resetMode = false;
             for (Position p : newState.getPositionsFromTeam(playerNum)) {
@@ -100,6 +106,9 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         myActivity = activity;
         SCSurfaceView view = activity.findViewById(R.id.surfaceView);
         view.setOnTouchListener(this);
+
+        ViewTreeObserver vto = view.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(this);
     }
 
     /**
@@ -178,5 +187,14 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
         }
 
         return false;
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        if (myState == null || myActivity.findViewById(R.id.surfaceView) == null) {
+            return;
+        }
+
+        receiveInfo(myState);
     }
 }

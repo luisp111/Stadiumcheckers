@@ -15,6 +15,11 @@ import edu.up.cs301.stadiumcheckers.Position;
 
 /**
  * Stadium Checkers
+ * <p>
+ * Final release notes:
+ * - I really don't feel like touching the rotation action to fix it, it's too complicated.
+ * - Networking probably works.
+ * - You can rotate the screen, save and load the game, and use the help button.
  *
  * @author Jaden Barker
  * @author James Pham
