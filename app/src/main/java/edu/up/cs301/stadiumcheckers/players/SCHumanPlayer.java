@@ -151,7 +151,8 @@ public class SCHumanPlayer extends GameHumanPlayer implements View.OnTouchListen
                 if (sView.getResetMode()) {
                     for (Position pos : state.getPositionsFromTeam(playerNum)) {
                         if (pos.getRing() == -2) {
-                            game.sendAction(new SCResetAction(this, pos, entry.getKey()));
+                            game.sendAction(new SCResetAction(this, pos, playerNum * 5 + entry.getKey()));
+                            break;
                         }
                     }
                     return false;
