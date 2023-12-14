@@ -561,6 +561,13 @@ public class SCSurfaceView extends FlashSurfaceView {
         boolean[] lastRot = state.getLastRingRotations();
         for (int i = 1; i < state.getRingCount() - 1; i++) {
             float ang = state.getRingAngle(i);
+            if (Math.abs(animAngles[i] - ang) > 0.1f) {
+                keepUpdating = true;
+            } else {
+                animAngles[i] = ang;
+                continue;
+            }
+
             if (lastRot[i]) {
                 if (animAngles[i] < ang) {
                     animAngles[i] = (7 * animAngles[i] + ang - 360) / 8;
@@ -577,12 +584,6 @@ public class SCSurfaceView extends FlashSurfaceView {
                 } else {
                     animAngles[i] = (7 * animAngles[i] + ang) / 8;
                 }
-            }
-
-            if (Math.abs(animAngles[i] - ang) > 0.1f) {
-                keepUpdating = true;
-            } else {
-                animAngles[i] = ang;
             }
         }
         this.keepUpdating = keepUpdating;

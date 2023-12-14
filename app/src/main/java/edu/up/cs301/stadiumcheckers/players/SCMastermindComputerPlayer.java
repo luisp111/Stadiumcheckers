@@ -19,6 +19,12 @@ public class SCMastermindComputerPlayer extends GameComputerPlayer {
     private static final float angularDistanceWeight = -1f;
     // how strongly the ai considers the number of secured marbles on a turn
     private static final float securedMarblesWeight = 1000f;
+    // how strongly the ai considers the number of opponent secured marbles on a turn
+    private static final float oppAbsoluteDistanceWeight = -16f;
+    // how strongly the ai considers the total angular distance to the target slot
+    private static final float oppAngularDistanceWeight = 2f;
+    // how strongly the ai considers the number of secured marbles on a turn
+    private static final float oppSecuredMarblesWeight = -2000f;
 
     /**
      * constructor
@@ -103,9 +109,35 @@ public class SCMastermindComputerPlayer extends GameComputerPlayer {
                     absDist += p.getRing();
                 }
 
+                int oppAbsDist = 0;
+                int oppSecMarbs = 0;
+                int oppAngDist = 0;
+                for (int i = 0; i < 4; i++) {
+                    if (i == playerNum) {
+                        continue;
+                    }
+
+                    for (Position p : s.getPositionsFromTeam(i)) {
+                        if (p.getRing() == -1) {
+                            oppSecMarbs++;
+                            continue;
+                        }
+                        if (p.getRing() == -2) {
+                            oppSecMarbs--;
+                            continue;
+                        }
+                        oppAngDist += state.angleDist(targetAngle, state.getPosAngle(p));
+                        oppAbsDist += p.getRing();
+                    }
+                }
+
                 float tot = absDist * absoluteDistanceWeight;
                 tot += secMarbs * securedMarblesWeight;
                 tot += angDist * angularDistanceWeight;
+                tot += oppAbsDist * oppAbsoluteDistanceWeight;
+                tot += oppAngDist * oppAngularDistanceWeight;
+                tot += oppSecMarbs * oppSecuredMarblesWeight;
+
                 if (tot > mTot) {
                     mTot = tot;
                     dir = !dir;
